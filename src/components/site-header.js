@@ -31,26 +31,37 @@ export function SiteHeader() {
         setUser(JSON.parse(userStr));
       }
 
-      // Verify with backend (Cookie check)
+      // Verify with backend (Token check)
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/profile?t=${Date.now()}`, { // Cache bust param
-           credentials: "include",
+        const token = localStorage.getItem("token");
+        
+        // If no token, we are definitely logged out
+        if (!token) {
+             setUser(null);
+             return;
+        }
+
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/profile?t=${Date.now()}`, {
            headers: {
+             'Authorization': `Bearer ${token}`,
              'Cache-Control': 'no-store',
              'Pragma': 'no-cache'
            }
         });
+        
         if (res.ok) {
            const userData = await res.json();
            setUser(userData);
            localStorage.setItem("user", JSON.stringify(userData));
         } else {
-           // Cookie invalid or expired
+           // Token invalid or expired
            setUser(null);
            localStorage.removeItem("user");
+           localStorage.removeItem("token");
         }
       } catch (error) {
-         // Network error or other
+         // Network error - keep optimistic state if possible
+         console.error("Auth check failed", error);
       }
     };
 
