@@ -1,13 +1,14 @@
 export default function AuthorSidebar({ articles = [], currentFilter, onFilterChange }) {
-    
+  const safeArticles = Array.isArray(articles) ? articles : [];
+  
   const counts = {
-    active: articles.filter(a => a.status !== 'published' && a.status !== 'rejected').length,
-    revisionsRequested: articles.filter(a => a.status === 'revision_required').length,
-    revisionsSubmitted: 0, // Not explicitly tracked in simple status enum yet
-    incomplete: 0, // Not tracked
-    scheduled: 0, // Not tracked
-    published: articles.filter(a => a.status === 'published').length,
-    declined: articles.filter(a => a.status === 'rejected').length,
+    active: safeArticles.filter(a => a.status !== 'published' && a.status !== 'rejected').length,
+    revisionsRequested: safeArticles.filter(a => a.status === 'revision_required').length,
+    revisionsSubmitted: 0,
+    incomplete: 0,
+    scheduled: 0,
+    published: safeArticles.filter(a => a.status === 'published').length,
+    declined: safeArticles.filter(a => a.status === 'rejected').length,
   };
 
   const navItems = [

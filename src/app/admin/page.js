@@ -41,11 +41,10 @@ export default function AdminPage() {
 
   useEffect(() => {
     const checkAuth = () => {
-      const token = localStorage.getItem("token");
       const userStr = localStorage.getItem("user");
       const user = userStr ? JSON.parse(userStr) : null;
 
-      if (token && user && user.role === "admin") {
+      if (user && user.role === "admin") {
         setIsAuthenticated(true);
         fetchArticles();
       } else {
@@ -60,7 +59,7 @@ export default function AdminPage() {
   const fetchStats = async () => {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/stats`, {
-             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+             credentials: 'include',
         });
         if (res.ok) {
             const data = await res.json();
@@ -80,7 +79,7 @@ export default function AdminPage() {
   const fetchReviewers = async () => {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users?role=reviewer`, {
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+            credentials: 'include',
        });
        if (res.ok) {
            const data = await res.json();
@@ -93,10 +92,12 @@ export default function AdminPage() {
 
   const fetchArticles = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles`, {
+          credentials: 'include',
+      });
       if (!res.ok) throw new Error("Failed to fetch articles");
       const data = await res.json();
-      setArticles(data);
+      setArticles(Array.isArray(data) ? data : []);
 
       await fetchStats();
       await fetchReviewers();
@@ -132,12 +133,13 @@ export default function AdminPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(loginFormData),
+        credentials: 'include',
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        localStorage.setItem("token", data.token);
+        // localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data));
         setIsAuthenticated(true);
         window.dispatchEvent(new Event("auth-change"));
@@ -157,13 +159,10 @@ export default function AdminPage() {
   };
 
   const handleGenerateDOI = async (id) => {
-    const token = localStorage.getItem("token");
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${id}/doi`, {
         method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: 'include',
       });
       if (res.ok) {
         alert("DOI Generated!");
@@ -196,14 +195,11 @@ export default function AdminPage() {
     const formData = new FormData();
     formData.append("pdf", file);
 
-    const token = localStorage.getItem("token");
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/upload`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
         body: formData,
+        credentials: 'include',
       });
 
       if (res.ok) {
@@ -213,9 +209,9 @@ export default function AdminPage() {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({ pdfUrl: filePath }),
+            credentials: 'include',
         });
 
         alert("PDF Uploaded!");
@@ -240,15 +236,14 @@ export default function AdminPage() {
       const issue = prompt("Enter Issue Number (e.g., Vol 1, Issue 1):");
       if (!issue) return;
 
-      const token = localStorage.getItem("token");
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${id}/issue`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({ issue }),
+            credentials: 'include',
         });
 
         if (res.ok) {
@@ -284,18 +279,17 @@ export default function AdminPage() {
   }
 
   const handleSendBackToAuthor = async () => {
-    const token = localStorage.getItem("token");
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${currentArticle._id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
                 status: 'revision_required',
                 reviewerComments: sendBackMessage
-            })
+            }),
+            credentials: 'include',
         });
 
         if (res.ok) {
@@ -319,18 +313,17 @@ export default function AdminPage() {
   };
 
   const handleStatusUpdate = async () => {
-    const token = localStorage.getItem("token");
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${currentArticle._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           status: statusUpdate,
           reviewerComments: reviewerComments,
         }),
+        credentials: 'include',
       });
 
       if (res.ok) {
@@ -347,15 +340,14 @@ export default function AdminPage() {
   };
 
   const handleAssignReviewer = async (articleId, reviewerId) => {
-      const token = localStorage.getItem("token");
       try {
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${articleId}/assign`, {
               method: "PUT",
               headers: {
                   "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
               },
               body: JSON.stringify({ reviewerId }),
+              credentials: 'include',
           });
 
           if (res.ok) {
@@ -378,12 +370,11 @@ export default function AdminPage() {
   }, [publishModalOpen, publishVolume, publishIssue, publishType]);
 
   const fetchNextArticleNumber = async (vol, issue, type) => {
-      const token = localStorage.getItem("token");
       let url = `${process.env.NEXT_PUBLIC_API_URL}/api/articles/next-number?volume=${vol}&issue=${issue}`;
 
       try {
           const res = await fetch(url, {
-              headers: { Authorization: `Bearer ${token}` }
+              credentials: 'include',
           });
           
           if (!res.ok) {
@@ -400,21 +391,20 @@ export default function AdminPage() {
 
   const handlePublishNewIssue = async () => {
       setPublishing(true);
-      const token = localStorage.getItem("token");
       try {
           // 1. Ensure Issue Exists (Idempotent creation)
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/issues/publish`, {
               method: "POST",
               headers: {
                   "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`
               },
               body: JSON.stringify({
                   volume: publishVolume,
                   issue: publishIssue, // We now pass the manually selected issue
                   title: `Volume ${publishVolume}, Issue ${publishIssue}`,
                   type: publishType
-              })
+              }),
+              credentials: 'include',
           });
 
           // Even if issue exists (400), we proceed. Ideally backend should return 200 or 201.
@@ -427,8 +417,8 @@ export default function AdminPage() {
                   method: "PUT",
                   headers: {
                       "Content-Type": "application/json",
-                      Authorization: `Bearer ${token}`,
                   },
+                  credentials: 'include',
                   body: JSON.stringify({ 
                       issue: issueString, 
                       status: 'published',

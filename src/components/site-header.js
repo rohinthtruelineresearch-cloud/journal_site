@@ -22,22 +22,43 @@ export function SiteHeader() {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    // Check for user in localStorage
-    const checkUser = () => {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      } else {
-        setUser(null);
+    // Check for user session via API
+    // Check for user session via API
+    const checkUser = async () => {
+      // Optimistic check from localStorage
+      const userStr = localStorage.getItem("user");
+      if (userStr) {
+        setUser(JSON.parse(userStr));
+      }
+
+      // Verify with backend (Cookie check)
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/profile?t=${Date.now()}`, { // Cache bust param
+           credentials: "include",
+           headers: {
+             'Cache-Control': 'no-store',
+             'Pragma': 'no-cache'
+           }
+        });
+        if (res.ok) {
+           const userData = await res.json();
+           setUser(userData);
+           localStorage.setItem("user", JSON.stringify(userData));
+        } else {
+           // Cookie invalid or expired
+           setUser(null);
+           localStorage.removeItem("user");
+        }
+      } catch (error) {
+         // Network error or other
       }
     };
 
     checkUser();
 
-    // Listen for custom auth-change event and storage events
+    // Listen for custom auth-change event 
     window.addEventListener("auth-change", checkUser);
-    window.addEventListener("storage", checkUser);
-
+    
     // Close dropdown when clicking outside
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -48,16 +69,24 @@ export function SiteHeader() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       window.removeEventListener("auth-change", checkUser);
-      window.removeEventListener("storage", checkUser);
     };
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
+  const handleLogout = async () => {
+    try {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/logout`, {
+            method: 'POST',
+            credentials: "include",
+        });
+    } catch (err) {
+        console.error('Logout failed', err);
+    }
+    
+    // localStorage.removeItem("token"); // Token no longer stored
     localStorage.removeItem("user");
     setUser(null);
     setIsDropdownOpen(false);
-    window.dispatchEvent(new Event("auth-change"));
+    window.dispatchEvent(new Event("auth-change")); // Notify other components
     router.push("/");
   };
 

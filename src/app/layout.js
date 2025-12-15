@@ -2,6 +2,7 @@ import { Manrope, Newsreader } from "next/font/google";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import DisableDevTools from "@/components/disable-devtools";
 import { Toaster } from "react-hot-toast";
 
 const sans = Manrope({
@@ -33,6 +34,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${sans.variable} ${serif.variable} bg-slate-50 text-slate-900 antialiased`}
       >
+        <DisableDevTools />
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-sky-50 text-slate-900">
           <div className="pointer-events-none fixed inset-x-10 top-24 z-0 h-72 rounded-full bg-[radial-gradient(circle_at_center,_rgba(14,165,233,0.16),_transparent_55%)] blur-3xl" />
           <SiteHeader />

@@ -15,18 +15,20 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const token = searchParams.get("token");
-    if (token) {
-      localStorage.setItem("token", token);
-      // Fetch user details to determine role
+    // Handle Google Login Success
+    const success = searchParams.get("success");
+    if (success) {
+      // Fetch user details to determine role and update state
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/profile`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        credentials: "include",
       })
-        .then((res) => res.json())
+        .then((res) => {
+            if (res.ok) return res.json();
+            throw new Error('Login failed');
+        })
         .then((data) => {
           localStorage.setItem("user", JSON.stringify(data));
+          window.dispatchEvent(new Event("auth-change")); // Notify header
           if (data.role === "admin") {
             router.push("/admin");
           } else if (data.role === "reviewer") {
@@ -58,22 +60,22 @@ function LoginForm() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
+        credentials: "include", // Important for setting the cookie
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        localStorage.setItem("token", data.token);
+        // localStorage.setItem("token", data.token); // Token is now in cookie
         localStorage.setItem("user", JSON.stringify(data));
         
+        window.dispatchEvent(new Event("auth-change"));
+        
         if (data.role === "admin") {
-          window.dispatchEvent(new Event("auth-change"));
           router.push("/admin");
         } else if (data.role === "reviewer") {
-          window.dispatchEvent(new Event("auth-change"));
           router.push("/reviewer");
         } else {
-          window.dispatchEvent(new Event("auth-change"));
           router.push("/author");
         }
       } else {
@@ -87,7 +89,10 @@ function LoginForm() {
   };
 
   const handleGoogleLogin = () => {
+    // We want the backend to redirect back to login page with ?success=true
+    // The backend callback (userRoutes) does: res.redirect(`${frontendUrl}/login?success=true`);
     const origin = window.location.origin;
+    // We pass 'from' just in case, though backend determines redirect
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/users/auth/google?from=${encodeURIComponent(origin)}`;
   };
 
@@ -184,6 +189,14 @@ function LoginForm() {
                   placeholder="••••••••"
                 />
               </div>
+            </div>
+            <div className="flex items-center justify-end">
+              <Link
+                href="/forgot-password"
+                className="text-sm font-medium text-sky-600 hover:text-sky-500"
+              >
+                Forgot your password?
+              </Link>
             </div>
           </div>
 

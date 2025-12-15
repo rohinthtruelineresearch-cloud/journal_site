@@ -15,34 +15,27 @@ function AuthorPageContent() {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
-    
-    if (storedUser) {
-        setUser(JSON.parse(storedUser));
-    }
-
-    if (!token) {
-      router.push("/login");
-      return;
-    }
-
     const fetchMyArticles = async () => {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/my-articles`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+             credentials: 'include',
         });
+
+        if (res.status === 401) {
+            router.push('/login');
+            return;
+        }
 
         if (!res.ok) {
           throw new Error("Failed to fetch articles");
         }
 
         const data = await res.json();
-        setArticles(data);
+        // Ensure data is array
+        setArticles(Array.isArray(data) ? data : []);
       } catch (err) {
         setError(err.message);
+        setArticles([]); // fallback
       } finally {
         setLoading(false);
       }
@@ -51,14 +44,15 @@ function AuthorPageContent() {
     fetchMyArticles();
   }, [router]);
 
-  // Calculate Stats
+  // Calculate Stats - Ensure articles is array
+  const safeArticles = Array.isArray(articles) ? articles : [];
   const stats = {
-      active: articles.filter(a => a.status !== 'published' && a.status !== 'rejected').length,
-      published: articles.filter(a => a.status === 'published').length,
-      revisions: articles.filter(a => a.status === 'revision_required').length
+      active: safeArticles.filter(a => a.status !== 'published' && a.status !== 'rejected').length,
+      published: safeArticles.filter(a => a.status === 'published').length,
+      revisions: safeArticles.filter(a => a.status === 'revision_required').length
   };
 
-  const filteredArticles = articles.filter((article) => {
+  const filteredArticles = safeArticles.filter((article) => {
     switch (filter) {
         case 'active':
             return article.status !== 'published' && article.status !== 'rejected';

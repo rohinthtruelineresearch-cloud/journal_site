@@ -31,17 +31,12 @@ export default function AccountPage() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        router.push("/login");
-        return;
-      }
-
       try {
+        const token = localStorage.getItem("token");
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/profile`, {
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
+            Authorization: `Bearer ${token}`
+          }
         });
 
         if (res.ok) {
@@ -89,13 +84,13 @@ export default function AccountPage() {
     setSaving(true);
     setMessage({ type: "", text: "" });
 
-    const token = localStorage.getItem("token");
     try {
+      const token = localStorage.getItem("token");
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(formData),
       });

@@ -13,19 +13,18 @@ function SubmissionDetailsContent() {
   const { id } = params;
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-        router.push("/login");
-        return;
-    }
-
-    if (!id) return;
-
     const fetchArticle = async () => {
         try {
+            const token = localStorage.getItem("token");
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${id}`, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             });
+            if (res.status === 401) {
+                router.push("/login");
+                return;
+            }
             if (!res.ok) throw new Error("Failed to fetch article details");
             const data = await res.json();
             setArticle(data);

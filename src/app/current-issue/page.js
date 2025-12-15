@@ -29,17 +29,17 @@ function CurrentIssueContent() {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles`);
             if (!res.ok) throw new Error("Failed to fetch articles");
             const data = await res.json();
+            const safeData = Array.isArray(data) ? data : [];
             
             // Construct issue string, e.g., "Vol 1, Issue 2"
             // Note: Ensure this matches backend format exactly.
             // Backend saves as `Vol ${volume}, Issue ${issue}`
             const targetIssueStr = `Vol ${volumeParam}, Issue ${issueParam}`;
             
-            const filtered = data.filter(article => 
+            const filtered = safeData.filter(article => 
                 article.status === 'published' && 
                 article.issue === targetIssueStr
             );
-            setPublishedArticles(filtered);
             setPublishedArticles(filtered);
         } else {
             // Fetch Issues for Archive View
@@ -47,7 +47,7 @@ function CurrentIssueContent() {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/issues`);
             if (!res.ok) throw new Error("Failed to fetch issues");
             const data = await res.json();
-            setIssues(data);
+            setIssues(Array.isArray(data) ? data : []);
              // Default expand the first volume if available
             if (data.length > 0) {
                 setExpandedVolume(data[0].volume);

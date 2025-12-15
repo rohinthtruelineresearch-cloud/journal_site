@@ -91,21 +91,18 @@ export default function SubmitPage() {
     submissionFormData.append("wantsReviewerRole", wantsReviewerRole);
 
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        toast.error("Please log in to submit a paper.");
-        router.push("/login");
-        return;
-      }
-
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          // Content-Type header is automatically set by browser for FormData
-        },
+        credentials: 'include',
+        // Content-Type header is automatically set by browser for FormData
         body: submissionFormData,
       });
+
+      if (res.status === 401) {
+          toast.error("Please log in to submit a paper.");
+          router.push("/login");
+          return;
+      }
 
       if (!res.ok) {
         const errorData = await res.json();

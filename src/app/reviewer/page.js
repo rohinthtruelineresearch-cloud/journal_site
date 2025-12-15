@@ -13,33 +13,22 @@ export default function ReviewerPage() {
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
-    
-    if (storedUser) {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
-    }
-
-    if (!token) {
-      router.push("/login");
-      return;
-    }
-
     const fetchAssignedArticles = async () => {
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/assigned`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+            credentials: 'include',
         });
 
         if (res.ok) {
           const data = await res.json();
-          setArticles(data);
+          setArticles(Array.isArray(data) ? data : []);
+        } else {
+            console.error("Failed to fetch articles:", res.status);
+            setArticles([]);
         }
       } catch (err) {
         console.error("Failed to fetch assigned articles", err);
+        setArticles([]);
       } finally {
         setLoading(false);
       }
@@ -83,14 +72,13 @@ export default function ReviewerPage() {
       if (!selectedArticle) return;
       setSubmittingReview(true);
 
-      const token = localStorage.getItem("token");
       try {
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${selectedArticle._id}`, {
               method: "PUT",
               headers: {
                   "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
               },
+              credentials: 'include',
               body: JSON.stringify({
                   status: reviewDecision,
                   reviewerComments: reviewComments

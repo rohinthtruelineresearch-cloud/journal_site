@@ -19,9 +19,26 @@ export default function RegisterPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const validatePassword = (password, name) => {
+    if (password.length < 8) return "Password must be at least 8 characters long";
+    if (!/[A-Z]/.test(password)) return "Password must contain at least one uppercase letter";
+    if (!/[a-z]/.test(password)) return "Password must contain at least one lowercase letter";
+    if (!/[0-9]/.test(password)) return "Password must contain at least one number";
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) return "Password must contain at least one symbol";
+    if (name && password.toLowerCase() === name.toLowerCase()) return "Password cannot be the same as your name";
+    return "";
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    
+    const passwordError = validatePassword(formData.password, formData.name);
+    if (passwordError) {
+      setError(passwordError);
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -31,13 +48,15 @@ export default function RegisterPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
+        credentials: "include",
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        // Save user to local storage
+        // Save user to local storage (for display purposes, token is in cookie)
         localStorage.setItem("user", JSON.stringify(data));
+        window.dispatchEvent(new Event("auth-change"));
         router.push("/"); // Redirect to home
       } else {
         setError(data.message || "Registration failed");
@@ -125,6 +144,63 @@ export default function RegisterPage() {
                   placeholder="••••••••"
                 />
               </div>
+              
+              {/* Password Strength Meter */}
+              {formData.password && (
+                <div className="mt-2 space-y-1">
+                  <div className="flex gap-1 h-1.5">
+                    {[1, 2, 3, 4].map((level) => {
+                      let active = false;
+                      let color = "bg-slate-200";
+                      
+                      const strength = [
+                        formData.password.length >= 8,
+                        /[A-Z]/.test(formData.password),
+                        /[a-z]/.test(formData.password),
+                        /[0-9]/.test(formData.password),
+                        /[!@#$%^&*(),.?":{}|<>]/.test(formData.password)
+                      ].filter(Boolean).length;
+
+                      // Logic for bars
+                      if (level === 1) active = strength >= 1;
+                      if (level === 2) active = strength >= 3;
+                      if (level === 3) active = strength >= 4;
+                      if (level === 4) active = strength >= 5;
+
+                      if (active) {
+                         if (strength <= 2) color = "bg-red-500";
+                         else if (strength <= 4) color = "bg-amber-400";
+                         else color = "bg-emerald-500";
+                      }
+
+                      return (
+                        <div key={level} className={`h-full flex-1 rounded-full transition-colors duration-300 ${active ? color : 'bg-slate-200'}`} />
+                      );
+                    })}
+                  </div>
+                  <div className="flex justify-between text-xs text-slate-500">
+                     <span>
+                        {formData.password.length < 8 && "Min 8 chars"}
+                     </span>
+                     <span>
+                        {[
+                            formData.password.length >= 8,
+                            /[A-Z]/.test(formData.password),
+                            /[a-z]/.test(formData.password),
+                            /[0-9]/.test(formData.password),
+                            /[!@#$%^&*(),.?":{}|<>]/.test(formData.password)
+                        ].filter(Boolean).length < 3 ? "Weak" : 
+                        [
+                            formData.password.length >= 8,
+                            /[A-Z]/.test(formData.password),
+                            /[a-z]/.test(formData.password),
+                            /[0-9]/.test(formData.password),
+                            /[!@#$%^&*(),.?":{}|<>]/.test(formData.password)
+                        ].filter(Boolean).length < 5 ? "Medium" : "Strong"}
+                     </span>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div>
