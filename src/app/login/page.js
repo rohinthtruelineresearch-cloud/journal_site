@@ -16,11 +16,19 @@ function LoginForm() {
 
   useEffect(() => {
     // Handle Google Login Success
+    // Handle Google Login Success
     const success = searchParams.get("success");
-    if (success) {
-      // Fetch user details to determine role and update state
+    const token = searchParams.get("token");
+
+    if (success && token) {
+      // Save token immediately
+      localStorage.setItem("token", token);
+
+      // Fetch user details using the new token
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/profile`, {
-        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       })
         .then(async (res) => {
             if (res.ok) return res.json();
@@ -42,6 +50,8 @@ function LoginForm() {
           console.error("Failed to fetch user profile", err);
           setError(`Google Login Failed: ${err.message}`);
         });
+    } else if (success) {
+       setError("Login successful but token missing from URL.");
     }
   }, [searchParams, router]);
 
