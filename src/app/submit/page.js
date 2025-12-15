@@ -91,9 +91,12 @@ export default function SubmitPage() {
     submissionFormData.append("wantsReviewerRole", wantsReviewerRole);
 
     try {
+      const token = localStorage.getItem("token");
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles`, {
         method: "POST",
-        credentials: 'include',
+        headers: {
+             Authorization: `Bearer ${token}`
+        },
         // Content-Type header is automatically set by browser for FormData
         body: submissionFormData,
       });

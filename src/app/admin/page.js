@@ -58,8 +58,9 @@ export default function AdminPage() {
 
   const fetchStats = async () => {
     try {
+        const token = localStorage.getItem("token");
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/stats`, {
-             credentials: 'include',
+             headers: { Authorization: `Bearer ${token}` }
         });
         if (res.ok) {
             const data = await res.json();
@@ -78,8 +79,9 @@ export default function AdminPage() {
 
   const fetchReviewers = async () => {
       try {
+        const token = localStorage.getItem("token");
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users?role=reviewer`, {
-            credentials: 'include',
+            headers: { Authorization: `Bearer ${token}` }
        });
        if (res.ok) {
            const data = await res.json();
@@ -92,8 +94,9 @@ export default function AdminPage() {
 
   const fetchArticles = async () => {
     try {
+      const token = localStorage.getItem("token");
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles`, {
-          credentials: 'include',
+          headers: { Authorization: `Bearer ${token}` }
       });
       if (!res.ok) throw new Error("Failed to fetch articles");
       const data = await res.json();

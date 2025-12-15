@@ -15,8 +15,9 @@ export default function ReviewerPage() {
   useEffect(() => {
     const fetchAssignedArticles = async () => {
       try {
+        const token = localStorage.getItem("token");
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/assigned`, {
-            credentials: 'include',
+            headers: { Authorization: `Bearer ${token}` }
         });
 
         if (res.ok) {
@@ -73,12 +74,13 @@ export default function ReviewerPage() {
       setSubmittingReview(true);
 
       try {
+          const token = localStorage.getItem("token");
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${selectedArticle._id}`, {
               method: "PUT",
               headers: {
                   "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`
               },
-              credentials: 'include',
               body: JSON.stringify({
                   status: reviewDecision,
                   reviewerComments: reviewComments
