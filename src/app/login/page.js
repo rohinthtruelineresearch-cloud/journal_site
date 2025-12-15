@@ -22,9 +22,10 @@ function LoginForm() {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/profile`, {
         credentials: "include",
       })
-        .then((res) => {
+        .then(async (res) => {
             if (res.ok) return res.json();
-            throw new Error('Login failed');
+            const text = await res.text();
+            throw new Error(`Profile fetch failed: ${res.status} ${text}`);
         })
         .then((data) => {
           localStorage.setItem("user", JSON.stringify(data));
@@ -39,7 +40,7 @@ function LoginForm() {
         })
         .catch((err) => {
           console.error("Failed to fetch user profile", err);
-          setError("Failed to login with Google");
+          setError(`Google Login Failed: ${err.message}`);
         });
     }
   }, [searchParams, router]);
