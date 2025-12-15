@@ -93,7 +93,7 @@ export function SiteHeader() {
         console.error('Logout failed', err);
     }
     
-    // localStorage.removeItem("token"); // Token no longer stored
+    localStorage.removeItem("token"); 
     localStorage.removeItem("user");
     setUser(null);
     setIsDropdownOpen(false);
