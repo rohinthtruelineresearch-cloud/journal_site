@@ -188,16 +188,16 @@ export default function SubmitPage() {
 
             <div className="grid gap-4 md:grid-cols-2">
               <FileField 
-                label="Manuscript file (PDF)" 
+                label="Manuscript file (PDF/Word)" 
                 name="manuscript" 
-                accept=".pdf"
+                accept=".pdf,.doc,.docx"
                 onChange={(e) => handleFileChange(e, "manuscript")}
                 required
               />
               <FileField
-                label="Cover letter (PDF)"
+                label="Cover letter (PDF/Word)"
                 name="coverLetter"
-                accept=".pdf"
+                accept=".pdf,.doc,.docx"
                 onChange={(e) => handleFileChange(e, "coverLetter")}
                 required
               />
@@ -301,21 +301,25 @@ export default function SubmitPage() {
       {/* PDF Preview Modal */}
       {showPreview && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
-          <div className="relative h-[90vh] w-full max-w-5xl rounded-2xl bg-white p-2">
+          <div className="relative h-[90vh] w-full max-w-5xl">
             <button
               onClick={() => setShowPreview(false)}
-              className="absolute top-4 right-4 z-10 flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2 text-sm font-bold text-white shadow-lg transition hover:bg-slate-800"
+              className="absolute -top-12 right-0 z-50 flex items-center gap-2 text-white hover:text-slate-200 transition"
             >
-              <span>Close Preview</span>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <span className="text-sm font-bold uppercase tracking-wider">Close Preview</span>
+              <div className="rounded-full bg-white/20 p-2 backdrop-blur-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
             </button>
-            <iframe
-              src={previewUrl}
-              className="h-full w-full rounded-xl"
-              title="PDF Preview"
-            />
+            <div className="h-full w-full rounded-xl bg-white p-2">
+                <iframe
+                src={previewUrl}
+                className="h-full w-full rounded-lg"
+                title="PDF Preview"
+                />
+            </div>
           </div>
         </div>
       )}

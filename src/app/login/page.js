@@ -77,7 +77,7 @@ function LoginForm() {
       const data = await res.json();
 
       if (res.ok) {
-        // localStorage.setItem("token", data.token); // Token is now in cookie
+        localStorage.setItem("token", data.token); // Store token for header auth
         localStorage.setItem("user", JSON.stringify(data));
         
         window.dispatchEvent(new Event("auth-change"));

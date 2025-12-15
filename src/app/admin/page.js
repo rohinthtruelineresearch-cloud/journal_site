@@ -59,6 +59,8 @@ export default function AdminPage() {
   const fetchStats = async () => {
     try {
         const token = localStorage.getItem("token");
+        if (!token) return; // Prevent fetch if no token
+        
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/stats`, {
              headers: { Authorization: `Bearer ${token}` }
         });
@@ -80,6 +82,8 @@ export default function AdminPage() {
   const fetchReviewers = async () => {
       try {
         const token = localStorage.getItem("token");
+        if (!token) return;
+
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users?role=reviewer`, {
             headers: { Authorization: `Bearer ${token}` }
        });
@@ -95,6 +99,8 @@ export default function AdminPage() {
   const fetchArticles = async () => {
     try {
       const token = localStorage.getItem("token");
+      if (!token) return;
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles`, {
           headers: { Authorization: `Bearer ${token}` }
       });

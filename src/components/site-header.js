@@ -27,21 +27,40 @@ export function SiteHeader() {
     const checkUser = async () => {
       // Optimistic check from localStorage
       const userStr = localStorage.getItem("user");
+      console.log("[Header] Optimistic User:", userStr); 
       if (userStr) {
         setUser(JSON.parse(userStr));
       }
 
       // Verify with backend (Token check)
       try {
-        const token = localStorage.getItem("token");
+        let token = localStorage.getItem("token");
+        
+        // Fallback: If token missing but user exists with token, recover it
+        if (!token && userStr) {
+            try {
+                const parsedUser = JSON.parse(userStr);
+                if (parsedUser.token) {
+                    token = parsedUser.token;
+                    localStorage.setItem("token", token); // Heal storage
+                    console.log("[Header] Recovered token from user object");
+                }
+            } catch (e) {}
+        }
+
+        console.log("[Header] Token:", token);
         
         // If no token, we are definitely logged out
         if (!token) {
+             console.log("[Header] No token found, clearing user.");
              setUser(null);
              return;
         }
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/profile?t=${Date.now()}`, {
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/users/profile?t=${Date.now()}`;
+        console.log("[Header] Fetching profile from:", apiUrl);
+
+        const res = await fetch(apiUrl, {
            headers: {
              'Authorization': `Bearer ${token}`,
              'Cache-Control': 'no-store',
@@ -49,19 +68,23 @@ export function SiteHeader() {
            }
         });
         
+        console.log("[Header] Profile Response Status:", res.status);
+
         if (res.ok) {
            const userData = await res.json();
+           console.log("[Header] Profile Success:", userData);
            setUser(userData);
            localStorage.setItem("user", JSON.stringify(userData));
         } else {
            // Token invalid or expired
+           console.log("[Header] Profile Failed (Invalid/Expired Token)", res.status);
            setUser(null);
            localStorage.removeItem("user");
            localStorage.removeItem("token");
         }
       } catch (error) {
          // Network error - keep optimistic state if possible
-         console.error("Auth check failed", error);
+         console.error("[Header] Auth check network failed", error);
       }
     };
 
