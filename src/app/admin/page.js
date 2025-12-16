@@ -169,8 +169,12 @@ export default function AdminPage() {
 
   const handleGenerateDOI = async (id) => {
     try {
+      const token = localStorage.getItem("token");
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${id}/doi`, {
         method: "PUT",
+        headers: {
+             Authorization: `Bearer ${token}`
+        },
         credentials: 'include',
       });
       if (res.ok) {
@@ -205,8 +209,12 @@ export default function AdminPage() {
     formData.append("pdf", file);
 
     try {
+      const token = localStorage.getItem("token");
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/upload`, {
         method: "POST",
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
         body: formData,
         credentials: 'include',
       });
@@ -218,6 +226,7 @@ export default function AdminPage() {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
             },
             body: JSON.stringify({ pdfUrl: filePath }),
             credentials: 'include',
@@ -246,10 +255,12 @@ export default function AdminPage() {
       if (!issue) return;
 
       try {
+        const token = localStorage.getItem("token");
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${id}/issue`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
             },
             body: JSON.stringify({ issue }),
             credentials: 'include',
@@ -289,10 +300,12 @@ export default function AdminPage() {
 
   const handleSendBackToAuthor = async () => {
     try {
+        const token = localStorage.getItem("token");
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${currentArticle._id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
             },
             body: JSON.stringify({
                 status: 'revision_required',
@@ -323,10 +336,12 @@ export default function AdminPage() {
 
   const handleStatusUpdate = async () => {
     try {
+      const token = localStorage.getItem("token");
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${currentArticle._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
           status: statusUpdate,
@@ -350,10 +365,12 @@ export default function AdminPage() {
 
   const handleAssignReviewer = async (articleId, reviewerId) => {
       try {
+          const token = localStorage.getItem("token");
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${articleId}/assign`, {
               method: "PUT",
               headers: {
                   "Content-Type": "application/json",
+                   Authorization: `Bearer ${token}`
               },
               body: JSON.stringify({ reviewerId }),
               credentials: 'include',
@@ -382,7 +399,9 @@ export default function AdminPage() {
       let url = `${process.env.NEXT_PUBLIC_API_URL}/api/articles/next-number?volume=${vol}&issue=${issue}`;
 
       try {
+          const token = localStorage.getItem("token");
           const res = await fetch(url, {
+              headers: { Authorization: `Bearer ${token}` },
               credentials: 'include',
           });
           
@@ -401,11 +420,13 @@ export default function AdminPage() {
   const handlePublishNewIssue = async () => {
       setPublishing(true);
       try {
+          const token = localStorage.getItem("token");
           // 1. Ensure Issue Exists (Idempotent creation)
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/issues/publish`, {
               method: "POST",
               headers: {
                   "Content-Type": "application/json",
+                   Authorization: `Bearer ${token}`
               },
               body: JSON.stringify({
                   volume: publishVolume,
@@ -426,6 +447,7 @@ export default function AdminPage() {
                   method: "PUT",
                   headers: {
                       "Content-Type": "application/json",
+                      Authorization: `Bearer ${token}`
                   },
                   credentials: 'include',
                   body: JSON.stringify({ 
