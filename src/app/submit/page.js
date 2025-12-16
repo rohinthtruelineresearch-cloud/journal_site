@@ -5,6 +5,7 @@ import { doiInfo, journalInfo, paymentInfo } from "@/data/journal";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import Loader from "@/components/Loader";
 
 export default function SubmitPage() {
   const router = useRouter();
@@ -128,6 +129,7 @@ export default function SubmitPage() {
 
   return (
     <div className="space-y-8">
+      {(loading || previewLoading) && <Loader overlay={true} />}
       <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-[0_25px_70px_-38px_rgba(15,23,42,0.35)] md:p-12">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>

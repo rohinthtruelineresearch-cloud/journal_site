@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ReviewerHeader from "@/components/reviewer/ReviewerHeader";
 import ReviewerSidebar from "@/components/reviewer/ReviewerSidebar";
+import Loader from "@/components/Loader";
 
 export default function ReviewerPage() {
   const [articles, setArticles] = useState([]);
@@ -106,10 +107,11 @@ export default function ReviewerPage() {
       }
   };
 
-  if (loading) return <div className="flex h-screen items-center justify-center text-slate-600">Loading dashboard...</div>;
+  if (loading) return <Loader />;
 
   return (
     <div className="min-h-screen bg-slate-50">
+      {submittingReview && <Loader overlay={true} />}
       <ReviewerHeader user={user} />
       
       <div className="mx-auto flex max-w-7xl flex-col md:flex-row">

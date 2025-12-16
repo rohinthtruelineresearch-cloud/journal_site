@@ -8,10 +8,12 @@ import {
   doiInfo,
   paymentInfo,
 } from "@/data/journal";
+import Loader from "@/components/Loader";
 
 export default function AdminPage() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false); // Global overlay loader
   const [error, setError] = useState(null);
   const [stats, setStats] = useState({ total: 0, pending: 0, published: 0, rejected: 0 });
   const [reviewers, setReviewers] = useState([]);
@@ -168,6 +170,7 @@ export default function AdminPage() {
   };
 
   const handleGenerateDOI = async (id) => {
+    setActionLoading(true);
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${id}/doi`, {
@@ -193,6 +196,8 @@ export default function AdminPage() {
     } catch (err) {
       console.error(err);
       alert("Error generating DOI");
+    } finally {
+        setActionLoading(false);
     }
   };
 
@@ -208,6 +213,7 @@ export default function AdminPage() {
     const formData = new FormData();
     formData.append("pdf", file);
 
+    setActionLoading(true);
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/upload`, {
@@ -247,13 +253,16 @@ export default function AdminPage() {
     } catch (err) {
       console.error(err);
       alert("Error uploading PDF");
+    } finally {
+        setActionLoading(false);
     }
   };
 
   const handlePublishIssue = async (id) => {
       const issue = prompt("Enter Issue Number (e.g., Vol 1, Issue 1):");
       if (!issue) return;
-
+      
+      setActionLoading(true);
       try {
         const token = localStorage.getItem("token");
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${id}/issue`, {
@@ -281,6 +290,8 @@ export default function AdminPage() {
       } catch (err) {
           console.error(err);
           alert("Error assigning issue");
+      } finally {
+          setActionLoading(false);
       }
   }
 
@@ -299,6 +310,7 @@ export default function AdminPage() {
   }
 
   const handleSendBackToAuthor = async () => {
+    setActionLoading(true);
     try {
         const token = localStorage.getItem("token");
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${currentArticle._id}`, {
@@ -324,6 +336,8 @@ export default function AdminPage() {
     } catch(err) {
         console.error(err);
         setToast({ message: "Error sending back article", type: "error" });
+    } finally {
+        setActionLoading(false);
     }
   }
 
@@ -335,6 +349,7 @@ export default function AdminPage() {
   };
 
   const handleStatusUpdate = async () => {
+    setActionLoading(true);
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${currentArticle._id}`, {
@@ -360,6 +375,8 @@ export default function AdminPage() {
     } catch (err) {
       console.error(err);
       alert("Error updating status");
+    } finally {
+        setActionLoading(false);
     }
   };
 
@@ -419,6 +436,7 @@ export default function AdminPage() {
 
   const handlePublishNewIssue = async () => {
       setPublishing(true);
+      setActionLoading(true);
       try {
           const token = localStorage.getItem("token");
           // 1. Ensure Issue Exists (Idempotent creation)
@@ -478,6 +496,7 @@ export default function AdminPage() {
           setToast({ message: "Error publishing issue", type: "error" });
       } finally {
           setPublishing(false);
+          setActionLoading(false);
       }
   };
 
@@ -490,8 +509,8 @@ export default function AdminPage() {
     }
     return article.status === filterStatus;
   });
-
-  if (loading) return <div>Loading...</div>;
+  
+  if (loading) return <Loader />;
   if (error) return <div>Error: {error}</div>;
 
   if (!isAuthenticated) {
@@ -626,6 +645,7 @@ export default function AdminPage() {
 
   return (
     <div className="space-y-8">
+      {actionLoading && <Loader overlay={true} />}
       <input
         type="file"
         ref={fileInputRef}

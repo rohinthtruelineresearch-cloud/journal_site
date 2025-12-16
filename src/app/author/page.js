@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import AuthorHeader from "@/components/author/AuthorHeader";
 import AuthorSidebar from "@/components/author/AuthorSidebar";
 import SubmissionsTable from "@/components/author/SubmissionsTable";
+import Loader from "@/components/Loader";
 
 function AuthorPageContent() {
   const [articles, setArticles] = useState([]);
@@ -80,7 +81,7 @@ function AuthorPageContent() {
       }
   }
 
-  if (loading) return <div className="flex h-screen items-center justify-center text-slate-600">Loading dashboard...</div>;
+  if (loading) return <Loader />;
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -141,7 +142,7 @@ function AuthorPageContent() {
 
 export default function AuthorPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Loader />}>
       <AuthorPageContent />
     </Suspense>
   );
