@@ -265,14 +265,14 @@ export function SiteHeader() {
             </Link>
           )}
 
-          <Link
+          {/* <Link
             href="https://www.manuscriptlink.com/journals/aura"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center text-center rounded-full bg-sky-100 px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm whitespace-nowrap transition hover:-translate-y-0.5 hover:bg-sky-200"
           >
             Submit paper
-          </Link>
+          </Link> */}
         </div>
       </div>
 
