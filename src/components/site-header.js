@@ -126,7 +126,7 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4 md:px-10">
+      <div className="flex items-center justify-between gap-4 px-6 py-4 md:px-10 lg:px-16">
         <Link href="/" className="group flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-yellow-500 text-white shadow-[0_10px_30px_-18px_rgba(15,23,42,0.7)]">
             <span className="text-lg font-semibold">AJ</span>
@@ -277,7 +277,7 @@ export function SiteHeader() {
       </div>
 
       <div className="lg:hidden">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-2 px-4 pb-4">
+        <div className="flex flex-wrap items-center gap-2 px-6 pb-4 md:px-10 lg:px-16">
           {links.map((link) => {
             const active =
               pathname === link.href || pathname.startsWith(`${link.href}/`);

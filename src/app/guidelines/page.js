@@ -53,7 +53,7 @@ export default function GuidelinesPage() {
         </GuidelineCard>
       </section>
 
-      <section className="grid gap-6 md:grid-cols-[1fr_0.9fr]">
+      <section className="grid gap-6 md:grid-cols-2">
         <GuidelineCard title="Referencing &amp; templates">
           <ul className="space-y-2 text-sm text-slate-700">
             {submissionGuidelines.referencing.map((item) => (
@@ -100,7 +100,7 @@ export default function GuidelinesPage() {
         </GuidelineCard>
       </section>
 
-      <section className="grid gap-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_18px_60px_-50px_rgba(15,23,42,0.5)] md:grid-cols-[1fr_1.1fr] md:p-10">
+      <section className="grid gap-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_18px_60px_-50px_rgba(15,23,42,0.5)] md:grid-cols-2 md:p-10">
         <div className="space-y-2">
           <h3 className="text-lg font-semibold text-slate-900">
             Ethics &amp; plagiarism

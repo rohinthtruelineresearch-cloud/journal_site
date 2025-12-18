@@ -12,7 +12,7 @@ const quickLinks = [
 export function SiteFooter() {
   return (
     <footer className="border-t border-slate-200 bg-white/90">
-      <div className="mx-auto max-w-6xl px-6 py-12 md:px-10">
+      <div className="px-6 py-12 md:px-10 lg:px-16">
         <div className="grid gap-10 md:grid-cols-[1.2fr_1fr_1fr]">
           <div className="space-y-3">
             <div className="text-lg font-semibold text-slate-900">

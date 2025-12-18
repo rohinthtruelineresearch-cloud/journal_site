@@ -168,7 +168,7 @@ function CurrentIssueContent() {
 
   // RENDER: LIST VIEW (Accordion)
   return (
-    <div className="mx-auto max-w-5xl space-y-8 px-4 py-8">
+    <div className="space-y-8">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-slate-900 md:text-4xl font-serif">
