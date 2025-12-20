@@ -48,6 +48,19 @@ function AuthorPageContent() {
     fetchMyArticles();
   }, [router]);
 
+  // Load user data from localStorage
+  useEffect(() => {
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      try {
+        const userData = JSON.parse(userStr);
+        setUser(userData);
+      } catch (e) {
+        console.error("Error parsing user data:", e);
+      }
+    }
+  }, []);
+
   // Calculate Stats - Ensure articles is array
   const safeArticles = Array.isArray(articles) ? articles : [];
   const stats = {

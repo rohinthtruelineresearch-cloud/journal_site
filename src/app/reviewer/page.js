@@ -39,6 +39,19 @@ export default function ReviewerPage() {
     fetchAssignedArticles();
   }, [router]);
 
+  // Load user data from localStorage
+  useEffect(() => {
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      try {
+        const userData = JSON.parse(userStr);
+        setUser(userData);
+      } catch (e) {
+        console.error("Error parsing user data:", e);
+      }
+    }
+  }, []);
+
   const filteredArticles = articles.filter(article => {
       if (filter === 'all') return true;
       if (filter === 'review_requested') return article.status === 'under_review';
