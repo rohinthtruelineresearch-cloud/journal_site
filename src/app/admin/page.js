@@ -41,6 +41,14 @@ export default function AdminPage() {
   const [publishing, setPublishing] = useState(false);
   const [toast, setToast] = useState(null); // { message, type }
 
+  // Notification State
+  const [notificationModalOpen, setNotificationModalOpen] = useState(false);
+  const [notificationTitle, setNotificationTitle] = useState('');
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const [notificationType, setNotificationType] = useState('info');
+  const [notificationTargets, setNotificationTargets] = useState(['all']);
+  const [sendingNotification, setSendingNotification] = useState(false);
+
   useEffect(() => {
     const checkAuth = () => {
       const userStr = localStorage.getItem("user");
@@ -500,6 +508,49 @@ export default function AdminPage() {
       }
   };
 
+  // Send Notification Function
+  const handleSendNotification = async () => {
+    if (!notificationTitle.trim() || !notificationMessage.trim()) {
+      setToast({ message: "Please fill in title and message", type: "error" });
+      return;
+    }
+
+    setSendingNotification(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/notifications`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          title: notificationTitle,
+          message: notificationMessage,
+          type: notificationType,
+          targetRoles: notificationTargets,
+        }),
+      });
+
+      if (res.ok) {
+        setToast({ message: "Notification sent successfully!", type: "success" });
+        setNotificationModalOpen(false);
+        setNotificationTitle('');
+        setNotificationMessage('');
+        setNotificationType('info');
+        setNotificationTargets(['all']);
+      } else {
+        const data = await res.json();
+        setToast({ message: data.message || "Failed to send notification", type: "error" });
+      }
+    } catch (err) {
+      console.error(err);
+      setToast({ message: "Error sending notification", type: "error" });
+    } finally {
+      setSendingNotification(false);
+    }
+  };
+
   // Filter State
   const [filterStatus, setFilterStatus] = useState("active");
 
@@ -666,12 +717,23 @@ export default function AdminPage() {
               Manage submissions, assign reviewers, verify payments, and mint DOIs.
             </p>
           </div>
-          <Link
-            href="/submit"
-            className="rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300"
-          >
-            Back to submissions
-          </Link>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setNotificationModalOpen(true)}
+              className="rounded-full bg-gradient-to-r from-purple-600 to-purple-700 px-4 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:from-purple-700 hover:to-purple-800 flex items-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+              Send Notification
+            </button>
+            <Link
+              href="/submit"
+              className="rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300"
+            >
+              Back to submissions
+            </Link>
+          </div>
         </div>
 
         {/* Stats Cards */}
@@ -742,7 +804,11 @@ export default function AdminPage() {
                   {submission._id} · {new Date(submission.createdAt).toLocaleDateString()}
                 </div>
                 <div className="mt-2 text-sm text-slate-600">
-                  Authors: {submission.authors.join(", ")}
+                  Authors: {submission.authors?.map(author => 
+                    typeof author === 'string' 
+                      ? author 
+                      : `${author.firstName || ''} ${author.lastName || ''}`.trim()
+                  ).filter(Boolean).join(", ") || 'Unknown'}
                 </div>
                 {submission.doi && (
                     <div className="mt-1 text-xs text-blue-600">DOI: {submission.doi}</div>
@@ -930,6 +996,113 @@ export default function AdminPage() {
       {/* Toast Notification */}
       {toast && (
           <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />
+      )}
+
+      {/* Send Notification Modal */}
+      {notificationModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+          <div className="w-full max-w-lg rounded-2xl bg-white p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-slate-900">Send Notification</h2>
+                <p className="text-sm text-slate-500">Broadcast a message to authors and reviewers</p>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Title *</label>
+                <input
+                  type="text"
+                  value={notificationTitle}
+                  onChange={(e) => setNotificationTitle(e.target.value)}
+                  placeholder="e.g., System Maintenance Notice"
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-purple-500 focus:ring-purple-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Message *</label>
+                <textarea
+                  rows={4}
+                  value={notificationMessage}
+                  onChange={(e) => setNotificationMessage(e.target.value)}
+                  placeholder="Write your notification message here..."
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-purple-500 focus:ring-purple-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Type</label>
+                  <select
+                    value={notificationType}
+                    onChange={(e) => setNotificationType(e.target.value)}
+                    className="w-full rounded-lg border border-slate-300 px-3 py-2"
+                  >
+                    <option value="info">ℹ️ Info</option>
+                    <option value="update">🔄 Update</option>
+                    <option value="warning">⚠️ Warning</option>
+                    <option value="important">❗ Important</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Send To</label>
+                  <select
+                    value={notificationTargets[0]}
+                    onChange={(e) => setNotificationTargets([e.target.value])}
+                    className="w-full rounded-lg border border-slate-300 px-3 py-2"
+                  >
+                    <option value="all">All Users</option>
+                    <option value="author">Authors Only</option>
+                    <option value="reviewer">Reviewers Only</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">
+                <button 
+                  onClick={() => {
+                    setNotificationModalOpen(false);
+                    setNotificationTitle('');
+                    setNotificationMessage('');
+                  }}
+                  className="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleSendNotification}
+                  disabled={sendingNotification}
+                  className="rounded-full bg-purple-600 px-6 py-2 text-sm font-semibold text-white hover:bg-purple-700 disabled:opacity-50 flex items-center gap-2"
+                >
+                  {sendingNotification ? (
+                    <>
+                      <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                      </svg>
+                      Send Notification
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Publish Issue Modal */}

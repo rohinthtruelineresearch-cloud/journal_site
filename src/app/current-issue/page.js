@@ -154,7 +154,13 @@ function CurrentIssueContent() {
                       {paper.title}
                     </h3>
                     <p className="text-xs sm:text-sm text-slate-600">
-                      {Array.isArray(paper.authors) ? paper.authors.join(", ") : paper.authors}
+                      {Array.isArray(paper.authors) 
+                        ? paper.authors.map(author => 
+                            typeof author === 'string' 
+                              ? author 
+                              : `${author.firstName || ''} ${author.lastName || ''}`.trim()
+                          ).filter(Boolean).join(", ") 
+                        : paper.authors}
                     </p>
                     <p className="mt-2 sm:mt-3 text-xs sm:text-sm text-slate-700">{paper.abstract}</p>
                   </article>

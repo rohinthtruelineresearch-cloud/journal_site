@@ -41,7 +41,13 @@ export default function SubmissionsTable({ articles }) {
                 <td className="px-6 py-4">
                   <div className="flex flex-col">
                       <span className="text-sm font-bold text-slate-9000">
-                          {article.authors?.[0] || 'Unknown Author'} et al. —
+                          {(() => {
+                            const firstAuthor = article.authors?.[0];
+                            if (!firstAuthor) return 'Unknown Author';
+                            // Handle both old string format and new object format
+                            if (typeof firstAuthor === 'string') return firstAuthor;
+                            return `${firstAuthor.firstName || ''} ${firstAuthor.lastName || ''}`.trim() || 'Unknown Author';
+                          })()} {article.authors?.length > 1 ? 'et al.' : ''} —
                       </span>
                       <span className="text-sm font-semibold text-slate-800">
                           {article.title}
