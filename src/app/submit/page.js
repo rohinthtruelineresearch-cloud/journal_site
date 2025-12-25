@@ -18,6 +18,7 @@ const PAPER_TYPES = [
 
 const FILE_DESIGNATIONS = [
   "Main Document (PDF)",
+  "Main Document (Word)",
   "Supplementary File",
   "Cover Letter",
   "Author Response Letter",
@@ -81,6 +82,7 @@ export default function SubmitPage() {
   const [hasSupplementaryMaterials, setHasSupplementaryMaterials] = useState(false);
   const [confirmPlagiarismPolicy, setConfirmPlagiarismPolicy] = useState(false);
   const [confirmPaperAccuracy, setConfirmPaperAccuracy] = useState(false);
+  const [wantsReviewerRole, setWantsReviewerRole] = useState(false);
   
   // Step 7: Preview state
   const [previewLoading, setPreviewLoading] = useState(false);
@@ -103,8 +105,8 @@ export default function SubmitPage() {
         if (wordCount(title) > 25) { toast.error("Title should not exceed 25 words"); return false; }
         return true;
       case 2:
-        const mainDoc = files.find(f => f.designation === "Main Document (PDF)");
-        if (!mainDoc) { toast.error("Please upload the main document (PDF)"); return false; }
+        const mainDoc = files.find(f => f.designation === "Main Document (PDF)" || f.designation === "Main Document (Word)");
+        if (!mainDoc) { toast.error("Please upload the main document (PDF or Word)"); return false; }
         return true;
       case 3:
         if (keywords.length < 2) { toast.error("Please add at least 2 keywords"); return false; }
@@ -243,9 +245,10 @@ export default function SubmitPage() {
     formData.append("funders", JSON.stringify(funders));
     formData.append("wasConferenceAccepted", wasConferenceAccepted);
     formData.append("conferenceName", conferenceName);
+    formData.append("wantsReviewerRole", wantsReviewerRole);
     
-    // Find the main manuscript file (Main Document PDF)
-    const manuscriptFile = files.find(f => f.designation === "Main Document (PDF)") || files[0];
+    // Find the main manuscript file (Main Document PDF or Word)
+    const manuscriptFile = files.find(f => f.designation === "Main Document (PDF)" || f.designation === "Main Document (Word)") || files[0];
     if (manuscriptFile && manuscriptFile.file) {
       formData.append("manuscript", manuscriptFile.file);
     }
@@ -288,7 +291,7 @@ export default function SubmitPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-sky-50/30">
-      {loading && <Loader overlay={true} />}
+      {loading && <Loader overlay={true} type={currentStep === 7 ? "submission" : "default"} />}
       
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex gap-8">
@@ -370,6 +373,7 @@ export default function SubmitPage() {
                     goToStep={goToStep}
                     hasViewedProof={hasViewedProof} setHasViewedProof={setHasViewedProof}
                     previewLoading={previewLoading} setPreviewLoading={setPreviewLoading}
+                    wantsReviewerRole={wantsReviewerRole} setWantsReviewerRole={setWantsReviewerRole}
                   />
                 )}
               </div>
@@ -527,7 +531,7 @@ function Step2({ files, handleFileUpload, updateFileDesignation, removeFile }) {
       <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
         <p className="text-sm text-amber-800 font-semibold mb-2">UPLOAD INSTRUCTIONS:</p>
         <ol className="text-sm text-amber-800 list-decimal list-inside space-y-1">
-          <li>Upload your PDF as "Main Document (PDF)" as the first file.</li>
+          <li>Upload your manuscript as "Main Document (PDF)" or "Main Document (Word)" as the first file.</li>
           <li>Upload additional files selecting the appropriate designation.</li>
           <li>Maximum file size: 100MB per file.</li>
         </ol>
@@ -639,11 +643,57 @@ function Step3({ keywords, keywordInput, setKeywordInput, addKeyword, removeKeyw
 
 // Step 4: Authors & Institutions
 function Step4({ authors, addAuthor, updateAuthor, removeAuthor, moveAuthor }) {
+  const [verifyingIdx, setVerifyingIdx] = useState(null);
+  const [verifiedEmails, setVerifiedEmails] = useState({});
+
+  const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+  const handleVerifyEmail = async (idx, email) => {
+    if (!email) {
+      toast.error("Please enter an email address first");
+      return;
+    }
+    if (!validateEmail(email)) {
+      toast.error("Please enter a valid email format");
+      return;
+    }
+
+    setVerifyingIdx(idx);
+    
+    // Simulate SMTP / Domain check for "Working Email"
+    // In a real app, this would call a backend service that pings the mail server
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Basic check: common fake domains
+      const fakeDomains = ['test.com', 'example.com', 'none.com', 'asdf.com'];
+      const domain = email.split('@')[1];
+      
+      if (fakeDomains.includes(domain)) {
+        toast.error("This email domain seems inactive or invalid.");
+        setVerifiedEmails(prev => ({ ...prev, [idx]: 'invalid' }));
+      } else {
+        toast.success("Email verified successfully!");
+        setVerifiedEmails(prev => ({ ...prev, [idx]: 'valid' }));
+      }
+    } catch (error) {
+      toast.error("Verification failed. Please try again.");
+    } finally {
+      setVerifyingIdx(null);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
         <p className="text-sm text-amber-800">
-          <strong>IMPORTANT!</strong> Please do not use ALL CAPS when typing your name, institution, or any other information.
+          <strong>IMPORTANT!</strong> Please do not use ALL CAPS when typing your name, institution, or any other information. Every user must have a working email.
         </p>
       </div>
 
@@ -666,7 +716,41 @@ function Step4({ authors, addAuthor, updateAuthor, removeAuthor, moveAuthor }) {
             <div className="grid grid-cols-2 gap-4">
               <input type="text" placeholder="First Name *" value={author.firstName} onChange={(e) => updateAuthor(idx, 'firstName', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
               <input type="text" placeholder="Last Name *" value={author.lastName} onChange={(e) => updateAuthor(idx, 'lastName', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
-              <input type="email" placeholder="Email *" value={author.email} onChange={(e) => updateAuthor(idx, 'email', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
+              
+              <div className="relative">
+                <input 
+                  type="email" 
+                  placeholder="Email *" 
+                  value={author.email} 
+                  onChange={(e) => {
+                    updateAuthor(idx, 'email', e.target.value);
+                    if (verifiedEmails[idx]) {
+                      const newVerified = { ...verifiedEmails };
+                      delete newVerified[idx];
+                      setVerifiedEmails(newVerified);
+                    }
+                  }} 
+                  className={`w-full px-4 py-2.5 border rounded-lg text-sm pr-20 ${
+                    verifiedEmails[idx] === 'valid' ? 'border-emerald-500 bg-emerald-50' : 
+                    verifiedEmails[idx] === 'invalid' ? 'border-red-500 bg-red-50' : 'border-slate-300'
+                  }`} 
+                />
+                <div className="absolute right-2 top-1.5 flex items-center gap-1">
+                  {verifyingIdx === idx ? (
+                    <div className="w-4 h-4 border-2 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
+                  ) : verifiedEmails[idx] === 'valid' ? (
+                    <span className="text-emerald-600 text-xs font-bold">✓ Verified</span>
+                  ) : (
+                    <button 
+                      onClick={() => handleVerifyEmail(idx, author.email)}
+                      className="text-[10px] bg-sky-600 text-white px-2 py-1 rounded hover:bg-sky-700 transition font-bold"
+                    >
+                      VERIFY
+                    </button>
+                  )}
+                </div>
+              </div>
+
               <input type="text" placeholder="ORCID (0000-0000-0000-0000)" value={author.orcid} onChange={(e) => updateAuthor(idx, 'orcid', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
               <input type="text" placeholder="Institution *" value={author.institution} onChange={(e) => updateAuthor(idx, 'institution', e.target.value)} className="col-span-2 px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
               <input type="text" placeholder="City" value={author.city} onChange={(e) => updateAuthor(idx, 'city', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
@@ -952,7 +1036,8 @@ function Step7({
   coverLetterText, coverLetterFile, hasFunding, funders,
   wasConferenceAccepted, conferenceName, hasSupplementaryMaterials,
   confirmPlagiarismPolicy, confirmPaperAccuracy,
-  goToStep, hasViewedProof, setHasViewedProof, previewLoading, setPreviewLoading
+  goToStep, hasViewedProof, setHasViewedProof, previewLoading, setPreviewLoading,
+  wantsReviewerRole, setWantsReviewerRole
 }) {
   const [pdfUrl, setPdfUrl] = useState(null);
   const [showPdfModal, setShowPdfModal] = useState(false);
@@ -1166,6 +1251,32 @@ function Step7({
         </p>
       </div>
 
+      {/* Become a Reviewer Section */}
+      <div className="border-t border-slate-200 pt-6">
+        <h4 className="text-sm font-semibold text-slate-900 mb-3">CONTRIBUTION OPPORTUNITY:</h4>
+        <div className="bg-sky-50 border border-sky-100 rounded-xl p-4 mb-4">
+          <p className="text-sm text-sky-800 italic">
+            "Your expertise is valuable to our community. By becoming a reviewer, you help maintain the high standards of our journal and stay at the forefront of research in your field."
+          </p>
+        </div>
+        <label className="flex items-start gap-3 p-4 border border-slate-200 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors group">
+          <input 
+            type="checkbox" 
+            checked={wantsReviewerRole} 
+            onChange={(e) => setWantsReviewerRole(e.target.checked)} 
+            className="mt-1 w-4 h-4 text-sky-600 rounded focus:ring-sky-500" 
+          />
+          <div className="flex flex-col">
+            <span className="text-sm font-semibold text-slate-900 group-hover:text-sky-700 transition-colors">
+              I wish to become a reviewer for this journal.
+            </span>
+            <span className="text-xs text-slate-500 mt-1">
+              By checking this box, your account will be upgraded to the Reviewer role upon successful submission.
+            </span>
+          </div>
+        </label>
+      </div>
+
       {/* View Proof Section */}
       <div className="border-t border-slate-200 pt-6">
         <h3 className="text-xl font-bold text-sky-700 mb-4"><span className="text-red-500">*</span> View Proof</h3>
@@ -1202,41 +1313,118 @@ function Step7({
         {hasViewedProof && <p className="text-sm text-emerald-600 mt-3 flex items-center gap-1"><span>✓</span> PDF proof viewed successfully</p>}
       </div>
 
-      {/* PDF Preview Modal */}
+      {/* PDF Preview Modal - ScholarOne Style Redesign */}
       {showPdfModal && pdfUrl && (
-        <div className="fixed inset-0 z-50 flex bg-black/90">
-          {/* PDF Container - takes most of the width */}
-          <div className="flex-1 flex flex-col">
-            {/* Minimal Header */}
-            <div className="flex items-center justify-between px-4 py-2 bg-slate-800 text-white">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 md:p-8">
+          <div className="bg-white w-full h-full max-w-6xl rounded-lg shadow-2xl flex flex-col overflow-hidden border border-slate-300">
+            {/* Window Header */}
+            <div className="bg-[#f0f0f0] border-b border-slate-300 px-4 py-2 flex justify-between items-center">
               <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                <div className="flex gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-red-400"></div>
+                  <div className="w-3 h-3 rounded-full bg-amber-400"></div>
+                  <div className="w-3 h-3 rounded-full bg-emerald-400"></div>
+                </div>
+                <span className="ml-4 text-xs font-medium text-slate-500 truncate max-w-md">
+                  mc.manuscriptcentral.com/methods?DOWNLOAD=TRUE&PARAMS=...
+                </span>
+              </div>
+              <button 
+                onClick={closePdfModal}
+                className="text-slate-400 hover:text-slate-600 transition"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
-                <span className="text-sm font-medium">Manuscript Preview</span>
+              </button>
+            </div>
+
+            <div className="flex flex-1 overflow-hidden">
+              {/* Left Sidebar */}
+              <div className="w-64 bg-[#f8f9fa] border-r border-slate-200 flex flex-col p-4 overflow-y-auto">
+                <p className="text-[10px] leading-relaxed text-slate-600 mb-6">
+                  Below is a list of the files that were uploaded as well as a summary / cover page. Click on a file name to view the proof of that file. Files are listed in the order specified by the author.
+                </p>
+
+                <div className="mb-6">
+                  <h3 className="text-xs font-bold text-slate-900 border-b border-slate-300 pb-1 mb-3 uppercase tracking-wider">
+                    Files Uploaded
+                  </h3>
+                  <div className="space-y-2">
+                    {files.map((f, i) => (
+                      <div key={i} className="flex items-start gap-2 group cursor-pointer">
+                        <span className="text-sky-600 mt-1">
+                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                            <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+                          </svg>
+                        </span>
+                        <span className="text-[11px] text-slate-700 group-hover:text-sky-700 group-hover:underline break-all">
+                          {f.name}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mb-6">
+                  <h3 className="text-xs font-bold text-slate-900 border-b border-slate-300 pb-1 mb-3 uppercase tracking-wider">
+                    Other
+                  </h3>
+                  <div className="flex items-start gap-2 group cursor-pointer">
+                    <span className="text-sky-600 mt-1">
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                        <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+                      </svg>
+                    </span>
+                    <span className="text-[11px] text-slate-700 group-hover:text-sky-700 group-hover:underline">
+                      Cover & Metadata
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mt-auto pt-6">
+                  <button 
+                    onClick={closePdfModal}
+                    className="w-full flex items-center justify-center gap-2 px-3 py-1.5 border border-slate-300 bg-white rounded text-[11px] font-medium text-slate-700 hover:bg-slate-50 transition shadow-sm"
+                  >
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Close Window
+                  </button>
+                </div>
+              </div>
+
+              {/* Main PDF Content Area */}
+              <div className="flex-1 bg-slate-100 flex flex-col">
+                {/* PDF Toolbar Mimic */}
+                <div className="bg-[#525659] px-4 py-2 flex justify-between items-center text-white">
+                  <span className="text-[11px] font-medium opacity-90">{files.find(f => f.designation?.includes('Main'))?.name || 'Manuscript.pdf'}</span>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 text-[11px]">
+                      <button className="hover:bg-white/10 p-1 rounded">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex-1 relative">
+                  <iframe
+                    src={`${pdfUrl}#toolbar=0&navpanes=0`}
+                    className="w-full h-full border-none"
+                    title="PDF Proof Preview"
+                  />
+                  
+                  {/* Watermark overlay (Optional, but looks professional) */}
+                  <div className="absolute top-4 right-4 pointer-events-none opacity-20 rotate-12">
+                     <span className="text-4xl font-black text-slate-400 select-none">PROOF</span>
+                  </div>
+                </div>
               </div>
             </div>
-            {/* PDF Viewer - Full Height */}
-            <div className="flex-1">
-              <iframe
-                src={pdfUrl}
-                className="w-full h-full"
-                title="PDF Preview"
-              />
-            </div>
-          </div>
-
-          {/* Close Button Panel on Right Side */}
-          <div className="w-20 bg-slate-900 flex flex-col items-center justify-center border-l border-slate-700">
-            <button
-              onClick={closePdfModal}
-              className="flex flex-col items-center gap-3 px-4 py-6 bg-gradient-to-b from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 rounded-xl shadow-lg transition text-white"
-            >
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              <span className="text-sm font-bold">CLOSE</span>
-            </button>
           </div>
         </div>
       )}

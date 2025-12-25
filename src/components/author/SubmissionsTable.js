@@ -36,7 +36,7 @@ export default function SubmissionsTable({ articles }) {
             {articles.map((article) => (
               <tr key={article._id} className="hover:bg-slate-50 transition-colors">
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 font-mono">
-                  {article._id.slice(-4)} {/* Mocking a short ID */}
+                  {article.manuscriptId || article._id.slice(-4)}
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex flex-col">

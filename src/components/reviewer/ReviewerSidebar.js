@@ -1,17 +1,27 @@
-export default function ReviewerSidebar({ articles = [], currentFilter, onFilterChange }) {
+export default function ReviewerSidebar({ articles = [], currentFilter, onFilterChange, user }) {
     
+  // Get counts based on specific reviewer status
   const counts = {
-    reviewRequested: articles.filter(a => a.status === 'under_review').length,
-    underProcessed: 0, // Placeholder as 'under_review' captures all active for now
-    resubmitted: 0, // Placeholder
+    invitations: articles.filter(a => {
+        const rev = a.reviewers?.find(r => r.user?._id === user?._id || r.user === user?._id);
+        return rev?.status === 'invited';
+    }).length,
+    active: articles.filter(a => {
+        const rev = a.reviewers?.find(r => r.user?._id === user?._id || r.user === user?._id);
+        return rev?.status === 'accepted';
+    }).length,
+    completed: articles.filter(a => {
+        const rev = a.reviewers?.find(r => r.user?._id === user?._id || r.user === user?._id);
+        return rev?.status === 'completed';
+    }).length,
     all: articles.length
   };
 
   const navItems = [
     { id: 'all', label: 'All Manuscripts', count: counts.all },
-    { id: 'review_requested', label: 'Paper Review Requested', count: counts.reviewRequested },
-    { id: 'under_processed', label: 'Paper Review Under Processed', count: counts.underProcessed },
-    { id: 'resubmitted', label: 'Paper Resubmitted with Updated', count: counts.resubmitted },
+    { id: 'invitations', label: 'Pending Invitations', count: counts.invitations },
+    { id: 'review_requested', label: 'Active Reviews', count: counts.active },
+    { id: 'completed', label: 'Completed Reviews', count: counts.completed },
   ];
 
   return (

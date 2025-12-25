@@ -228,7 +228,10 @@ export default function NotificationBell() {
               notifications.map((notification) => (
                 <div
                   key={notification._id}
-                  onClick={() => !notification.isRead && markAsRead(notification._id)}
+                  onClick={() => {
+                      if (!notification.isRead) markAsRead(notification._id);
+                      if (notification.link) window.location.href = notification.link;
+                  }}
                   className={`flex gap-3 p-4 border-b border-slate-100 cursor-pointer transition hover:bg-slate-50 ${
                     !notification.isRead ? 'bg-sky-50/50' : ''
                   }`}

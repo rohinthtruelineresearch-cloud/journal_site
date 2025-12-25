@@ -9,6 +9,7 @@ import {
   paymentInfo,
 } from "@/data/journal";
 import Loader from "@/components/Loader";
+import PosterNotification from "@/components/PosterNotification";
 
 export default function AdminPage() {
   const [articles, setArticles] = useState([]);
@@ -21,6 +22,8 @@ export default function AdminPage() {
   const fileInputRef = useRef(null);
   const [selectedArticleId, setSelectedArticleId] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authorModalOpen, setAuthorModalOpen] = useState(false);
+  const [authorDetails, setAuthorDetails] = useState([]);
 
   // Login State
   const [loginFormData, setLoginFormData] = useState({
@@ -48,6 +51,10 @@ export default function AdminPage() {
   const [notificationType, setNotificationType] = useState('info');
   const [notificationTargets, setNotificationTargets] = useState(['all']);
   const [sendingNotification, setSendingNotification] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPoster, setCurrentPoster] = useState(null);
+  const [posterFile, setPosterFile] = useState(null);
+  const [uploadingPoster, setUploadingPoster] = useState(false);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -57,6 +64,7 @@ export default function AdminPage() {
       if (user && user.role === "admin") {
         setIsAuthenticated(true);
         fetchArticles();
+        fetchCurrentPoster();
       } else {
         setIsAuthenticated(false);
         setLoading(false); // Stop loading if not auth, show login
@@ -128,6 +136,79 @@ export default function AdminPage() {
     }
   };
 
+  const fetchCurrentPoster = async () => {
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posters/active`);
+        if (res.ok) {
+            const data = await res.json();
+            setCurrentPoster(data);
+        }
+    } catch (err) {
+        console.error("Error fetching poster:", err);
+    }
+  };
+
+  const handlePosterUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('poster', file);
+
+    setUploadingPoster(true);
+    setActionLoading(true);
+
+    try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posters`, {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}` },
+            body: formData,
+            credentials: 'include'
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            setCurrentPoster(data);
+            setToast({ message: "Poster uploaded successfully! It will expire in 7 days.", type: "success" });
+        } else {
+            setToast({ message: "Failed to upload poster", type: "error" });
+        }
+    } catch (err) {
+        console.error(err);
+        setToast({ message: "Error uploading poster", type: "error" });
+    } finally {
+        setUploadingPoster(false);
+        setActionLoading(false);
+    }
+  };
+
+  const handleRemovePoster = async () => {
+    if (!window.confirm("Are you sure you want to remove the current poster?")) return;
+
+    setActionLoading(true);
+    try {
+        const token = localStorage.getItem('token');
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/posters/active`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${token}` },
+            credentials: 'include'
+        });
+
+        if (res.ok) {
+            setCurrentPoster(null);
+            setToast({ message: "Poster removed", type: "success" });
+        } else {
+            setToast({ message: "Failed to remove poster", type: "error" });
+        }
+    } catch (err) {
+        console.error(err);
+        setToast({ message: "Error removing poster", type: "error" });
+    } finally {
+        setActionLoading(false);
+    }
+  };
+
   const handleLogout = () => {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
@@ -163,6 +244,7 @@ export default function AdminPage() {
         setIsAuthenticated(true);
         window.dispatchEvent(new Event("auth-change"));
         fetchArticles();
+        fetchCurrentPoster();
       } else {
         setLoginError(data.message || "Login failed");
       }
@@ -555,10 +637,31 @@ export default function AdminPage() {
   const [filterStatus, setFilterStatus] = useState("active");
 
   const filteredArticles = articles.filter(article => {
+    // Basic status filter
+    let statusMatch = true;
     if (filterStatus === "active") {
-        return !['published', 'rejected'].includes(article.status);
+        statusMatch = !['published', 'rejected'].includes(article.status);
+    } else {
+        statusMatch = article.status === filterStatus;
     }
-    return article.status === filterStatus;
+
+    if (!statusMatch) return false;
+
+    // Search query filter
+    if (!searchQuery.trim()) return true;
+
+    const query = searchQuery.toLowerCase();
+    const titleMatch = article.title?.toLowerCase().includes(query);
+    const idMatch = article.manuscriptId?.toLowerCase().includes(query);
+    const mongoIdMatch = article._id?.toString().toLowerCase().includes(query);
+    
+    // Also search authors
+    const authorMatch = article.authors?.some(author => {
+        const name = typeof author === 'string' ? author : `${author.firstName} ${author.lastName}`;
+        return name.toLowerCase().includes(query);
+    });
+
+    return titleMatch || idMatch || mongoIdMatch || authorMatch;
   });
   
   if (loading) return <Loader />;
@@ -696,6 +799,7 @@ export default function AdminPage() {
 
   return (
     <div className="space-y-8">
+      <PosterNotification />
       {actionLoading && <Loader overlay={true} />}
       <input
         type="file"
@@ -757,6 +861,69 @@ export default function AdminPage() {
         </div>
       </section>
 
+      {/* Poster Management Section */}
+      <section className="rounded-3xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex-1">
+                <h2 className="text-xl font-bold text-slate-900">Holiday & Event Poster</h2>
+                <p className="mt-1 text-sm text-slate-500">
+                    Upload a poster (Deepavali, Christmas, etc.) to show to users after login. Only one poster can be active. 
+                    Posters automatically expire after 7 days.
+                </p>
+                
+                <div className="mt-4 flex flex-wrap gap-3">
+                    <label className="relative cursor-pointer rounded-xl bg-sky-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-sky-500 focus-within:ring-2 focus-within:ring-sky-500 focus-within:ring-offset-2">
+                        <span>{currentPoster ? 'Change Poster' : 'Upload New Poster'}</span>
+                        <input 
+                            type="file" 
+                            className="sr-only" 
+                            accept="image/*"
+                            onChange={handlePosterUpload}
+                            disabled={uploadingPoster}
+                        />
+                    </label>
+
+                    {currentPoster && (
+                        <button 
+                            onClick={handleRemovePoster}
+                            className="rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-xs font-bold text-red-600 transition hover:bg-red-100"
+                        >
+                            Remove Current Poster
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            {currentPoster && (
+                <div className="relative group shrink-0">
+                    <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-sky-400 to-indigo-400 opacity-25 blur transition group-hover:opacity-50"></div>
+                    <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+                        <img 
+                            src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${currentPoster.imageUrl}`} 
+                            alt="Active Poster" 
+                            className="h-32 w-48 object-cover"
+                        />
+                        <div className="absolute bottom-0 w-full bg-slate-900/60 p-1.5 text-center backdrop-blur-sm">
+                            <span className="text-[10px] font-bold text-white uppercase tracking-tighter">Active Now</span>
+                        </div>
+                    </div>
+                    <div className="mt-2 text-center">
+                        <span className="text-[10px] text-slate-400">Expires: {new Date(currentPoster.expiresAt).toLocaleDateString()}</span>
+                    </div>
+                </div>
+            )}
+            
+            {!currentPoster && (
+                <div className="flex h-32 w-48 shrink-0 flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 text-slate-400">
+                    <svg className="h-8 w-8 mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span className="text-[10px] font-medium">No Active Poster</span>
+                </div>
+            )}
+        </div>
+      </section>
+
       <section className="grid gap-6 md:grid-cols-[1.05fr_0.95fr]">
         <div className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_18px_60px_-50px_rgba(15,23,42,0.5)]">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -786,6 +953,33 @@ export default function AdminPage() {
                 ))}
              </div>
           </div>
+
+          {/* Search Box */}
+          <div className="relative mt-2">
+            <input 
+                type="text"
+                placeholder="Search by Title, ID, or Author..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-10 py-2.5 text-sm focus:border-sky-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-sky-500 transition-all shadow-sm"
+            />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+            {searchQuery && (
+                <button 
+                    onClick={() => setSearchQuery("")}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600"
+                >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            )}
+          </div>
+
           <div className="space-y-3">
             {filteredArticles.map((submission) => (
               <div
@@ -796,12 +990,20 @@ export default function AdminPage() {
                   <div className="font-semibold text-slate-900">
                     {submission.title}
                   </div>
-                  <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700">
-                    {submission.status}
+                  <span className={`rounded-full px-3 py-1 text-xs font-semibold
+                    ${submission.status === 'under_review' ? 'bg-amber-100 text-amber-700' : 
+                      submission.status === 'published' ? 'bg-green-100 text-green-700' :
+                      submission.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                      submission.status === 'revision_required' ? 'bg-orange-100 text-orange-700' :
+                      'bg-white text-slate-700'}`}>
+                    {submission.status.replace('_', ' ')}
                   </span>
                 </div>
-                <div className="text-xs uppercase tracking-[0.16em] text-slate-500">
-                  {submission._id} · {new Date(submission.createdAt).toLocaleDateString()}
+                <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500 flex items-center gap-2">
+                  <span className="text-slate-900 bg-slate-200 px-1.5 py-0.5 rounded">{submission.manuscriptId || 'NO ID'}</span>
+                  <span>{submission._id}</span>
+                  <span>·</span>
+                  <span>{new Date(submission.createdAt).toLocaleDateString()}</span>
                 </div>
                 <div className="mt-2 text-sm text-slate-600">
                   Authors: {submission.authors?.map(author => 
@@ -829,13 +1031,23 @@ export default function AdminPage() {
                                    const reviewerName = reviewers.find(r => r._id === rev.user)?.name || 'Unknown';
                                    let statusColor = 'text-slate-500';
                                    if (rev.status === 'accepted') statusColor = 'text-green-600';
-                                   if (rev.status === 'rejected') statusColor = 'text-red-600';
+                                   if (rev.status === 'declined' || rev.status === 'rejected') statusColor = 'text-red-500';
+                                   if (rev.status === 'invited') statusColor = 'text-sky-600';
+                                   if (rev.status === 'under_review') statusColor = 'text-amber-600';
+                                   if (rev.status === 'revision_required') statusColor = 'text-orange-500';
+                                   if (rev.status === 'completed') statusColor = 'text-indigo-600';
+                                   
+                                   const displayLabel = rev.decision ? 
+                                       `${rev.status.charAt(0).toUpperCase() + rev.status.slice(1)} (${rev.decision.replace('_', ' ')})` : 
+                                       rev.status.replace('_', ' ');
                                    
                                    return (
                                        <div key={idx} className="mb-2 border-b border-slate-100 last:border-0 pb-1 last:pb-0">
                                             <div className="flex justify-between items-center">
                                                 <span>{reviewerName}</span>
-                                                <span className={`${statusColor} font-bold`}>{rev.status}</span>
+                                                <span className={`${statusColor} font-bold text-[10px] uppercase tracking-wider`}>
+                                                    {displayLabel}
+                                                </span>
                                             </div>
                                             {rev.comments && (
                                                 <div className="mt-1 text-[10px] text-slate-600 bg-white p-1.5 rounded border border-slate-100 italic">
@@ -867,6 +1079,10 @@ export default function AdminPage() {
                   </div>
 
                   <div className="flex flex-wrap gap-2 mt-2">
+                      <ActionButton label="View Authors" onClick={() => {
+                          setAuthorDetails(submission.authors || []);
+                          setAuthorModalOpen(true);
+                      }} />
                       <ActionButton label="Review & Update" onClick={() => openReviewModal(submission)} />
                       <ActionButton label="Send back to author" onClick={() => openSendBackModal(submission)} variant="outline" />
                       <ActionButton label="Generate DOI" onClick={() => handleGenerateDOI(submission._id)} />
@@ -1295,6 +1511,81 @@ export default function AdminPage() {
                   Save Changes
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Author Details Modal */}
+      {authorModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 overflow-y-auto">
+          <div className="relative w-full max-w-2xl rounded-2xl bg-white p-6 md:p-8">
+            <button
+              onClick={() => setAuthorModalOpen(false)}
+              className="absolute right-4 top-4 rounded-full bg-slate-100 p-2 text-slate-900 hover:bg-slate-200"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+              <svg className="w-6 h-6 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              Submitted Author Details
+            </h2>
+            <div className="space-y-4">
+              {authorDetails.length === 0 ? (
+                <p className="text-slate-500 italic text-center py-8">No author details found.</p>
+              ) : (
+                authorDetails.map((author, index) => (
+                  <div key={index} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="text-xs font-bold uppercase tracking-wider text-sky-600 bg-sky-50 px-2 py-0.5 rounded">
+                        Author {author.order || index + 1} {author.isCorresponding && " (Corresponding)"}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                      <div>
+                        <span className="text-slate-500 block text-[10px] uppercase font-bold">First Name</span>
+                        <span className="text-slate-900 font-medium">{author.firstName || "N/A"}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block text-[10px] uppercase font-bold">Last Name</span>
+                        <span className="text-slate-900 font-medium">{author.lastName || "N/A"}</span>
+                      </div>
+                      <div className="col-span-2">
+                        <span className="text-slate-500 block text-[10px] uppercase font-bold">Email</span>
+                        <span className="text-sky-600 font-medium">{author.email || "N/A"}</span>
+                      </div>
+                      <div className="col-span-2">
+                        <span className="text-slate-500 block text-[10px] uppercase font-bold">Institution</span>
+                        <span className="text-slate-900 font-medium">{author.institution || "N/A"}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block text-[10px] uppercase font-bold">City</span>
+                        <span className="text-slate-900">{author.city || "N/A"}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 block text-[10px] uppercase font-bold">Country</span>
+                        <span className="text-slate-900">{author.country || "N/A"}</span>
+                      </div>
+                      <div className="col-span-2">
+                        <span className="text-slate-500 block text-[10px] uppercase font-bold">ORCID</span>
+                        <span className="text-slate-600 font-mono text-xs">{author.orcid || "Not provided"}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+            <div className="mt-8 flex justify-end">
+              <button
+                onClick={() => setAuthorModalOpen(false)}
+                className="rounded-full bg-slate-900 px-8 py-2 text-sm font-semibold text-white hover:bg-slate-800 transition shadow-lg hover:shadow-xl"
+              >
+                Close Details
+              </button>
             </div>
           </div>
         </div>

@@ -6,6 +6,7 @@ import AuthorHeader from "@/components/author/AuthorHeader";
 import AuthorSidebar from "@/components/author/AuthorSidebar";
 import SubmissionsTable from "@/components/author/SubmissionsTable";
 import Loader from "@/components/Loader";
+import PosterNotification from "@/components/PosterNotification";
 
 function AuthorPageContent() {
   const [articles, setArticles] = useState([]);
@@ -13,6 +14,7 @@ function AuthorPageContent() {
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
   const [filter, setFilter] = useState("active");
+  const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -70,18 +72,41 @@ function AuthorPageContent() {
   };
 
   const filteredArticles = safeArticles.filter((article) => {
+    // Status filter
+    let statusMatch = false;
     switch (filter) {
         case 'active':
-            return article.status !== 'published' && article.status !== 'rejected';
+            statusMatch = article.status !== 'published' && article.status !== 'rejected';
+            break;
         case 'published':
-            return article.status === 'published';
+            statusMatch = article.status === 'published';
+            break;
          case 'rejected':
-            return article.status === 'rejected';
+            statusMatch = article.status === 'rejected';
+            break;
         case 'revision_required':
-             return article.status === 'revision_required';
+             statusMatch = article.status === 'revision_required';
+             break;
         default:
-            return false;
+            statusMatch = false;
     }
+
+    if (!statusMatch) return false;
+
+    // Search query filter
+    if (!searchQuery.trim()) return true;
+
+    const query = searchQuery.toLowerCase();
+    const titleMatch = article.title?.toLowerCase().includes(query);
+    const idMatch = article.manuscriptId?.toLowerCase().includes(query);
+    const mongoIdMatch = article._id?.toLowerCase().includes(query);
+    
+    const authorMatch = article.authors?.some(author => {
+        const name = typeof author === 'string' ? author : `${author.firstName} ${author.lastName}`;
+        return name.toLowerCase().includes(query);
+    });
+
+    return titleMatch || idMatch || mongoIdMatch || authorMatch;
   });
   
   const getPageTitle = (f) => {
@@ -94,25 +119,28 @@ function AuthorPageContent() {
       }
   }
 
-  if (loading) return <Loader />;
-
   return (
     <div className="min-h-screen bg-slate-50">
-      <AuthorHeader user={user} />
-      
-      <div className="mx-auto flex max-w-7xl flex-col md:flex-row">
-        <AuthorSidebar 
-            articles={articles} 
-            currentFilter={filter} 
-            onFilterChange={setFilter} 
-        />
-        
-        <main className="flex-1 p-6 md:p-8">
-            <div className="mb-6 flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-slate-900">
-                    {getPageTitle(filter)} ({filteredArticles.length})
-                </h1>
-            </div>
+      <PosterNotification />
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          <AuthorHeader user={user} />
+          
+          <div className="mx-auto flex max-w-7xl flex-col md:flex-row">
+            <AuthorSidebar 
+                articles={articles} 
+                currentFilter={filter} 
+                onFilterChange={setFilter} 
+            />
+            
+            <main className="flex-1 p-6 md:p-8">
+                <div className="mb-6 flex items-center justify-between">
+                    <h1 className="text-2xl font-bold text-slate-900">
+                        {getPageTitle(filter)} ({filteredArticles.length})
+                    </h1>
+                </div>
 
             {/* Author Stats */}
             <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -136,6 +164,8 @@ function AuthorPageContent() {
                      <input 
                         type="text" 
                         placeholder="Search submissions, ID, authors..." 
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full rounded-md border border-slate-300 py-2 pl-3 pr-10 text-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
                      />
                       <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -149,7 +179,9 @@ function AuthorPageContent() {
             <SubmissionsTable articles={filteredArticles} />
         </main>
       </div>
-    </div>
+    </>
+  )}
+</div>
   );
 }
 

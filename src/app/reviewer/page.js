@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import ReviewerHeader from "@/components/reviewer/ReviewerHeader";
 import ReviewerSidebar from "@/components/reviewer/ReviewerSidebar";
 import Loader from "@/components/Loader";
+import PosterNotification from "@/components/PosterNotification";
 
 export default function ReviewerPage() {
   const [articles, setArticles] = useState([]);
@@ -54,9 +55,14 @@ export default function ReviewerPage() {
 
   const filteredArticles = articles.filter(article => {
       if (filter === 'all') return true;
-      if (filter === 'review_requested') return article.status === 'under_review';
-      if (filter === 'under_processed') return false; // Placeholder
-      if (filter === 'resubmitted') return false; // Placeholder
+      
+      const myReview = article.reviewers?.find(r => r.user?._id === user?._id || r.user === user?._id);
+      const displayStatus = myReview?.status || 'invited';
+
+      if (filter === 'invitations') return displayStatus === 'invited';
+      if (filter === 'review_requested') return displayStatus === 'accepted';
+      if (filter === 'completed') return displayStatus === 'completed';
+      
       return true;
   });
 
@@ -120,27 +126,68 @@ export default function ReviewerPage() {
       }
   };
 
-  if (loading) return <Loader />;
+  const handleRespondInvitation = async (articleId, response) => {
+      setLoading(true);
+      try {
+          const token = localStorage.getItem("token");
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${articleId}/respond-invitation`, {
+              method: "PUT",
+              headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`
+              },
+              body: JSON.stringify({ response }),
+              credentials: 'include',
+          });
+
+          if (res.ok) {
+              alert(`Invitation ${response}!`);
+              // Refresh assigned articles
+              const updatedRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/assigned`, {
+                  headers: { Authorization: `Bearer ${token}` }
+              });
+              if (updatedRes.ok) {
+                  const data = await updatedRes.json();
+                  setArticles(Array.isArray(data) ? data : []);
+              }
+          } else {
+              const errorData = await res.json();
+              alert(`Failed: ${errorData.message || "Failed to respond to invitation"}`);
+          }
+      } catch (err) {
+          console.error("Error responding to invitation:", err);
+          alert(`Network/Server Error: ${err.message}`);
+      } finally {
+          setLoading(false);
+      }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {submittingReview && <Loader overlay={true} />}
-      <ReviewerHeader user={user} />
-      
-      <div className="mx-auto flex max-w-7xl flex-col md:flex-row">
-        <ReviewerSidebar 
-            articles={articles}
-            currentFilter={filter}
-            onFilterChange={setFilter}
-        />
+      <PosterNotification />
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          {submittingReview && <Loader overlay={true} />}
+          <ReviewerHeader user={user} />
+          
+          <div className="mx-auto flex max-w-7xl flex-col md:flex-row">
+            <ReviewerSidebar 
+                articles={articles}
+                currentFilter={filter}
+                onFilterChange={setFilter}
+                user={user}
+            />
 
-        <main className="flex-1 p-6 md:p-8">
+            <main className="flex-1 p-6 md:p-8">
+               {/* ... (rest of the content) ... */}
              <div className="mb-6">
                 <h1 className="text-2xl font-bold text-slate-900">
                     {filter === 'all' ? 'All Assigned Manuscripts' : 
-                     filter === 'review_requested' ? 'Paper Review Requested' :
-                     filter === 'under_processed' ? 'Paper Review Under Processed' :
-                     filter === 'resubmitted' ? 'Paper Resubmitted with Updated' : 'Manuscripts'}
+                     filter === 'invitations' ? 'Pending Invitations' :
+                     filter === 'review_requested' ? 'Active Reviews' :
+                     filter === 'completed' ? 'Completed Reviews' : 'Manuscripts'}
                 </h1>
                 <p className="mt-1 text-sm text-slate-500">
                     Manage your assignments and submit reviews clearly and efficiently.
@@ -163,52 +210,77 @@ export default function ReviewerPage() {
                          // But for display, we want to show OUR status.
                          
                          const myReview = article.reviewers?.find(r => r.user === user?._id);
-                         const displayStatus = myReview?.status || 'under_review';
+                         const displayStatus = myReview?.status || 'invited';
 
                          return (
                              <div key={article._id} className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:flex-row sm:items-start sm:justify-between transition hover:shadow-md">
                                  <div className="space-y-2">
                                      <div className="flex items-center gap-2">
                                          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium
-                                            ${displayStatus === 'under_review' ? 'bg-orange-100 text-orange-800' : 
+                                            ${displayStatus === 'invited' ? 'bg-blue-100 text-blue-800 animate-pulse' : 
                                               displayStatus === 'accepted' ? 'bg-green-100 text-green-800' :
+                                              displayStatus === 'declined' ? 'bg-red-100 text-red-800' :
                                               'bg-slate-100 text-slate-800'}`}>
                                              {displayStatus.replace('_', ' ')}
                                          </span>
-                                         <span className="text-xs text-slate-500">Assigned: {new Date(article.createdAt).toLocaleDateString()}</span>
+                                         <span className="text-xs text-slate-500">
+                                              <span className="mr-2 font-mono bg-slate-100 px-1.5 py-0.5 rounded text-slate-700">{article.manuscriptId || 'NO ID'}</span>
+                                              Assigned: {new Date(article.createdAt).toLocaleDateString()}
+                                         </span>
                                      </div>
                                      <h3 className="text-lg font-semibold text-slate-900">{article.title}</h3>
                                      <p className="text-sm text-slate-600 line-clamp-2 max-w-2xl">{article.abstract}</p>
                                  </div>
                                  
-                                 <div className="flex shrink-0 flex-col gap-2 sm:items-end">
-                                     {article.coverLetterUrl && (
-                                         <a 
-                                         href={`${process.env.NEXT_PUBLIC_API_URL}/${article.coverLetterUrl}`}
-                                         target="_blank"
-                                         rel="noopener noreferrer"
-                                         className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50"
-                                         >
-                                             View CV/Cover Letter
-                                         </a>
+                                  <div className="flex shrink-0 flex-col gap-2 sm:items-end">
+                                     {displayStatus === 'invited' ? (
+                                         <div className="flex flex-col gap-2">
+                                             <button 
+                                                 onClick={() => handleRespondInvitation(article._id, 'accepted')}
+                                                 className="rounded-lg bg-teal-600 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-teal-500"
+                                             >
+                                                 Accept Invitation
+                                             </button>
+                                             <button 
+                                                 onClick={() => handleRespondInvitation(article._id, 'declined')}
+                                                 className="rounded-lg border border-red-300 px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50"
+                                             >
+                                                 Decline
+                                             </button>
+                                         </div>
+                                     ) : displayStatus === 'declined' ? (
+                                         <span className="text-xs text-red-500 font-semibold italic">Invitation Declined</span>
+                                     ) : (
+                                         <>
+                                            {article.coverLetterUrl && (
+                                                <a 
+                                                href={`${process.env.NEXT_PUBLIC_API_URL}/${article.coverLetterUrl}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50"
+                                                >
+                                                    View CV/Cover Letter
+                                                </a>
+                                            )}
+                                            {article.manuscriptUrl && (
+                                                <a 
+                                                href={`${process.env.NEXT_PUBLIC_API_URL}/${article.manuscriptUrl}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50"
+                                                >
+                                                    View Manuscript
+                                                </a>
+                                            )}
+                                            <button 
+                                                onClick={() => openReviewModal(article)}
+                                                className="w-full sm:w-auto rounded-lg bg-teal-600 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-teal-500"
+                                            >
+                                                {displayStatus === 'completed' ? 'Update Review' : 'Submit Review'}
+                                            </button>
+                                         </>
                                      )}
-                                     {article.manuscriptUrl && (
-                                         <a 
-                                         href={`${process.env.NEXT_PUBLIC_API_URL}/${article.manuscriptUrl}`}
-                                         target="_blank"
-                                         rel="noopener noreferrer"
-                                         className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50"
-                                         >
-                                             View Manuscript
-                                         </a>
-                                     )}
-                                     <button 
-                                         onClick={() => openReviewModal(article)}
-                                         className="w-full sm:w-auto rounded-lg bg-teal-600 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-teal-500"
-                                     >
-                                         {displayStatus === 'under_review' ? 'Submit Review' : 'Update Review'}
-                                     </button>
-                                 </div>
+                                  </div>
                              </div>
                          );
                      })
@@ -269,6 +341,8 @@ export default function ReviewerPage() {
                   </div>
               </div>
           </div>
+      )}
+        </>
       )}
     </div>
   );
