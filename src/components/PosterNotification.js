@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 export default function PosterNotification() {
     const [poster, setPoster] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
+    const [imageLoading, setImageLoading] = useState(true);
 
     useEffect(() => {
         const checkPoster = async () => {
@@ -25,8 +26,7 @@ export default function PosterNotification() {
                 
                 if (data && data.imageUrl) {
                     setPoster(data);
-                    // Show small popup after short delay
-                    setTimeout(() => setIsOpen(true), 1500);
+                    setIsOpen(true);
                 }
             } catch (err) {
                 // Silently fail in production or log to service
@@ -63,11 +63,22 @@ export default function PosterNotification() {
                 </div>
 
                 {/* Poster Content */}
-                <div className="p-1">
+                <div className="p-1 relative min-h-[200px] flex items-center justify-center bg-slate-50">
+                    {imageLoading && (
+                        <div className="absolute inset-0 z-10 flex items-center justify-center bg-slate-50 animate-pulse">
+                            <div className="flex flex-col items-center gap-2">
+                                <svg className="h-8 w-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span className="text-[10px] font-medium text-slate-400">Loading Announcement...</span>
+                            </div>
+                        </div>
+                    )}
                     <img 
                         src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${poster.imageUrl}`} 
                         alt="Special Announcement" 
-                        className="w-full h-auto rounded-xl object-cover shadow-inner"
+                        onLoad={() => setImageLoading(false)}
+                        className={`w-full h-auto rounded-xl object-cover shadow-inner transition-opacity duration-500 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
                     />
                 </div>
 
