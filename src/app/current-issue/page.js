@@ -113,7 +113,9 @@ function CurrentIssueContent() {
             <div className="space-y-4">
                {/* Cover Image Placeholder */}
                <div className="flex gap-6">
-                   <div className="hidden h-32 w-24 shrink-0 bg-slate-200 shadow-sm md:block border border-slate-300"></div> 
+                   <div className="hidden h-32 w-24 shrink-0 overflow-hidden rounded-sm shadow-md md:block border border-slate-100">
+                      <img src="/journal-cover.jpg" alt="Journal Cover" className="h-full w-full object-cover" />
+                   </div> 
                    <div className="space-y-2">
                         <h1 className="font-serif text-3xl font-bold text-slate-900 md:text-4xl">
                             Volume {volumeParam}, Issue {issueParam}
@@ -233,7 +235,7 @@ function CurrentIssueContent() {
       {/* Header */}
       <div>
               <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-                List of issues from Journal of AI-Enabled Innovation and Discovery
+                List of issues from Journal of AI Enabled Innovation and Discovery
               </h2>
         <p className="mt-2 text-slate-600">
           Browse the list of issues and latest articles.

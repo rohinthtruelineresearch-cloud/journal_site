@@ -52,7 +52,7 @@ export default function ArchivePage() {
       {/* Header */}
       <div>
           <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-            List of issues from Journal of AI-Enabled Innovation and Discovery
+            List of issues from Journal of AI Enabled Innovation and Discovery
           </h2>
         <p className="mt-2 text-slate-600">
           Browse the list of issues and latest articles.

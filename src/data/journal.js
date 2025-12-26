@@ -1,5 +1,5 @@
 export const journalInfo = {
-  title: "Journal of AI-Enabled Innovation and Discovery",
+  title: "Journal of AI Enabled Innovation and Discovery",
   shortTitle: "JAIID",
   issn: "2791-4021 (online)",
   doiPrefix: "10.56890/ajse",

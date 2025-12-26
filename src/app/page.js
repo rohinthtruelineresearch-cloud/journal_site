@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { currentIssue, editorialBoard, journalInfo } from "@/data/journal";
+import { currentIssue, editorialBoard, journalInfo, archiveIssues } from "@/data/journal";
 
 function StatCard({ title, value }) {
   return (
@@ -75,61 +75,58 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="relative overflow-hidden bg-slate-900 text-white">
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-800 via-slate-900 to-sky-900" />
-            <div className="absolute -right-10 -top-16 h-48 w-48 rounded-full bg-sky-500/30 blur-3xl" />
-            <div className="relative space-y-4 p-8 md:p-10">
-              <div className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-slate-200">
-                <span className="h-px flex-1 bg-slate-700" />
-                Latest Issue
-                <span className="h-px flex-1 bg-slate-700" />
-              </div>
-              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-200">
-                <span className="rounded-full bg-white/10 px-3 py-1">
-                  Volume {currentIssue.volume}, Issue {currentIssue.issue}
-                </span>
-                <span className="rounded-full bg-white/10 px-3 py-1">
-                  {currentIssue.month} {currentIssue.year}
-                </span>
-                <span className="rounded-full bg-white/10 px-3 py-1">
-                  {currentIssue.theme}
-                </span>
-              </div>
-              <p className="text-sm text-slate-200">{currentIssue.published}</p>
-              <div className="space-y-3">
-                {currentIssue.papers.slice(0, 3).map((paper, index) => (
-                  <div
-                    key={paper.doi}
-                    className="rounded-2xl border border-white/10 bg-white/5 p-4"
-                  >
-                    <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.12em] text-slate-200/80">
-                      <span>Paper {index + 1}</span>
-                      <span>{paper.doi}</span>
-                    </div>
-                    <div className="mt-2 text-sm font-semibold leading-snug text-white">
-                      {paper.title}
-                    </div>
-                    <div className="text-xs text-slate-200/80">
-                      {paper.authors}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="flex items-center gap-3 pt-2">
-                <Link
-                  href="/current-issue"
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-white transition hover:text-sky-200"
-                >
-                  View current issue
-                  <span aria-hidden>-&gt;</span>
-                </Link>
-                <Link
-                  href="/archive"
-                  className="text-xs text-slate-300 transition hover:text-sky-200"
-                >
-                  Browse archive
-                </Link>
-              </div>
+          <div className="relative overflow-hidden bg-slate-900 text-white group rounded-3xl lg:rounded-none lg:rounded-r-3xl h-full min-h-[500px]">
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-900 to-sky-950 opacity-95" />
+            <img src="/journal-cover.jpg" alt="Cover Background" className="absolute inset-0 h-full w-full object-cover opacity-10 blur-sm mix-blend-overlay" />
+            <div className="absolute -right-10 -top-16 h-48 w-48 rounded-full bg-sky-500/20 blur-3xl" />
+            
+            <div className="relative p-8 md:p-10 flex flex-col h-full">
+               <div className="flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-sky-200/80 mb-8">
+                  <span className="h-px w-8 bg-sky-500/50" />
+                  Recent Issues
+               </div>
+
+               <div className="space-y-6 flex-1">
+                  {[currentIssue, ...archiveIssues].slice(0, 3).map((issue, idx) => (
+                      <div key={`${issue.volume}-${issue.issue}`} className="group/item flex gap-4 items-start relative">
+                           {/* Connecting Line */}
+                           {idx !== 2 && <div className="absolute left-[27px] top-16 bottom-[-24px] w-px bg-white/10 group-hover/item:bg-sky-500/30 transition-colors" />}
+                           
+                           <div className="h-20 w-14 shrink-0 overflow-hidden rounded shadow-lg border border-white/10 transition-transform group-hover/item:scale-105 group-hover/item:border-sky-500/50">
+                              <img src="/journal-cover.jpg" alt={`Vol ${issue.volume}`} className="h-full w-full object-cover" />
+                           </div>
+                           <div className="flex-1 min-w-0 pt-1">
+                              <h3 className="text-lg font-serif font-medium text-white truncate">
+                                 Volume {issue.volume}, Issue {issue.issue}
+                              </h3>
+                              <div className="flex flex-wrap gap-2 text-xs text-slate-400 mt-1">
+                                 <span>{issue.month} {issue.year}</span>
+                                 {issue.theme && <span className="text-slate-600">•</span>}
+                              </div>
+                               {issue.theme && (
+                                  <div className="text-xs text-sky-100/70 mt-1 line-clamp-1 italic">
+                                     {issue.theme}
+                                  </div>
+                               )}
+                               <Link 
+                                  href={`/current-issue?volume=${issue.volume}&issue=${issue.issue}`}
+                                  className="mt-2 inline-flex items-center text-[10px] font-bold uppercase tracking-widest text-sky-500 hover:text-sky-300 transition-colors"
+                               >
+                                  View Issue <span className="ml-1 text-base leading-none">›</span>
+                               </Link>
+                           </div>
+                      </div>
+                  ))}
+               </div>
+
+               <div className="w-full h-px bg-white/10 my-6" />
+
+               <div className="flex items-center justify-between">
+                  <Link href="/archive" className="text-sm font-medium text-slate-300 hover:text-white transition flex items-center gap-2">
+                      View all archives
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-70"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                  </Link>
+               </div>
             </div>
           </div>
         </div>

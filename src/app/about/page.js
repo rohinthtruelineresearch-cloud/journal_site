@@ -185,7 +185,7 @@ export default function AboutPage() {
             <div className="space-y-4">
               <p className="text-sm text-slate-400">Apply by submitting your CV and area of expertise to our editorial office.</p>
               <a 
-                href={`mailto:${contactInfo.email}?subject=Application for Editorial Board / Reviewer - [Your Name]&body=Dear Editorial Team,%0D%0A%0D%0AI am writing to express my interest in joining the Editorial Board / Reviewer Pool for the Journal of AI-Enabled Innovation and Discovery.%0D%0A%0D%0AMy Details:%0D%0AName: [Your Name]%0D%0AAffiliation: [Your Institution]%0D%0AExpertise: [Your Area of Expertise]%0D%0AProfile/ORCID: [Link if any]%0D%0A%0D%0AI have attached my academic CV for your reference.%0D%0A%0D%0ABest regards,%0D%0A[Your Name]`} 
+                href={`mailto:${contactInfo.email}?subject=Application for Editorial Board / Reviewer - [Your Name]&body=Dear Editorial Team,%0D%0A%0D%0AI am writing to express my interest in joining the Editorial Board / Reviewer Pool for the Journal of AI Enabled Innovation and Discovery.%0D%0A%0D%0AMy Details:%0D%0AName: [Your Name]%0D%0AAffiliation: [Your Institution]%0D%0AExpertise: [Your Area of Expertise]%0D%0AProfile/ORCID: [Link if any]%0D%0A%0D%0AI have attached my academic CV for your reference.%0D%0A%0D%0ABest regards,%0D%0A[Your Name]`} 
                 className="inline-block bg-white text-slate-900 px-6 py-2.5 rounded-full font-bold text-sm transition hover:bg-emerald-50"
               >
                 Apply via Email: {contactInfo.email}

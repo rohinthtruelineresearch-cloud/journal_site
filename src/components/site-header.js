@@ -128,8 +128,8 @@ export function SiteHeader() {
     <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl">
       <div className="flex items-center justify-between gap-4 px-6 py-4 md:px-10 lg:px-16">
         <Link href="/" className="group flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-yellow-500 text-white shadow-[0_10px_30px_-18px_rgba(15,23,42,0.7)]">
-            <span className="text-lg font-semibold">AJ</span>
+          <div className="flex h-11 min-w-[44px] px-3 items-center justify-center rounded-xl border border-slate-900 bg-slate-900 text-white shadow-lg shadow-slate-900/20">
+            <span className="text-sm font-bold tracking-wide">JAEID</span>
           </div>
           <div className="leading-tight">
             <div className="text-sm font-semibold text-slate-900">
