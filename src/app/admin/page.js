@@ -1098,8 +1098,8 @@ export default function AdminPage() {
                                        if (rev.status === 'completed') statusColor = 'text-indigo-600';
                                        
                                        const displayLabel = rev.decision ? 
-                                           `${rev.status.charAt(0).toUpperCase() + rev.status.slice(1)} (${rev.decision.replace('_', ' ')})` : 
-                                           rev.status.replace('_', ' ');
+                                           `${rev.status.toUpperCase()} [${rev.decision.toUpperCase().replace('_', ' ')}]` : 
+                                           rev.status.toUpperCase().replace('_', ' ');
                                        
                                        return (
                                            <div key={idx} className="mb-2 border-b border-slate-100 last:border-0 pb-1 last:pb-0">
@@ -1154,7 +1154,7 @@ export default function AdminPage() {
                               const missingSteps = [];
                               
                               // 1. Check Reviewer Constraints (3/5 accepted)
-                              const acceptedCount = submission.reviewers?.filter(r => r.status === 'accepted').length || 0;
+                              const acceptedCount = submission.reviewers?.filter(r => r.decision === 'accepted').length || 0;
                               
                               // We check if acceptedCount < 3.
                               // Note: If admins want to override, they can use 'Review & Update' to force status, but this button enforces the rule.

@@ -51,9 +51,9 @@ export default function ArchivePage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-900 md:text-4xl font-serif">
-          List of issues from International Journal of AI-Driven Discovery
-        </h1>
+          <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+            List of issues from Journal of AI-Enabled Innovation and Discovery
+          </h2>
         <p className="mt-2 text-slate-600">
           Browse the list of issues and latest articles.
         </p>

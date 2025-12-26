@@ -1,6 +1,6 @@
 export const journalInfo = {
-  title: "International Journal of AI-Driven Discovery",
-  shortTitle: "IJAIDD",
+  title: "Journal of AI-Enabled Innovation and Discovery",
+  shortTitle: "JAIID",
   issn: "2791-4021 (online)",
   doiPrefix: "10.56890/ajse",
   frequency: "Bimonthly (Six issues in a year)",

@@ -17,7 +17,7 @@ export default function Loader({ overlay = false, type = "default" }) {
       <p className="text-sm text-slate-500">Please do not close this window</p>
     </div>
   ) : (
-    <ThreeDot variant="bounce" color="#2ec12e" size="large" text="International Journal of AI-Driven Discovery" textColor="#87d675" />
+    <ThreeDot variant="bounce" color="#2ec12e" size="large" text="Journal of AI-Enabled Innovation and Discovery" textColor="#87d675" />
   );
 
   if (overlay) {

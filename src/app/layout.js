@@ -18,7 +18,7 @@ const serif = Newsreader({
 });
 
 export const metadata = {
-  title: "International Journal of AI-Driven Discovery",
+  title: "Journal of AI-Enabled Innovation and Discovery",
   description:
     "Professional, fast, and transparent journal site for submissions, issues, and editorial workflows.",
   openGraph: {
