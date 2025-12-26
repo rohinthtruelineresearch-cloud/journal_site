@@ -18,11 +18,11 @@ const serif = Newsreader({
 });
 
 export const metadata = {
-  title: "Aurora Journal of Systems Engineering",
+  title: "International Journal of AI-Driven Discovery",
   description:
     "Professional, fast, and transparent journal site for submissions, issues, and editorial workflows.",
   openGraph: {
-    title: "Aurora Journal of Systems Engineering",
+    title: "International Journal of AI-Driven Discovery",
     description:
       "Peer-reviewed, IEEE/Elsevier-style journal with fast review cycles and DOI-ready publishing.",
   },

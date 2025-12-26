@@ -42,9 +42,9 @@ export default function Home() {
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <Link
-                href="/author"
-                className="rounded-full bg-sky-100 px-5 py-3 text-sm font-semibold text-slate-900 shadow-sm transition hover:-translate-y-0.5 hover:bg-sky-200"
-              >
+                href="/submit"
+                className="rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold !text-white shadow-xl shadow-slate-900/20 transition hover:-translate-y-0.5 hover:bg-slate-800"
+              >   
                 Submit your paper
               </Link>
               <Link
@@ -135,6 +135,46 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Call for Papers Banner - Light Theme Refresh */}
+      <section className="relative overflow-hidden rounded-[2rem] bg-sky-50 px-6 py-10 md:px-14 md:py-12 border border-sky-100 shadow-xl">
+        {/* Subtle decorative background elements */}
+        <div className="absolute -right-10 -top-10 h-64 w-64 rounded-full bg-sky-200/30 blur-[80px] pointer-events-none" />
+        <div className="absolute -left-10 -bottom-10 h-64 w-64 rounded-full bg-indigo-100/40 blur-[80px] pointer-events-none" />
+        
+        <div className="relative z-10 flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+          <div className="space-y-4 max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-sky-600 border border-sky-200 shadow-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
+              </span>
+              Call for Papers - Inaugural Issue
+            </div>
+            <h2 className="text-3xl font-semibold md:text-4xl font-serif text-slate-900 tracking-tight leading-tight">
+              "AI-Driven Innovation across Science and Technology"
+            </h2>
+            <p className="text-slate-600 text-base md:text-lg leading-relaxed">
+              Submit your original research by <span className="text-slate-950 font-semibold">01.06.2026</span> and benefit from a <span className="text-sky-600 font-bold underline decoration-sky-200 decoration-4 underline-offset-4">full publication fee waiver</span>. 
+              Accepted papers published with permanent DOI and global indexing.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-4 shrink-0">
+            <Link
+              href="/submit"
+              className="rounded-full bg-slate-900 px-8 py-4 text-sm font-bold !text-white shadow-xl shadow-slate-900/10 transition-all hover:bg-slate-800 hover:-translate-y-0.5"
+            >
+              Submit Manuscript
+            </Link>
+            <Link
+              href="/guidelines"
+              className="rounded-full border border-slate-200 bg-white px-8 py-4 text-sm font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:border-slate-300"
+            >
+              View Guidelines
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <section className="space-y-4">
         <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
           <div>
@@ -142,30 +182,34 @@ export default function Home() {
               Aim &amp; scope
             </h2>
             <p className="text-sm text-slate-600">
-              We focus on systems engineering that blends AI, infrastructure, and
-              responsible deployment.
+              Advancing AI research across Science, Engineering, Technology, and Society.
             </p>
           </div>
           <Link
             href="/about"
             className="text-sm font-semibold text-sky-700 transition hover:text-sky-900"
           >
-            Meet the editorial board -&gt;
+            Detailed aims & objectives -&gt;
           </Link>
         </div>
-        <div className="grid gap-4 md:grid-cols-2">
-          {journalInfo.focusAreas.map((item) => (
+        <div className="grid gap-4 md:grid-cols-3">
+          {journalInfo.detailedScope.map((section) => (
             <div
-              key={item}
-              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_20px_60px_-45px_rgba(15,23,42,0.5)]"
+              key={section.category}
+              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_20px_60px_-45px_rgba(15,23,42,0.5)] hover:border-sky-200 transition-colors"
             >
-              <div className="flex items-start gap-3">
-                <div className="mt-1 h-2.5 w-2.5 rounded-full bg-sky-600" />
+              <div className="flex items-start gap-4">
+                <div className="mt-1.5 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-sky-600 shadow-[0_0_10px_rgba(2,132,199,0.5)]" />
                 <div>
-                  <div className="font-semibold text-slate-900">{item}</div>
-                  <p className="mt-1 text-sm text-slate-600">
-                    High-impact contributions, datasets, and reproducible tooling welcome.
-                  </p>
+                  <div className="font-semibold text-slate-900">{section.category}</div>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {section.topics.slice(0, 3).map((topic, i) => (
+                      <span key={i} className="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md">
+                        {topic}
+                      </span>
+                    ))}
+                    <span className="text-[11px] text-slate-400 self-center">...</span>
+                  </div>
                 </div>
               </div>
             </div>

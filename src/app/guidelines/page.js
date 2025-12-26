@@ -7,200 +7,209 @@ import {
 
 export default function GuidelinesPage() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-[0_25px_70px_-38px_rgba(15,23,42,0.35)] md:p-12">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-slate-500">
+        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 rounded-full bg-sky-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-sky-700">
               Author guidelines
-            </p>
-            <h1 className="mt-2 text-3xl font-semibold text-slate-900 md:text-4xl">
-              Submit with confidence
+            </div>
+            <h1 className="text-3xl font-semibold text-slate-900 md:text-5xl font-serif">
+              Submission Standards
             </h1>
-            <p className="mt-2 max-w-3xl text-base text-slate-600">
-              Follow this checklist to accelerate desk screening and peer review.
-              We mirror IEEE/Elsevier structure while keeping the experience fast
-              and transparent.
+            <p className="max-w-2xl text-lg text-slate-600 leading-relaxed">
+              Fast, fair, and transparent publication. We support authors at every stage, 
+              from initial free-format submission to final DOI-ready publication.
             </p>
           </div>
           <Link
             href="/submit"
-            className="rounded-full bg-sky-600 px-5 py-3 text-sm font-semibold !text-white shadow-[0_20px_45px_-28px_rgba(3,105,161,0.9)] transition hover:-translate-y-0.5 hover:bg-sky-700"
+            className="rounded-full bg-sky-600 px-8 py-4 text-base font-semibold !text-white shadow-[0_20px_45px_-28px_rgba(3,105,161,0.9)] transition hover:-translate-y-0.5 hover:bg-sky-700"
           >
-            Start submission
+            Submit Paper
           </Link>
         </div>
       </section>
 
-      <section className="grid gap-6 md:grid-cols-2">
-        <GuidelineCard title="Submission format">
-          <ul className="space-y-2 text-sm text-slate-700">
-            {submissionGuidelines.formatting.map((item) => (
-              <li key={item}>• {item}</li>
-            ))}
-          </ul>
-          <div className="mt-4 text-xs text-slate-500">
-            Accepted file types: {submissionGuidelines.submissionFormat.join(", ")}
+      {/* Launch Offer Banner */}
+      <section className="rounded-3xl border border-emerald-200 bg-emerald-50 p-6 md:p-8">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center">
+          <div className="h-12 w-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white flex-shrink-0">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+            </svg>
           </div>
-        </GuidelineCard>
-
-        <GuidelineCard title="Files to upload">
-          <ul className="space-y-2 text-sm text-slate-700">
-            {submissionGuidelines.files.map((item) => (
-              <li key={item}>• {item}</li>
-            ))}
-          </ul>
-        </GuidelineCard>
+          <div>
+            <h3 className="text-lg font-bold text-emerald-900">Inaugural Issue Launch Offer!</h3>
+            <p className="text-emerald-700">
+              Full waiver (100% discount) for all papers submitted before <strong>01.06.2026</strong>. 
+              Accepted papers will be published completely <strong>FREE of cost</strong>.
+            </p>
+          </div>
+        </div>
       </section>
 
-      <section className="grid gap-6 md:grid-cols-2">
-        <GuidelineCard title="Referencing &amp; templates">
-          <ul className="space-y-2 text-sm text-slate-700">
-            {submissionGuidelines.referencing.map((item) => (
-              <li key={item}>• {item}</li>
-            ))}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <GuidelineCard title="1. Submission Format" icon="📄">
+          <ul className="space-y-4 text-sm text-slate-600">
+            <li className="flex gap-3">
+              <span className="font-bold text-sky-600">FREE FORMAT:</span>
+              Initial submission is accepted in any professional layout. No IEEE formatting required at the start.
+            </li>
+            <li className="flex gap-3">
+              <span className="font-bold text-sky-600">Language:</span>
+              Manuscripts must be in clear, academic English.
+            </li>
+            <li className="flex gap-3">
+              <span className="font-bold text-sky-600">Length:</span>
+              Maximum 12 pages including references.
+            </li>
+            <li className="bg-slate-50 p-3 rounded-xl border border-slate-100 italic">
+              After acceptance, final submission must strictly follow IEEE double-column format.
+            </li>
           </ul>
-          <div className="mt-4 flex flex-wrap gap-3">
-            <a
-              href="https://www.ieee.org/conferences/publishing/templates.html"
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100"
-            >
-              IEEE DOCX template
-            </a>
-            <a
-              href="https://www.overleaf.com/latex/templates/ieee-journal-template/zhqxxrbmhjhx"
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100"
-            >
-              LaTeX/Overleaf template
-            </a>
-          </div>
         </GuidelineCard>
 
-        <GuidelineCard title="Publication fee">
-          <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
-            <div className="text-3xl font-semibold text-slate-900">
-              {paymentInfo.currency} {paymentInfo.amount}
-            </div>
-            <div className="text-xs uppercase tracking-[0.18em] text-slate-500">
-              charged only after acceptance
-            </div>
-            <ul className="mt-3 space-y-1 text-sm text-slate-700">
-              {submissionGuidelines.fee.includes.map((item) => (
-                <li key={item}>• {item}</li>
-              ))}
-            </ul>
-            <div className="mt-3 text-xs text-slate-500">
-              {submissionGuidelines.fee.waiver}
-            </div>
-          </div>
+        <GuidelineCard title="2. File Requirements" icon="📎">
+          <ul className="space-y-4 text-sm text-slate-600">
+            <li className="flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-emerald-500" />
+              Only Microsoft Word (.DOC/.DOCX) accepted
+            </li>
+            <li className="flex items-center gap-2 text-rose-600">
+              <div className="h-2 w-2 rounded-full bg-rose-500" />
+              PDF/Latex NOT accepted at initial stage
+            </li>
+            <li className="mt-4 p-4 rounded-xl bg-amber-50 border border-amber-100 text-xs text-amber-800">
+              <strong>Plagiarism Policy:</strong> Similarity index must be &lt; 15%. 
+              Exceeding this limit leads to rejection without review.
+            </li>
+          </ul>
         </GuidelineCard>
-      </section>
 
-      <section className="grid gap-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_18px_60px_-50px_rgba(15,23,42,0.5)] md:grid-cols-2 md:p-10">
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold text-slate-900">
-            Ethics &amp; plagiarism
+        <GuidelineCard title="3. Peer Review Process" icon="⚖️">
+          <ul className="space-y-4 text-sm text-slate-600">
+            <li className="flex gap-2 font-semibold text-slate-900">Double-blind Policy</li>
+            <li className="flex gap-3">
+              <div className="font-bold text-sky-600">•</div>
+              Reviewed by at least 2 independent experts.
+            </li>
+            <div className="space-y-2 pt-2 border-t border-slate-100">
+              <div className="flex justify-between text-xs">
+                <span>Editorial Decision:</span>
+                <span className="font-bold text-emerald-600">Same Day</span>
+              </div>
+              <div className="flex justify-between text-xs">
+                <span>Review Decision:</span>
+                <span className="font-bold text-emerald-600">Within 15 Days</span>
+              </div>
+            </div>
+          </ul>
+        </GuidelineCard>
+      </div>
+
+      <section className="grid gap-6 md:grid-cols-2">
+        <section className="space-y-6 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+          <h3 className="text-xl font-semibold text-slate-900 flex items-center gap-3">
+            <span className="text-2xl">🤖</span> AI Usage & Disclosure
           </h3>
-          <p className="text-sm text-slate-600">
-            COPE-aligned policies with similarity thresholds enforced at
-            submission and before publication.
+          <p className="text-sm text-slate-600 leading-relaxed">
+            As an AI-focused journal, we require transparency:
           </p>
-          <div className="text-xs text-slate-500">
-            We run both plagiarism and AI-writing detection before review.
-          </div>
-        </div>
-        <div className="grid gap-3 md:grid-cols-2">
-          {submissionGuidelines.plagiarism.map((item) => (
-            <div
-              key={item}
-              className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 text-sm text-slate-700"
-            >
-              {item}
-            </div>
-          ))}
-          <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 text-sm text-slate-700">
-            Data/code statements encouraged. Sensitive data allowed with
-            governance plan.
-          </div>
-        </div>
-      </section>
-
-      <section className="grid gap-6 md:grid-cols-2">
-        <GuidelineCard title="DOI &amp; metadata">
-          <div className="text-sm text-slate-700">
-            DOI prefix {doiInfo.prefix}. {doiInfo.policy}
-          </div>
-          <div className="mt-3 text-xs text-slate-500">
-            Registrar: {doiInfo.registrar}. Metadata pushed with ORCID, funding,
-            keywords, and references where provided.
-          </div>
-        </GuidelineCard>
-        <GuidelineCard title="Payments">
-          <div className="text-sm text-slate-700">
-            Gateways: {paymentInfo.gateways.join(" · ")} ({paymentInfo.currency}{" "}
-            {paymentInfo.amount}).
-          </div>
-          <ul className="mt-2 space-y-1 text-sm text-slate-700">
-            {paymentInfo.verification.map((item) => (
-              <li key={item}>• {item}</li>
+          <ul className="space-y-3">
+            {[
+              "Authors MUST disclose use of AI tools in research or preparation.",
+              "AI-generated content must be critically reviewed and validated.",
+              "Authors maintain full responsibility for accuracy and integrity."
+            ].map((item, i) => (
+              <li key={i} className="flex gap-3 text-sm text-slate-700">
+                <div className="mt-1 h-5 w-5 rounded-full bg-sky-100 flex items-center justify-center text-[10px] text-sky-600 font-bold flex-shrink-0">
+                  {i+1}
+                </div>
+                {item}
+              </li>
             ))}
           </ul>
-          <div className="mt-3 text-xs text-slate-500">{paymentInfo.note}</div>
-        </GuidelineCard>
+        </section>
+
+        <section className="space-y-6 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+          <h3 className="text-xl font-semibold text-slate-900 flex items-center gap-3">
+            <span className="text-2xl">💰</span> Publication Choices
+          </h3>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="p-4 rounded-2xl bg-sky-50 border border-sky-100">
+              <div className="font-bold text-sky-900 text-sm">Open Access</div>
+              <div className="text-2xl font-bold text-sky-600 mt-1">$100</div>
+              <div className="text-[10px] text-sky-700 mt-1">Free access worldwide</div>
+            </div>
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+              <div className="font-bold text-slate-900 text-sm">Subscription</div>
+              <div className="text-2xl font-bold text-slate-600 mt-1">$0</div>
+              <div className="text-[10px] text-slate-500 mt-1">Limited accessibility</div>
+            </div>
+          </div>
+          <div className="text-xs text-slate-500 italic">
+            Waivers available for students and low-income backgrounds. No submission fees.
+          </div>
+        </section>
       </section>
 
-      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_18px_60px_-50px_rgba(15,23,42,0.5)] md:p-10">
-        <h3 className="text-lg font-semibold text-slate-900">
-          Quick pre-flight checklist
-        </h3>
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <ChecklistItem label="Title page lists all authors, affiliations, ORCID, and corresponding email." />
-          <ChecklistItem label="Line numbers enabled; figures/tables referenced in order." />
-          <ChecklistItem label="Similarity report expected to be below 15% overall." />
-          <ChecklistItem label="Ethics statement provided (human/animal data where relevant)." />
-          <ChecklistItem label="Data/code availability statement included, even if not shareable." />
-          <ChecklistItem label="All citations include DOI where available and consistent IEEE numbering." />
-        </div>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Link
-            href="/submit"
-            className="rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold !text-white transition hover:-translate-y-0.5 hover:bg-slate-800"
-          >
-            Proceed to submission
-          </Link>
-          <a
-            href="mailto:editorial.office@ajse.org"
-            className="rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-300"
-          >
-            Ask the editorial office
-          </a>
+      <section className="rounded-3xl border border-slate-900 bg-slate-900 p-8 md:p-12 text-white overflow-hidden relative">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-sky-500/20 rounded-full blur-3xl -mr-32 -mt-32" />
+        <div className="relative z-10 grid gap-8 md:grid-cols-2 md:items-center">
+          <div className="space-y-4">
+            <h3 className="text-2xl font-semibold font-serif">Ready to publish?</h3>
+            <p className="text-slate-300">
+              Join our inaugural issue: <strong>"AI-Driven Innovation across Science and Technology"</strong>. 
+              Be part of the movement bridging the gap between theory and application.
+            </p>
+            <div className="flex flex-wrap gap-4 pt-4">
+              <Link
+                href="/submit"
+                className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-sky-50"
+              >
+                Submit Now
+              </Link>
+              <Link
+                href="/contact"
+                className="rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
+              >
+                Inquire via WhatsApp
+              </Link>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
+              <div className="text-xs text-slate-400 uppercase tracking-wider">Frequency</div>
+              <div className="text-lg font-semibold mt-1">6 Issues / Year</div>
+            </div>
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
+              <div className="text-xs text-slate-400 uppercase tracking-wider">DOI</div>
+              <div className="text-lg font-semibold mt-1">Per Published Paper</div>
+            </div>
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
+              <div className="text-xs text-slate-400 uppercase tracking-wider">Archiving</div>
+              <div className="text-lg font-semibold mt-1">Permanent</div>
+            </div>
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
+              <div className="text-xs text-slate-400 uppercase tracking-wider">Copyright</div>
+              <div className="text-lg font-semibold mt-1">Authors Retain</div>
+            </div>
+          </div>
         </div>
       </section>
     </div>
   );
 }
 
-function GuidelineCard({
-  title,
-  children,
-}) {
+function GuidelineCard({ title, icon, children }) {
   return (
-    <div className="h-full rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_18px_60px_-50px_rgba(15,23,42,0.5)]">
-      <div className="text-sm font-semibold text-slate-900">{title}</div>
-      <div className="mt-3">{children}</div>
-    </div>
-  );
-}
-
-function ChecklistItem({ label }) {
-  return (
-    <div className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-3 text-sm text-slate-700">
-      <div className="mt-1 h-2.5 w-2.5 rounded-full bg-emerald-500" />
-      <span>{label}</span>
+    <div className="h-full rounded-3xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex items-center gap-3 mb-6">
+        <span className="text-3xl">{icon}</span>
+        <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
+      </div>
+      <div>{children}</div>
     </div>
   );
 }

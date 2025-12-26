@@ -38,7 +38,16 @@ function LoginForm() {
         .then((data) => {
           localStorage.setItem("user", JSON.stringify(data));
           window.dispatchEvent(new Event("auth-change")); // Notify header
-          if (data.role === "admin") {
+          
+          const fromQuery = searchParams.get("from");
+          const fromSession = sessionStorage.getItem("redirectAfterLogin");
+          const redirectTo = fromQuery || fromSession;
+          
+          if (fromSession) sessionStorage.removeItem("redirectAfterLogin");
+
+          if (redirectTo) {
+            router.push(redirectTo);
+          } else if (data.role === "admin") {
             router.push("/admin");
           } else if (data.role === "reviewer") {
             router.push("/reviewer");
@@ -87,7 +96,18 @@ function LoginForm() {
         } else if (data.role === "reviewer") {
           router.push("/reviewer");
         } else {
-          router.push("/author");
+          // Check for redirect param or session storage
+          const fromQuery = searchParams.get("from");
+          const fromSession = sessionStorage.getItem("redirectAfterLogin");
+          const redirectTo = fromQuery || fromSession;
+          
+          if (fromSession) sessionStorage.removeItem("redirectAfterLogin");
+
+          if (redirectTo) {
+              router.push(redirectTo);
+          } else {
+              router.push("/author");
+          }
         }
       } else {
         setError(data.message || "Login failed");
@@ -100,10 +120,13 @@ function LoginForm() {
   };
 
   const handleGoogleLogin = () => {
+    const from = searchParams.get("from");
+    if (from) {
+      sessionStorage.setItem("redirectAfterLogin", from);
+    }
+    
     // We want the backend to redirect back to login page with ?success=true
-    // The backend callback (userRoutes) does: res.redirect(`${frontendUrl}/login?success=true`);
     const origin = window.location.origin;
-    // We pass 'from' just in case, though backend determines redirect
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/users/auth/google?from=${encodeURIComponent(origin)}`;
   };
 

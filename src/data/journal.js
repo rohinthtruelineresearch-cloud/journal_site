@@ -1,85 +1,124 @@
 export const journalInfo = {
-  title: "Aurora Journal of Systems Engineering",
-  shortTitle: "AJSE",
+  title: "International Journal of AI-Driven Discovery",
+  shortTitle: "IJAIDD",
   issn: "2791-4021 (online)",
   doiPrefix: "10.56890/ajse",
-  frequency: "Quarterly, published online-first",
+  frequency: "Bimonthly (Six issues in a year)",
   description:
-    "Peer-reviewed, open-access journal for intelligent systems, resilient infrastructure, and trustworthy AI.",
-  tagline: "Fast, rigorous, and transparent publication for applied research.",
-  indexingBadges: [
-    "Crossref DOI ready",
-    "Open Access compliant",
-    "Google Scholar friendly",
-    "LOCKSS archiving ready",
+    "An international, peer-reviewed scholarly publication dedicated to advancing research in Artificial Intelligence (AI) and its transformative role across Science, Engineering, Technology, and Society.",
+  tagline: "Bridging Theory and Application in the Age of AI.",
+  aboutFull: [
+    "The journal is an international, peer-reviewed scholarly publication dedicated to advancing research in Artificial Intelligence (AI) and its transformative role across Science, Engineering, Technology, and Society. As AI rapidly becomes a foundational driver of innovation, discovery, and decision-making, the journal provides a high-quality academic platform for publishing original research that contributes to both theoretical advancement and practical implementation of intelligent systems. The journal aims to support and promote interdisciplinary and cross-sector research, recognizing that many of today’s global challenges require AI-driven solutions that transcend traditional disciplinary boundaries.",
+    "A defining characteristic of the journal is its strong commitment to ethical, responsible, and transparent AI research. In addition to technical excellence, the journal promotes studies addressing explainability, fairness, accountability, robustness, and governance of AI systems. Research that examines the societal, legal, and ethical implications of AI deployment is considered essential to ensuring that technological progress aligns with human values and public interest.",
   ],
-  focusAreas: [
-    "Autonomous and cyber-physical systems",
-    "Data-centric AI and trustworthy ML",
-    "Smart energy, mobility, and built environments",
-    "Secure distributed systems and edge/cloud orchestration",
-    "Human-in-the-loop decision support",
-    "Sustainable computing and green software",
+  aims: [
+    "Promote cutting-edge AI research across interdisciplinary domains",
+    "Bridge theoretical AI research with real-world applications",
+    "Encourage ethical, responsible, and explainable AI systems",
+    "Support global collaboration between academia and industry",
+  ],
+  objectives: [
+    "Publish original and impactful AI research",
+    "Ensure rapid yet rigorous peer review",
+    "Provide open and accessible knowledge dissemination",
+    "Support early-career researchers and students",
+  ],
+  detailedScope: [
+    {
+      category: "Core Artificial Intelligence",
+      topics: [
+        "Machine Learning & Deep Learning",
+        "Generative AI & Large Language Models",
+        "Computer Vision & NLP",
+        "Reinforcement Learning",
+        "Explainable & Trustworthy AI",
+      ],
+    },
+    {
+      category: "AI for Science & Engineering",
+      topics: [
+        "AI for Physics, Chemistry & Materials",
+        "AI-Driven Engineering Design",
+        "Robotics & Intelligent Automation",
+        "Smart Manufacturing & Industry 4.0",
+      ],
+    },
+    {
+      category: "AI in Technology & Society",
+      topics: [
+        "AI for Healthcare & Life Sciences",
+        "AI for Climate, Environment & Sustainability",
+        "AI Ethics, Law & Governance",
+        "AI for Smart Cities & IoT",
+      ],
+    },
+  ],
+  scopeNote: "Interdisciplinary research and AI-driven discovery papers are strongly encouraged.",
+  indexingBadges: [
+    "Google Scholar (Planned)",
+    "DOAJ (Planned)",
+    "Scopus (Planned)",
+    "Web of Science (Planned)",
   ],
   publicationTimeline: [
-    { title: "Desk check", detail: "48h formatting and scope screening" },
-    { title: "Double-blind review", detail: "10-14 days average turn-around" },
-    { title: "Author revision", detail: "1-2 weeks revision window" },
-    { title: "Acceptance", detail: "Decision letter + invoice issued" },
-    { title: "Online first", detail: "DOI minted within 72h after payment" },
+    { title: "Editorial Desk Check", detail: "Same day of submission" },
+    { title: "Double-blind Review", detail: "Completed within 15 days" },
+    { title: "Author Revision", detail: "1-2 weeks window" },
+    { title: "DOI & Publication", detail: "Online within 72h of acceptance" },
   ],
   policies: {
+    peerReview: {
+      type: "Double-blind peer review",
+      description: "Each manuscript is reviewed by at least two independent expert reviewers selected based on subject expertise.",
+      timeline: [
+        { stage: "Initial editorial decision", period: "Same day of submission" },
+        { stage: "Peer-review decision", period: "Within 15 days" }
+      ]
+    },
     ethics: [
-      "COPE-aligned editorial practices",
-      "Conflicts of interest declared by authors, reviewers, and editors",
-      "Data/code availability statements encouraged for reproducibility",
+      "Author Responsibilities: Original work, proper citation, disclosure of conflicts, ethical research.",
+      "Editorial Responsibilities: Fair decision-making, confidentiality, ethical oversight.",
+      "Reviewer Responsibilities: Objective evaluation, confidentiality, timely review."
     ],
+    aiUsage: "Authors must disclose the use of AI tools. AI-generated content must be critically reviewed and validated by authors.",
     plagiarism: [
-      "< 15% total similarity; no single source above 5%",
-      "Mandatory plagiarism and AI-writing detection at submission",
-      "Retractions follow COPE guidelines",
+      "Similarity index must be below 15%",
+      "Mandatory plagiarism screening for all manuscripts",
+      "Self-plagiarism and duplicate submissions are prohibited"
     ],
-    openAccess:
-      "Gold OA. Authors retain copyright with CC BY 4.0 licensing and perpetual hosting.",
+    copyright: "Authors retain copyright. Articles published under Creative Commons licenses with proper attribution required.",
+    openAccess: "Gold Open Access (USD 100) or Subscription-based (No publication fee).",
+    launchOffer: "Full waiver for all papers submitted until 01.06.2026. Accepted papers will be published free of cost."
   },
 };
 
 export const editorialBoard = [
   {
-    name: "Dr. Anika Rao",
+    name: "Dr. Ragul Sambath",
     role: "Editor-in-Chief",
-    affiliation: "Indian Institute of Technology Delhi, India",
-    focus: "Autonomous and intelligent systems",
+    email: "editor@ajse.org",
+    affiliation: "Department of Electrical and Electronics Engineering, Chettinad College of Engineering and Technology",
+    bio: "Dr. Ragul Sambath is a dedicated researcher and faculty member specializing in Electrical and Electronics Engineering with a strong focus on intelligent and data-driven technologies. His academic interests include AI-enabled engineering systems, smart technologies, and applied research innovation. As Editor-in-Chief, he oversees the peer-review process, editorial decisions, and quality assurance, ensuring timely and transparent publication of high-impact research.",
+    focus: "AI-enabled engineering, smart technologies",
+  },
+  {
+    name: "Dr. V. Nagaraj",
+    role: "Editor-in-Chief",
+    email: "nagaraj@ajse.org",
+    affiliation: "Department of Electrical and Electronics Engineering, Chettinad College of Engineering and Technology",
+    focus: "Power systems, AI in renewable energy",
   },
   {
     name: "Prof. Luca Marin",
-    role: "Deputy Editor",
+    role: "Associate Editor",
     affiliation: "Politecnico di Milano, Italy",
     focus: "Cyber-physical infrastructure and control",
   },
   {
     name: "Dr. Maya Castillo",
-    role: "Managing Editor",
+    role: "Associate Editor",
     affiliation: "Universidad de los Andes, Colombia",
     focus: "Human-centered computing and resilience",
-  },
-  {
-    name: "Prof. Elise Tan",
-    role: "Associate Editor",
-    affiliation: "National University of Singapore, Singapore",
-    focus: "Trustworthy AI and verification",
-  },
-  {
-    name: "Dr. David Mensah",
-    role: "Associate Editor",
-    affiliation: "University of Cape Town, South Africa",
-    focus: "Smart energy and sustainability",
-  },
-  {
-    name: "Prof. Satoshi Nakahara",
-    role: "Associate Editor",
-    affiliation: "Tohoku University, Japan",
-    focus: "Edge computing and distributed systems",
   },
 ];
 
@@ -198,34 +237,34 @@ export const archiveIssues = [
 
 export const submissionGuidelines = {
   formatting: [
-    "8-12 pages, double-column IEEE style, 12pt main text, single-spaced",
-    "Include title page with author affiliations, ORCID, and corresponding author email",
-    "All figures at 300 DPI minimum; vector formats preferred for line art",
+    "Initial Submission: FREE FORMAT (No IEEE formatting required)",
+    "File Format: Microsoft Word (.DOC or .DOCX) ONLY. No PDF or Latex accepted at initial stage",
+    "Language: English only",
+    "Max Length: 12 pages",
+    "Post-Acceptance: Must strictly follow IEEE double-column format",
   ],
   files: [
-    "Manuscript (DOCX or LaTeX PDF) with line numbers",
-    "Cover letter stating novelty and conflict-of-interest declarations",
-    "Signed publication ethics statement (auto-generated after submission)",
-    "Optional: dataset/code link with license and checksum",
+    "Manuscript (DOCX only) with clear structure",
+    "Cover letter with novelty statement",
+    "Disclosure of AI usage in research/preparation",
   ],
   referencing: [
-    "IEEE numeric citation style with DOI where available",
-    "APA 7th is accepted for humanities-focused sections",
-    "Reference managers: provide .bib or .ris file for camera-ready",
+    "Standard academic referencing allowed for initial stage",
+    "IEEE numeric style required for final camera-ready version",
   ],
   fee: {
-    amount: 120,
+    amount: 100,
     currency: "USD",
     includes: [
-      "DOI registration via Crossref",
-      "Professional copyediting and typesetting",
-      "Long-term archiving and hosting",
+      "Open Access publication",
+      "Permanent DOI assignment",
+      "Global discoverability and indexing",
     ],
-    waiver:
-      "Fee charged only after acceptance. Waivers/discounts available for students and researchers from low-income economies.",
+    waiver: "Full or partial waivers available for students and authors from low-income backgrounds. Requests accepted after acceptance.",
   },
-  plagiarism: null, // filled below to avoid circular reference lint complaints
-  submissionFormat: ["DOCX", "PDF"],
+  launchOffer: journalInfo.policies.launchOffer,
+  plagiarism: journalInfo.policies.plagiarism,
+  submissionFormat: ["DOCX"],
 };
 
 submissionGuidelines.plagiarism = journalInfo.policies.plagiarism;
@@ -250,11 +289,12 @@ export const paymentInfo = {
 };
 
 export const contactInfo = {
-  email: "editorial.office@ajse.org",
-  support: "+91-98765-43210",
-  whatsapp: "+91-98765-43210",
-  address: "Research Park, 4th Floor, Sector 22, Bengaluru, India",
-  officeHours: "09:00-18:00 IST, Monday-Friday",
+  email: "editor@ajse.org",
+  support: "Dr. V. Nagaraj: +91 99521 24414",
+  whatsapp: "+91 99521 24414",
+  whatsappNote: "WhatsApp only",
+  address: "Chettinad College of Engineering and Technology, Karur, Tamil Nadu, India",
+  officeHours: "09:00-18:00 IST, Monday-Saturday",
 };
 
 export const mockSubmissions = [

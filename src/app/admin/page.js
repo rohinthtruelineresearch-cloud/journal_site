@@ -24,6 +24,9 @@ export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authorModalOpen, setAuthorModalOpen] = useState(false);
   const [authorDetails, setAuthorDetails] = useState([]);
+  const [inquiries, setInquiries] = useState([]);
+  const [inquiriesLoading, setInquiriesLoading] = useState(false);
+  const [showInquiries, setShowInquiries] = useState(false);
 
   // Login State
   const [loginFormData, setLoginFormData] = useState({
@@ -145,6 +148,43 @@ export default function AdminPage() {
         }
     } catch (err) {
         console.error("Error fetching poster:", err);
+    }
+  };
+
+  const fetchInquiries = async () => {
+    setInquiriesLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/inquiries`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setInquiries(data);
+      }
+    } catch (err) {
+      console.error("Error fetching inquiries:", err);
+    } finally {
+      setInquiriesLoading(false);
+    }
+  };
+
+  const updateInquiryStatus = async (id, status) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/inquiries/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ status })
+      });
+      if (res.ok) {
+        fetchInquiries();
+      }
+    } catch (err) {
+      console.error("Error updating inquiry status:", err);
     }
   };
 
@@ -823,6 +863,23 @@ export default function AdminPage() {
           </div>
           <div className="flex gap-3">
             <button
+              onClick={() => {
+                const newState = !showInquiries;
+                setShowInquiries(newState);
+                if (newState) fetchInquiries();
+              }}
+              className={`rounded-full px-4 py-3 text-sm font-semibold transition hover:-translate-y-0.5 flex items-center gap-2 ${
+                showInquiries 
+                ? 'bg-slate-900 text-white' 
+                : 'bg-white border border-slate-200 text-slate-700 hover:border-slate-300'
+              }`}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+              </svg>
+              {showInquiries ? 'View Submissions' : 'View Inquiries'}
+            </button>
+            <button
               onClick={() => setNotificationModalOpen(true)}
               className="rounded-full bg-gradient-to-r from-purple-600 to-purple-700 px-4 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:from-purple-700 hover:to-purple-800 flex items-center gap-2"
             >
@@ -924,290 +981,395 @@ export default function AdminPage() {
         </div>
       </section>
 
-      <section className="grid gap-6 md:grid-cols-[1.05fr_0.95fr]">
-        <div className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_18px_60px_-50px_rgba(15,23,42,0.5)]">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
+      {!showInquiries ? (
+        <>
+          {/* Submissions & Reviewers Grid */}
+          <section className="grid gap-6 md:grid-cols-[1.05fr_0.95fr]">
+            <div className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_18px_60px_-50px_rgba(15,23,42,0.5)]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-2">
+                    <div className="text-sm font-semibold text-slate-900">
+                    Manage submissions
+                    </div>
+                    <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold text-slate-600">
+                    {filteredArticles.length} active
+                    </span>
+                </div>
+                
+                {/* Filter Tabs */}
+                 <div className="flex overflow-x-auto pb-2 sm:pb-0 gap-2 no-scrollbar">
+                    {statuses.map(status => (
+                        <button
+                            key={status.id}
+                            onClick={() => setFilterStatus(status.id)}
+                            className={`whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
+                                filterStatus === status.id 
+                                ? 'bg-slate-900 text-white' 
+                                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                            }`}
+                        >
+                            {status.label}
+                        </button>
+                    ))}
+                 </div>
+              </div>
+
+              {/* Search Box */}
+              <div className="relative mt-2">
+                <input 
+                    type="text"
+                    placeholder="Search by Title, ID, or Author..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-10 py-2.5 text-sm focus:border-sky-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-sky-500 transition-all shadow-sm"
+                />
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                {searchQuery && (
+                    <button 
+                        onClick={() => setSearchQuery("")}
+                        className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600"
+                    >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                )}
+              </div>
+
+              <div className="space-y-3">
+                {filteredArticles.map((submission) => (
+                  <div
+                    key={submission._id}
+                    className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="font-semibold text-slate-900">
+                        {submission.title}
+                      </div>
+                      <span className={`rounded-full px-3 py-1 text-xs font-semibold
+                        ${submission.status === 'under_review' ? 'bg-amber-100 text-amber-700' : 
+                          submission.status === 'published' ? 'bg-green-100 text-green-700' :
+                          submission.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                          submission.status === 'revision_required' ? 'bg-orange-100 text-orange-700' :
+                          'bg-white text-slate-700'}`}>
+                        {submission.status.replace('_', ' ')}
+                      </span>
+                    </div>
+                    <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500 flex items-center gap-2">
+                      <span className="text-slate-900 bg-slate-200 px-1.5 py-0.5 rounded">{submission.manuscriptId || 'NO ID'}</span>
+                      <span>{submission._id}</span>
+                      <span>·</span>
+                      <span>{new Date(submission.createdAt).toLocaleDateString()}</span>
+                    </div>
+                    <div className="mt-2 text-sm text-slate-600">
+                      Authors: {submission.authors?.map(author => 
+                        typeof author === 'string' 
+                          ? author 
+                          : `${author.firstName || ''} ${author.lastName || ''}`.trim()
+                      ).filter(Boolean).join(", ") || 'Unknown'}
+                    </div>
+                    {submission.doi && (
+                        <div className="mt-1 text-xs text-blue-600">DOI: {submission.doi}</div>
+                    )}
+                     {submission.issue && (
+                        <div className="mt-1 text-xs text-green-600">Issue: {submission.issue}</div>
+                    )}
+                     {submission.pdfUrl && (
+                        <div className="mt-1 text-xs text-purple-600">PDF Uploaded</div>
+                    )}
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <div className="w-full mt-2 space-y-2">
+                            {/* List Assigned Reviewers */}
+                           {submission.reviewers && submission.reviewers.length > 0 && (
+                               <div className="text-xs text-slate-500 bg-slate-50 p-2 rounded-md">
+                                   <div className="font-semibold mb-1">Reviewers ({submission.reviewers.length}/5):</div>
+                                   {submission.reviewers.map((rev, idx) => {
+                                       const reviewerName = reviewers.find(r => r._id === rev.user)?.name || 'Unknown';
+                                       let statusColor = 'text-slate-500';
+                                       if (rev.status === 'accepted') statusColor = 'text-green-600';
+                                       if (rev.status === 'declined' || rev.status === 'rejected') statusColor = 'text-red-500';
+                                       if (rev.status === 'invited') statusColor = 'text-sky-600';
+                                       if (rev.status === 'under_review') statusColor = 'text-amber-600';
+                                       if (rev.status === 'revision_required') statusColor = 'text-orange-500';
+                                       if (rev.status === 'completed') statusColor = 'text-indigo-600';
+                                       
+                                       const displayLabel = rev.decision ? 
+                                           `${rev.status.charAt(0).toUpperCase() + rev.status.slice(1)} (${rev.decision.replace('_', ' ')})` : 
+                                           rev.status.replace('_', ' ');
+                                       
+                                       return (
+                                           <div key={idx} className="mb-2 border-b border-slate-100 last:border-0 pb-1 last:pb-0">
+                                                <div className="flex justify-between items-center">
+                                                    <span>{reviewerName}</span>
+                                                    <span className={`${statusColor} font-bold text-[10px] uppercase tracking-wider`}>
+                                                        {displayLabel}
+                                                    </span>
+                                                </div>
+                                                {rev.comments && (
+                                                    <div className="mt-1 text-[10px] text-slate-600 bg-white p-1.5 rounded border border-slate-100 italic">
+                                                        "{rev.comments}"
+                                                    </div>
+                                                )}
+                                           </div>
+                                       )
+                                   })}
+                               </div>
+                           )}
+                           
+                           {/* Assignment Dropdown */}
+                           <select 
+                               className="text-xs w-full rounded-md border-slate-300 py-1 pl-2 pr-8 disabled:opacity-50"
+                               value=""
+                               onChange={(e) => {
+                                   if (e.target.value) handleAssignReviewer(submission._id, e.target.value);
+                               }}
+                               disabled={submission.reviewers?.length >= 5}
+                           >
+                               <option value="">+ Assign Reviewer {submission.reviewers?.length >= 5 ? '(Max Reached)' : ''}</option>
+                               {reviewers
+                                .filter(r => !submission.reviewers?.some(existing => existing.user === r._id)) // Exclude already assigned
+                                .map(r => (
+                                   <option key={r._id} value={r._id}>{r.name}</option>
+                               ))}
+                           </select>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2 mt-2">
+                          <ActionButton label="View Authors" onClick={() => {
+                              setAuthorDetails(submission.authors || []);
+                              setAuthorModalOpen(true);
+                          }} />
+                          <ActionButton label="Review & Update" onClick={() => openReviewModal(submission)} />
+                          <ActionButton label="Send back to author" onClick={() => openSendBackModal(submission)} variant="outline" />
+                          <ActionButton label="Generate DOI" onClick={() => handleGenerateDOI(submission._id)} />
+                          <ActionButton label="Upload final PDF" onClick={() => handleUploadClick(submission._id)} />
+                          
+                          {submission.status !== 'published' && submission.status !== 'rejected' && (
+                          <ActionButton label="Publish issue" onClick={() => {
+                              // Validation Check
+                              const missingSteps = [];
+                              
+                              // 1. Check Reviewer Constraints (3/5 accepted)
+                              const acceptedCount = submission.reviewers?.filter(r => r.status === 'accepted').length || 0;
+                              
+                              // We check if acceptedCount < 3.
+                              // Note: If admins want to override, they can use 'Review & Update' to force status, but this button enforces the rule.
+                              if (acceptedCount < 3) missingSteps.push(`Need at least 3 accepted reviews (Current: ${acceptedCount})`);
+
+                              if (!submission.doi) missingSteps.push("DOI must be generated");
+                              if (!submission.pdfUrl) missingSteps.push("Final PDF must be uploaded");
+        
+                              if (missingSteps.length > 0) {
+                                   setToast({ message: `Cannot publish: ${missingSteps[0]}`, type: "error" });
+                              } else {
+                                  setSelectedArticleId(submission._id);
+                                  setPublishModalOpen(true);
+                              }
+                          }} />
+                          )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_18px_60px_-50px_rgba(15,23,42,0.5)]">
                 <div className="text-sm font-semibold text-slate-900">
-                Manage submissions
+                  Reviewer assignments
+                </div>
+                <div className="mt-3 grid gap-2 text-sm text-slate-700">
+                  {reviewers.length === 0 && <div className="text-slate-500 italic">No reviewers found.</div>}
+                  {reviewers.map((reviewer) => (
+                    <div
+                      key={reviewer._id}
+                      className="rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3 flex justify-between items-center"
+                    >
+                      <span>{reviewer.name} ({reviewer.email})</span>
+                      <span className="text-xs bg-slate-200 px-2 py-1 rounded">Reviewer</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+               {/* Add Reviewer Assignment to List Item UI in next chunk if needed, or modify existing */}
+
+
+              <div className="rounded-3xl border border-slate-200 bg-slate-900 p-6 text-white shadow-[0_20px_55px_-40px_rgba(15,23,42,0.65)]">
+                <div className="text-xs uppercase tracking-[0.2em] text-slate-200">
+                  DOI &amp; publication
+                </div>
+                <div className="mt-2 text-lg font-semibold">
+                  Prefix {doiInfo.prefix}
+                </div>
+                <ul className="mt-3 space-y-2 text-sm text-slate-100/90">
+                  <li>• Generate DOI after acceptance and final PDF upload</li>
+                  <li>• Push metadata to Crossref within 48 hours</li>
+                  <li>• Publish online-first and add to archive index</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          {/* Payment & Email Templates Grid */}
+          <section className="grid gap-6 md:grid-cols-[1.05fr_0.95fr]">
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_18px_60px_-50px_rgba(15,23,42,0.5)]">
+              <div className="flex items-center justify-between">
+                <div className="text-sm font-semibold text-slate-900">
+                  Payment verification
                 </div>
                 <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold text-slate-600">
-                {filteredArticles.length} active
+                  {paymentInfo.gateways.join(" · ")}
                 </span>
-            </div>
-            
-            {/* Filter Tabs */}
-             <div className="flex overflow-x-auto pb-2 sm:pb-0 gap-2 no-scrollbar">
-                {statuses.map(status => (
-                    <button
-                        key={status.id}
-                        onClick={() => setFilterStatus(status.id)}
-                        className={`whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
-                            filterStatus === status.id 
-                            ? 'bg-slate-900 text-white' 
-                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                        }`}
-                    >
-                        {status.label}
-                    </button>
+              </div>
+              <div className="mt-3 grid gap-2 text-sm text-slate-700">
+                <div>Amount: {paymentInfo.currency} {paymentInfo.amount}</div>
+                {paymentInfo.verification.map((item) => (
+                  <div
+                    key={item}
+                    className="rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3"
+                  >
+                    {item}
+                  </div>
                 ))}
-             </div>
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <ActionButton label="Mark as paid" />
+                <ActionButton label="Request receipt" />
+                <ActionButton label="Flag for finance" />
+              </div>
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_18px_60px_-50px_rgba(15,23,42,0.5)]">
+              <div className="text-sm font-semibold text-slate-900">
+                Acceptance email template
+              </div>
+              <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
+                <div className="text-xs uppercase tracking-[0.16em] text-slate-500">
+                  Subject
+                </div>
+                <div className="text-sm font-semibold text-slate-900">
+                  {acceptanceEmailTemplate.subject}
+                </div>
+                <div className="mt-3 space-y-2 text-sm text-slate-700">
+                  {acceptanceEmailTemplate.body.map((line) => (
+                    <p key={line}>{line}</p>
+                  ))}
+                </div>
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <ActionButton label="Send acceptance" />
+                <ActionButton label="Send revisions" />
+                <ActionButton label="Send rejection" />
+              </div>
+            </div>
+          </section>
+        </>
+      ) : (
+        <section className="rounded-3xl border border-slate-200 bg-white p-6 md:p-10 shadow-sm">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl font-bold text-slate-900">User Inquiries</h2>
+            <button 
+              onClick={fetchInquiries}
+              className="p-2 rounded-full hover:bg-slate-100 text-slate-600"
+              title="Refresh Inquiries"
+            >
+              <svg className={`w-5 h-5 ${inquiriesLoading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </button>
           </div>
 
-          {/* Search Box */}
-          <div className="relative mt-2">
-            <input 
-                type="text"
-                placeholder="Search by Title, ID, or Author..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-10 py-2.5 text-sm focus:border-sky-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-sky-500 transition-all shadow-sm"
-            />
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          {inquiriesLoading && inquiries.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20">
+              <Loader />
+              <p className="mt-4 text-slate-500 italic">Loading inquiries...</p>
+            </div>
+          ) : inquiries.length === 0 ? (
+            <div className="text-center py-20 rounded-2xl border-2 border-dashed border-slate-100 bg-slate-50">
+              <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 text-slate-400 mb-4">
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                 </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-slate-900">No inquiries found</h3>
+              <p className="text-slate-500 max-w-xs mx-auto mt-1">When users submit the "Send an Inquiry" form, those messages will appear here.</p>
             </div>
-            {searchQuery && (
-                <button 
-                    onClick={() => setSearchQuery("")}
-                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600"
-                >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            )}
-          </div>
-
-          <div className="space-y-3">
-            {filteredArticles.map((submission) => (
-              <div
-                key={submission._id}
-                className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="font-semibold text-slate-900">
-                    {submission.title}
-                  </div>
-                  <span className={`rounded-full px-3 py-1 text-xs font-semibold
-                    ${submission.status === 'under_review' ? 'bg-amber-100 text-amber-700' : 
-                      submission.status === 'published' ? 'bg-green-100 text-green-700' :
-                      submission.status === 'rejected' ? 'bg-red-100 text-red-700' :
-                      submission.status === 'revision_required' ? 'bg-orange-100 text-orange-700' :
-                      'bg-white text-slate-700'}`}>
-                    {submission.status.replace('_', ' ')}
-                  </span>
-                </div>
-                <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500 flex items-center gap-2">
-                  <span className="text-slate-900 bg-slate-200 px-1.5 py-0.5 rounded">{submission.manuscriptId || 'NO ID'}</span>
-                  <span>{submission._id}</span>
-                  <span>·</span>
-                  <span>{new Date(submission.createdAt).toLocaleDateString()}</span>
-                </div>
-                <div className="mt-2 text-sm text-slate-600">
-                  Authors: {submission.authors?.map(author => 
-                    typeof author === 'string' 
-                      ? author 
-                      : `${author.firstName || ''} ${author.lastName || ''}`.trim()
-                  ).filter(Boolean).join(", ") || 'Unknown'}
-                </div>
-                {submission.doi && (
-                    <div className="mt-1 text-xs text-blue-600">DOI: {submission.doi}</div>
-                )}
-                 {submission.issue && (
-                    <div className="mt-1 text-xs text-green-600">Issue: {submission.issue}</div>
-                )}
-                 {submission.pdfUrl && (
-                    <div className="mt-1 text-xs text-purple-600">PDF Uploaded</div>
-                )}
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <div className="w-full mt-2 space-y-2">
-                        {/* List Assigned Reviewers */}
-                       {submission.reviewers && submission.reviewers.length > 0 && (
-                           <div className="text-xs text-slate-500 bg-slate-50 p-2 rounded-md">
-                               <div className="font-semibold mb-1">Reviewers ({submission.reviewers.length}/5):</div>
-                               {submission.reviewers.map((rev, idx) => {
-                                   const reviewerName = reviewers.find(r => r._id === rev.user)?.name || 'Unknown';
-                                   let statusColor = 'text-slate-500';
-                                   if (rev.status === 'accepted') statusColor = 'text-green-600';
-                                   if (rev.status === 'declined' || rev.status === 'rejected') statusColor = 'text-red-500';
-                                   if (rev.status === 'invited') statusColor = 'text-sky-600';
-                                   if (rev.status === 'under_review') statusColor = 'text-amber-600';
-                                   if (rev.status === 'revision_required') statusColor = 'text-orange-500';
-                                   if (rev.status === 'completed') statusColor = 'text-indigo-600';
-                                   
-                                   const displayLabel = rev.decision ? 
-                                       `${rev.status.charAt(0).toUpperCase() + rev.status.slice(1)} (${rev.decision.replace('_', ' ')})` : 
-                                       rev.status.replace('_', ' ');
-                                   
-                                   return (
-                                       <div key={idx} className="mb-2 border-b border-slate-100 last:border-0 pb-1 last:pb-0">
-                                            <div className="flex justify-between items-center">
-                                                <span>{reviewerName}</span>
-                                                <span className={`${statusColor} font-bold text-[10px] uppercase tracking-wider`}>
-                                                    {displayLabel}
-                                                </span>
-                                            </div>
-                                            {rev.comments && (
-                                                <div className="mt-1 text-[10px] text-slate-600 bg-white p-1.5 rounded border border-slate-100 italic">
-                                                    "{rev.comments}"
-                                                </div>
-                                            )}
-                                       </div>
-                                   )
-                               })}
-                           </div>
-                       )}
-                       
-                       {/* Assignment Dropdown */}
-                       <select 
-                           className="text-xs w-full rounded-md border-slate-300 py-1 pl-2 pr-8 disabled:opacity-50"
-                           value=""
-                           onChange={(e) => {
-                               if (e.target.value) handleAssignReviewer(submission._id, e.target.value);
-                           }}
-                           disabled={submission.reviewers?.length >= 5}
-                       >
-                           <option value="">+ Assign Reviewer {submission.reviewers?.length >= 5 ? '(Max Reached)' : ''}</option>
-                           {reviewers
-                            .filter(r => !submission.reviewers?.some(existing => existing.user === r._id)) // Exclude already assigned
-                            .map(r => (
-                               <option key={r._id} value={r._id}>{r.name}</option>
-                           ))}
-                       </select>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2 mt-2">
-                      <ActionButton label="View Authors" onClick={() => {
-                          setAuthorDetails(submission.authors || []);
-                          setAuthorModalOpen(true);
-                      }} />
-                      <ActionButton label="Review & Update" onClick={() => openReviewModal(submission)} />
-                      <ActionButton label="Send back to author" onClick={() => openSendBackModal(submission)} variant="outline" />
-                      <ActionButton label="Generate DOI" onClick={() => handleGenerateDOI(submission._id)} />
-                      <ActionButton label="Upload final PDF" onClick={() => handleUploadClick(submission._id)} />
+          ) : (
+            <div className="grid gap-6">
+              {inquiries.map((inquiry) => (
+                <div key={inquiry._id} className="group rounded-2xl border border-slate-100 bg-white p-6 shadow-sm hover:shadow-md transition-all hover:border-sky-100">
+                  <div className="flex flex-col md:flex-row justify-between gap-4">
+                    <div className="space-y-4 flex-1">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <span className={`rounded-full px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                          inquiry.status === 'new' ? 'bg-sky-100 text-sky-700' :
+                          inquiry.status === 'replied' ? 'bg-emerald-100 text-emerald-700' :
+                          'bg-slate-100 text-slate-600'
+                        }`}>
+                          {inquiry.status}
+                        </span>
+                        <span className="text-xs text-slate-400 font-medium">
+                          {new Date(inquiry.createdAt).toLocaleString()}
+                        </span>
+                      </div>
                       
-                      {submission.status !== 'published' && submission.status !== 'rejected' && (
-                      <ActionButton label="Publish issue" onClick={() => {
-                          // Validation Check
-                          const missingSteps = [];
-                          
-                          // 1. Check Reviewer Constraints (3/5 accepted)
-                          const acceptedCount = submission.reviewers?.filter(r => r.status === 'accepted').length || 0;
-                          
-                          // We check if acceptedCount < 3.
-                          // Note: If admins want to override, they can use 'Review & Update' to force status, but this button enforces the rule.
-                          if (acceptedCount < 3) missingSteps.push(`Need at least 3 accepted reviews (Current: ${acceptedCount})`);
+                      <div>
+                        <h4 className="text-lg font-bold text-slate-900 group-hover:text-sky-600 transition-colors uppercase">{inquiry.name}</h4>
+                        <a href={`mailto:${inquiry.email}`} className="text-sm font-semibold text-slate-500 hover:text-sky-500 transition-colors">{inquiry.email}</a>
+                      </div>
 
-                          if (!submission.doi) missingSteps.push("DOI must be generated");
-                          if (!submission.pdfUrl) missingSteps.push("Final PDF must be uploaded");
-    
-                          if (missingSteps.length > 0) {
-                               setToast({ message: `Cannot publish: ${missingSteps[0]}`, type: "error" });
-                          } else {
-                              setSelectedArticleId(submission._id);
-                              setPublishModalOpen(true);
-                          }
-                      }} />
+                      {inquiry.submissionId && (
+                        <div className="inline-flex items-center gap-2 rounded-lg bg-amber-50 px-3 py-1.5 border border-amber-100">
+                          <span className="text-[10px] font-bold text-amber-600 uppercase">Related Submission</span>
+                          <span className="text-sm font-mono font-bold text-amber-800">{inquiry.submissionId}</span>
+                        </div>
                       )}
+
+                      <div className="rounded-xl bg-slate-50 p-4 border border-slate-100 relative">
+                        <svg className="absolute -top-3 left-6 w-6 h-6 text-slate-100" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 0l-2 4h4l-2-4z" />
+                        </svg>
+                        <p className="text-slate-700 text-sm italic leading-relaxed whitespace-pre-wrap">"{inquiry.message}"</p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-2 shrink-0 md:w-48">
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-1">Actions</p>
+                      <button 
+                        onClick={() => updateInquiryStatus(inquiry._id, 'replied')}
+                        className="flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-emerald-700 shadow-sm"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                        </svg>
+                        Mark as Replied
+                      </button>
+                      <button 
+                         onClick={() => updateInquiryStatus(inquiry._id, 'read')}
+                         className="flex items-center justify-center gap-2 rounded-xl bg-slate-100 px-4 py-2.5 text-xs font-bold text-slate-700 transition hover:bg-slate-200"
+                      >
+                        Mark as Read
+                      </button>
+                      <button 
+                         onClick={() => updateInquiryStatus(inquiry._id, 'closed')}
+                         className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-500 transition hover:bg-slate-50"
+                      >
+                        Close Inquiry
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_18px_60px_-50px_rgba(15,23,42,0.5)]">
-            <div className="text-sm font-semibold text-slate-900">
-              Reviewer assignments
-            </div>
-            <div className="mt-3 grid gap-2 text-sm text-slate-700">
-              {reviewers.length === 0 && <div className="text-slate-500 italic">No reviewers found.</div>}
-              {reviewers.map((reviewer) => (
-                <div
-                  key={reviewer._id}
-                  className="rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3 flex justify-between items-center"
-                >
-                  <span>{reviewer.name} ({reviewer.email})</span>
-                  <span className="text-xs bg-slate-200 px-2 py-1 rounded">Reviewer</span>
-                </div>
               ))}
             </div>
-          </div>
-          
-           {/* Add Reviewer Assignment to List Item UI in next chunk if needed, or modify existing */}
-
-
-          <div className="rounded-3xl border border-slate-200 bg-slate-900 p-6 text-white shadow-[0_20px_55px_-40px_rgba(15,23,42,0.65)]">
-            <div className="text-xs uppercase tracking-[0.2em] text-slate-200">
-              DOI &amp; publication
-            </div>
-            <div className="mt-2 text-lg font-semibold">
-              Prefix {doiInfo.prefix}
-            </div>
-            <ul className="mt-3 space-y-2 text-sm text-slate-100/90">
-              <li>• Generate DOI after acceptance and final PDF upload</li>
-              <li>• Push metadata to Crossref within 48 hours</li>
-              <li>• Publish online-first and add to archive index</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section className="grid gap-6 md:grid-cols-[1.05fr_0.95fr]">
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_18px_60px_-50px_rgba(15,23,42,0.5)]">
-          <div className="flex items-center justify-between">
-            <div className="text-sm font-semibold text-slate-900">
-              Payment verification
-            </div>
-            <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold text-slate-600">
-              {paymentInfo.gateways.join(" · ")}
-            </span>
-          </div>
-          <div className="mt-3 grid gap-2 text-sm text-slate-700">
-            <div>Amount: {paymentInfo.currency} {paymentInfo.amount}</div>
-            {paymentInfo.verification.map((item) => (
-              <div
-                key={item}
-                className="rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-3"
-              >
-                {item}
-              </div>
-            ))}
-          </div>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <ActionButton label="Mark as paid" />
-            <ActionButton label="Request receipt" />
-            <ActionButton label="Flag for finance" />
-          </div>
-        </div>
-
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_18px_60px_-50px_rgba(15,23,42,0.5)]">
-          <div className="text-sm font-semibold text-slate-900">
-            Acceptance email template
-          </div>
-          <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
-            <div className="text-xs uppercase tracking-[0.16em] text-slate-500">
-              Subject
-            </div>
-            <div className="text-sm font-semibold text-slate-900">
-              {acceptanceEmailTemplate.subject}
-            </div>
-            <div className="mt-3 space-y-2 text-sm text-slate-700">
-              {acceptanceEmailTemplate.body.map((line) => (
-                <p key={line}>{line}</p>
-              ))}
-            </div>
-          </div>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <ActionButton label="Send acceptance" />
-            <ActionButton label="Send revisions" />
-            <ActionButton label="Send rejection" />
-          </div>
-        </div>
-      </section>
+          )}
+        </section>
+      )}
 
       {/* Toast Notification */}
       {toast && (

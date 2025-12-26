@@ -52,7 +52,7 @@ export default function ArchivePage() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-slate-900 md:text-4xl font-serif">
-          List of issues from Aurora Journal of Systems Engineering
+          List of issues from International Journal of AI-Driven Discovery
         </h1>
         <p className="mt-2 text-slate-600">
           Browse the list of issues and latest articles.

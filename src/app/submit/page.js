@@ -88,6 +88,15 @@ export default function SubmitPage() {
   const [previewLoading, setPreviewLoading] = useState(false);
   const [hasViewedProof, setHasViewedProof] = useState(false);
 
+  // Ensure user is logged in before accessing this page
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Please login or register to start a submission.");
+      router.push("/login?from=/submit");
+    }
+  }, [router]);
+
   // Reset hasViewedProof when entering Step 7 (ensures user must view proof each time)
   useEffect(() => {
     if (currentStep === 7) {
