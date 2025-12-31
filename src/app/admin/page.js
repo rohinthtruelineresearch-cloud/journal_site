@@ -1158,7 +1158,7 @@ export default function AdminPage() {
                               
                               // We check if acceptedCount < 3.
                               // Note: If admins want to override, they can use 'Review & Update' to force status, but this button enforces the rule.
-                              if (acceptedCount < 3) missingSteps.push(`Need at least 3 accepted reviews (Current: ${acceptedCount})`);
+                              if (acceptedCount < 2) missingSteps.push(`Need at least 2 accepted reviews (Current: ${acceptedCount})`);
 
                               if (!submission.doi) missingSteps.push("DOI must be generated");
                               if (!submission.pdfUrl) missingSteps.push("Final PDF must be uploaded");
