@@ -109,12 +109,7 @@ export const editorialBoard = [
     bio: "Dr. V. Nagaraj is a distinguished academician and research professional specializing in Electrical and Electronics Engineering with a strong emphasis on AI-driven technologies, smart systems, and applied engineering research. His academic and professional interests include intelligent automation, emerging engineering technologies, and interdisciplinary research innovation. As Editor-in-Chief, he oversees the peer-review process, editorial decisions, and quality assurance, ensuring high standards of academic integrity, transparency, and timely publication of impactful research.",
     focus: "Power systems, AI in renewable energy",
   },
-  {
-    name: "Prof. Luca Marin",
-    role: "Associate Editor",
-    affiliation: "Politecnico di Milano, Italy",
-    focus: "Cyber-physical infrastructure and control",
-  },
+
   {
     name: "Dr. Maya Castillo",
     role: "Associate Editor",
@@ -189,9 +184,9 @@ export const paymentInfo = {
 };
 
 export const contactInfo = {
-  email: "editor@jaeid.com, ragul@jaeid.com, nagaraj@jaeid.com, info@jaeid.com",
-  support: "Dr. V. Nagaraj: +91 99521 24414",
-  whatsapp: "Dr. V. Nagaraj: +91 99521 24414 / Dr. Ragul Sambath: +91 99521 24414",
+  email: "editor@jaeid.com",
+  support: "Dr. V. Nagaraj: +91 9578873583",
+  whatsapp: "Dr. V. Nagaraj: +91 9578873583 / Dr. Ragul Sambath: +91 99521 24414",
   whatsappNote: "WhatsApp only",
   address: "Building No. 7/232-19, Devi Towers, Kalipatti Privu Road, Vaikuntham, Sankari, Salem, Tamil Nadu – 637103.",
   officeHours: "09:00-18:00 IST, Monday-Saturday",
