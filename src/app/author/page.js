@@ -21,6 +21,10 @@ function AuthorPageContent() {
     const fetchMyArticles = async () => {
       try {
         const token = localStorage.getItem("token");
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        console.log("DEBUG: Fetching articles for user:", user);
+        console.log("DEBUG: Token:", token);
+
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/my-articles`, {
              headers: {
                  Authorization: `Bearer ${token}`
@@ -28,6 +32,7 @@ function AuthorPageContent() {
         });
 
         if (res.status === 401) {
+            console.error("DEBUG: 401 Unauthorized");
             router.push('/login');
             return;
         }
@@ -37,9 +42,12 @@ function AuthorPageContent() {
         }
 
         const data = await res.json();
+        console.log("DEBUG: API Response Data:", data);
+        
         // Ensure data is array
         setArticles(Array.isArray(data) ? data : []);
       } catch (err) {
+        console.error("DEBUG: Fetch Error:", err);
         setError(err.message);
         setArticles([]); // fallback
       } finally {
