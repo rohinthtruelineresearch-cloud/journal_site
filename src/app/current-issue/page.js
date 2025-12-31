@@ -198,7 +198,7 @@ function CurrentIssueContent() {
                                     
                                     {paper.pdfUrl && (
                                        <a 
-                                         href={`${process.env.NEXT_PUBLIC_API_URL}${paper.pdfUrl.startsWith('/') ? '' : '/'}${paper.pdfUrl}`}
+                                         href={paper.pdfUrl.startsWith('http') ? paper.pdfUrl : `${process.env.NEXT_PUBLIC_API_URL}${paper.pdfUrl.startsWith('/') ? '' : '/'}${paper.pdfUrl}`}
                                          target="_blank"
                                          rel="noopener noreferrer"
                                          className="flex items-center gap-1 text-xs font-bold text-[#007398] hover:underline"

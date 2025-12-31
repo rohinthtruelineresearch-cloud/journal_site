@@ -105,7 +105,8 @@ export const editorialBoard = [
     name: "Dr. V. Nagaraj",
     role: "Editor-in-Chief",
     email: "nagaraj@jaeid.com",
-    affiliation: "Department of Electrical and Electronics Engineering, Chettinad College of Engineering and Technology",
+    affiliation: "",
+    bio: "Dr. V. Nagaraj is a distinguished academician and research professional specializing in Electrical and Electronics Engineering with a strong emphasis on AI-driven technologies, smart systems, and applied engineering research. His academic and professional interests include intelligent automation, emerging engineering technologies, and interdisciplinary research innovation. As Editor-in-Chief, he oversees the peer-review process, editorial decisions, and quality assurance, ensuring high standards of academic integrity, transparency, and timely publication of impactful research.",
     focus: "Power systems, AI in renewable energy",
   },
   {

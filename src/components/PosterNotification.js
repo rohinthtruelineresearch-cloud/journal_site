@@ -75,7 +75,7 @@ export default function PosterNotification() {
                         </div>
                     )}
                     <img 
-                        src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${poster.imageUrl}`} 
+                        src={poster.imageUrl.startsWith('http') ? poster.imageUrl : `${process.env.NEXT_PUBLIC_API_URL}/uploads/${poster.imageUrl}`}
                         alt="Special Announcement" 
                         onLoad={() => setImageLoading(false)}
                         className={`w-full h-auto rounded-xl object-cover shadow-inner transition-opacity duration-500 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
