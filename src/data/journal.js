@@ -96,7 +96,7 @@ export const editorialBoard = [
   {
     name: "Dr. Ragul Sambath",
     role: "Editor-in-Chief",
-    email: "editor@ajse.org",
+    email: "ragul@jaeid.com",
     affiliation: "Department of Electrical and Electronics Engineering, Chettinad College of Engineering and Technology",
     bio: "Dr. Ragul Sambath is a dedicated researcher and faculty member specializing in Electrical and Electronics Engineering with a strong focus on intelligent and data-driven technologies. His academic interests include AI-enabled engineering systems, smart technologies, and applied research innovation. As Editor-in-Chief, he oversees the peer-review process, editorial decisions, and quality assurance, ensuring timely and transparent publication of high-impact research.",
     focus: "AI-enabled engineering, smart technologies",
@@ -104,7 +104,7 @@ export const editorialBoard = [
   {
     name: "Dr. V. Nagaraj",
     role: "Editor-in-Chief",
-    email: "nagaraj@ajse.org",
+    email: "nagaraj@jaeid.com",
     affiliation: "Department of Electrical and Electronics Engineering, Chettinad College of Engineering and Technology",
     focus: "Power systems, AI in renewable energy",
   },
@@ -130,110 +130,9 @@ export const reviewerPool = [
   "Dr. Peter Wood - Data governance",
 ];
 
-export const currentIssue = {
-  volume: 12,
-  issue: 4,
-  month: "November",
-  year: 2025,
-  theme: "Trustworthy Autonomy and Resilient Infrastructure",
-  published: "Published online November 12, 2025",
-  papers: [
-    {
-      title:
-        "Risk-aware Decision Layers for Mission-Critical Autonomous Vehicles",
-      authors: "A. Ilyas, C. Mehta, J. Fern",
-      doi: "10.56890/ajse.12.4.001",
-      pages: "1-14",
-      pdfUrl: "#",
-      abstract:
-        "A layered decision architecture combining verifiable safety shields with learning-based controllers to reduce disengagements by 28% across 1.2M km simulations.",
-      keywords: ["autonomy", "verification", "safety cases"],
-    },
-    {
-      title: "Adaptive Microgrid Orchestration with Physics-Informed RL",
-      authors: "L. Marin, E. Tan, P. Wood",
-      doi: "10.56890/ajse.12.4.002",
-      pages: "15-32",
-      pdfUrl: "#",
-      abstract:
-        "Demonstrates a physics-informed reinforcement learning controller that stabilizes hybrid microgrids under 15% renewable volatility without curtailment.",
-      keywords: ["microgrids", "reinforcement learning", "energy systems"],
-    },
-    {
-      title: "Privacy-Preserving Multimodal Federated Models for Hospitals",
-      authors: "D. Mensah, S. Nakahara",
-      doi: "10.56890/ajse.12.4.003",
-      pages: "33-52",
-      pdfUrl: "#",
-      abstract:
-        "Introduces a multimodal federated learning pipeline with differential privacy that achieves 92.1% F1 on ICU risk detection across four hospitals.",
-      keywords: ["federated learning", "privacy", "healthcare AI"],
-    },
-    {
-      title: "Cascading Failure Simulation for Smart Rail Networks",
-      authors: "K. Meier, I. Kovacs",
-      doi: "10.56890/ajse.12.4.004",
-      pages: "53-70",
-      pdfUrl: "#",
-      abstract:
-        "A Monte Carlo stress-testing framework that uncovers hidden coupling in rail signaling, reducing incident propagation by 34% in a digital twin.",
-      keywords: ["digital twins", "transportation", "simulation"],
-    },
-  ],
-};
+export const currentIssue = null;
 
-export const archiveIssues = [
-  {
-    volume: 12,
-    issue: 3,
-    month: "August",
-    year: 2025,
-    theme: "Edge Intelligence and Adaptive Networks",
-    published: "Published August 28, 2025",
-    papers: [
-      {
-        title: "Latency-aware Scheduling for Federated Edge Clusters",
-        authors: "M. Castillo, I. Park",
-        doi: "10.56890/ajse.12.3.001",
-        pages: "1-18",
-        pdfUrl: "#",
-        abstract:
-          "A hybrid scheduler balancing accuracy and latency across heterogeneous edge hardware.",
-        keywords: ["edge computing", "federated learning"],
-      },
-      {
-        title: "Robust Graph Models for Critical Infrastructure",
-        authors: "E. Tan, S. Farouk",
-        doi: "10.56890/ajse.12.3.002",
-        pages: "19-35",
-        pdfUrl: "#",
-        abstract:
-          "Presents robustness-aware GNNs for cascading failure prediction under uncertainty.",
-        keywords: ["graph neural networks", "resilience"],
-      },
-    ],
-  },
-  {
-    volume: 12,
-    issue: 2,
-    month: "May",
-    year: 2025,
-    theme: "Sustainable Computing and Green Software",
-    published: "Published May 14, 2025",
-    papers: [
-      {
-        title: "Carbon Budgets for AI Inference in Production",
-        authors: "S. Dubois, P. Wood",
-        doi: "10.56890/ajse.12.2.001",
-        pages: "1-21",
-        pdfUrl: "#",
-        abstract:
-          "Defines service-level carbon budgets and telemetry for large-scale inference systems.",
-        keywords: ["sustainability", "observability"],
-      },
-    ],
-  },
-];
+export const archiveIssues = [];
 
 export const submissionGuidelines = {
   formatting: [
@@ -289,11 +188,11 @@ export const paymentInfo = {
 };
 
 export const contactInfo = {
-  email: "editor@ajse.org",
+  email: "editor@jaeid.com, ragul@jaeid.com, nagaraj@jaeid.com, info@jaeid.com",
   support: "Dr. V. Nagaraj: +91 99521 24414",
-  whatsapp: "+91 99521 24414",
+  whatsapp: "Dr. V. Nagaraj: +91 99521 24414 / Dr. Ragul Sambath: +91 99521 24414",
   whatsappNote: "WhatsApp only",
-  address: "Chettinad College of Engineering and Technology, Karur, Tamil Nadu, India",
+  address: "Building No. 7/232-19, Devi Towers, Kalipatti Privu Road, Vaikuntham, Sankari, Salem, Tamil Nadu – 637103.",
   officeHours: "09:00-18:00 IST, Monday-Saturday",
 };
 

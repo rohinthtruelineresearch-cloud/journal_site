@@ -138,30 +138,7 @@ export default function AboutPage() {
           </div>
         </div>
 
-        <div className="mt-10">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Associate Editors</h3>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {editorialBoard.filter(m => m.role !== "Editor-in-Chief").map((member) => (
-              <div
-                key={member.name}
-                className="rounded-xl border border-slate-200 bg-white p-4"
-              >
-                <div className="text-sm font-bold text-slate-900">
-                  {member.name}
-                </div>
-                <div className="mt-1 text-[10px] uppercase tracking-[0.16em] text-sky-600 font-semibold">
-                  {member.role}
-                </div>
-                <div className="mt-2 text-xs text-slate-600">
-                  {member.affiliation}
-                </div>
-                <div className="mt-1.5 text-[10px] text-slate-500">
-                  Focus: {member.focus}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+
       </section>
 
       {/* Join Us Section */}
