@@ -33,7 +33,7 @@ export default async function sitemap() {
     const issues = await response.json();
 
     const issueRoutes = Array.isArray(issues) ? issues.map((issue) => ({
-      url: `${baseUrl}/current-issue?volume=${issue.volume}&issue=${issue.issue}`,
+      url: `${baseUrl}/current-issue?volume=${issue.volume}&amp;issue=${issue.issue}`,
       lastModified: new Date(issue.publicationDate || new Date()),
       changeFrequency: 'weekly',
       priority: 0.7,
