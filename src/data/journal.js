@@ -94,6 +94,14 @@ export const journalInfo = {
 
 export const editorialBoard = [
   {
+    name: "Dr. V. Nagaraj",
+    role: "Editor-in-Chief",
+    email: "nagaraj@jaeid.com",
+    affiliation: "Founder & Managing Director, Trueline Research Private Limited, India",
+    bio: "Dr. V. Nagaraj is a visionary research leader and technology entrepreneur with over a decade of experience across academia, research, and industry. He specializes in Artificial Intelligence–driven research innovation, academic–industry collaboration, and startup ecosystem development. As Editor-in-Chief, he oversees peer-review processes, editorial decision-making, and publication quality, ensuring ethical, transparent, and high-impact scholarly publishing aligned with global research standards.",
+    focus: "AI-driven research innovation, academic–industry collaboration",
+  },
+  {
     name: "Dr. Ragul Sambath",
     role: "Editor-in-Chief",
     email: "ragul@jaeid.com",
@@ -101,21 +109,8 @@ export const editorialBoard = [
     bio: "Dr. Ragul Sambath is a dedicated researcher and faculty member specializing in Electrical and Electronics Engineering with a strong focus on intelligent and data-driven technologies. His academic interests include AI-enabled engineering systems, smart technologies, and applied research innovation. As Editor-in-Chief, he oversees the peer-review process, editorial decisions, and quality assurance, ensuring timely and transparent publication of high-impact research.",
     focus: "AI-enabled engineering, smart technologies",
   },
-  {
-    name: "Dr. V. Nagaraj",
-    role: "Editor-in-Chief",
-    email: "nagaraj@jaeid.com",
-    affiliation: "",
-    bio: "Dr. V. Nagaraj is a distinguished academician and research professional specializing in Electrical and Electronics Engineering with a strong emphasis on AI-driven technologies, smart systems, and applied engineering research. His academic and professional interests include intelligent automation, emerging engineering technologies, and interdisciplinary research innovation. As Editor-in-Chief, he oversees the peer-review process, editorial decisions, and quality assurance, ensuring high standards of academic integrity, transparency, and timely publication of impactful research.",
-    focus: "Power systems, AI in renewable energy",
-  },
 
-  {
-    name: "Dr. Maya Castillo",
-    role: "Associate Editor",
-    affiliation: "Universidad de los Andes, Colombia",
-    focus: "Human-centered computing and resilience",
-  },
+
 ];
 
 export const reviewerPool = [
@@ -185,8 +180,8 @@ export const paymentInfo = {
 
 export const contactInfo = {
   email: "editor@jaeid.com",
-  support: "Dr. V. Nagaraj: +91 9578873583",
-  whatsapp: "Dr. V. Nagaraj: +91 9578873583 / Dr. Ragul Sambath: +91 99521 24414",
+  support: "Dr. V. Nagaraj: +91 9578873583 / Dr. Ragul Sambath: +91 99521 24414",
+  whatsapp: "+91 9578873583",
   whatsappNote: "WhatsApp only",
   address: "Building No. 7/232-19, Devi Towers, Kalipatti Privu Road, Vaikuntham, Sankari, Salem, Tamil Nadu – 637103.",
   officeHours: "09:00-18:00 IST, Monday-Saturday",

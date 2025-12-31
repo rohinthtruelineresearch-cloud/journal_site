@@ -4,7 +4,7 @@ import { journalInfo, editorialBoard, reviewerPool, contactInfo } from "@/data/j
 export default function AboutPage() {
   return (
     <div className="space-y-8">
-      {/* Hero Section */}
+      {/* Hero Section - About Page */}
       <section className="rounded-2xl sm:rounded-3xl border border-slate-200 bg-white p-5 sm:p-6 md:p-8 lg:p-12 shadow-[0_25px_70px_-38px_rgba(15,23,42,0.35)]">
         <div className="space-y-3 sm:space-y-4">
           <div className="inline-flex items-center gap-2 rounded-full bg-sky-100 px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.12em] text-sky-700">
@@ -147,7 +147,7 @@ export default function AboutPage() {
         <div className="relative z-10 space-y-6">
           <h2 className="text-2xl font-semibold font-serif">Call for Editors & Reviewers</h2>
           <p className="text-slate-300 max-w-3xl">
-            We invite qualified academicians, researchers, and industry professionals to join our board. 
+            We invite qualified academicians, researchers, and industry professionals to join our board.
             Editors and reviewers play a vital role in maintaining our academic quality and integrity.
           </p>
           <div className="grid gap-6 md:grid-cols-2">
@@ -161,8 +161,8 @@ export default function AboutPage() {
             </div>
             <div className="space-y-4">
               <p className="text-sm text-slate-400">Apply by submitting your CV and area of expertise to our editorial office.</p>
-              <a 
-                href={`mailto:${contactInfo.email}?subject=Application for Editorial Board / Reviewer - [Your Name]&body=Dear Editorial Team,%0D%0A%0D%0AI am writing to express my interest in joining the Editorial Board / Reviewer Pool for the Journal of AI Enabled Innovation and Discovery.%0D%0A%0D%0AMy Details:%0D%0AName: [Your Name]%0D%0AAffiliation: [Your Institution]%0D%0AExpertise: [Your Area of Expertise]%0D%0AProfile/ORCID: [Link if any]%0D%0A%0D%0AI have attached my academic CV for your reference.%0D%0A%0D%0ABest regards,%0D%0A[Your Name]`} 
+              <a
+                href={`mailto:${contactInfo.email}?subject=Application for Editorial Board / Reviewer - [Your Name]&body=Dear Editorial Team,%0D%0A%0D%0AI am writing to express my interest in joining the Editorial Board / Reviewer Pool for the Journal of AI Enabled Innovation and Discovery.%0D%0A%0D%0AMy Details:%0D%0AName: [Your Name]%0D%0AAffiliation: [Your Institution]%0D%0AExpertise: [Your Area of Expertise]%0D%0AProfile/ORCID: [Link if any]%0D%0A%0D%0AI have attached my academic CV for your reference.%0D%0A%0D%0ABest regards,%0D%0A[Your Name]`}
                 className="inline-block bg-white text-slate-900 px-6 py-2.5 rounded-full font-bold text-sm transition hover:bg-emerald-50"
               >
                 Apply via Email: {contactInfo.email}
