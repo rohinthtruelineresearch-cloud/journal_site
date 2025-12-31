@@ -1605,7 +1605,7 @@ export default function AdminPage() {
                 <div className="flex flex-col gap-2">
                   {currentArticle.manuscriptUrl ? (
                     <a 
-                      href={`${process.env.NEXT_PUBLIC_API_URL}/${currentArticle.manuscriptUrl}`} 
+                      href={currentArticle.manuscriptUrl.startsWith('http') ? currentArticle.manuscriptUrl : `${process.env.NEXT_PUBLIC_API_URL}/${currentArticle.manuscriptUrl}`} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 rounded-lg border border-slate-200 p-3 hover:bg-slate-50"
@@ -1621,7 +1621,7 @@ export default function AdminPage() {
                   
                   {currentArticle.coverLetterUrl ? (
                     <a 
-                      href={`${process.env.NEXT_PUBLIC_API_URL}/${currentArticle.coverLetterUrl}`} 
+                      href={currentArticle.coverLetterUrl.startsWith('http') ? currentArticle.coverLetterUrl : `${process.env.NEXT_PUBLIC_API_URL}/${currentArticle.coverLetterUrl}`} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 rounded-lg border border-slate-200 p-3 hover:bg-slate-50"

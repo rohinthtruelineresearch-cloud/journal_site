@@ -89,7 +89,7 @@ function SubmissionDetailsContent() {
                              <h4 className="font-semibold text-slate-800 text-sm mb-2">Manuscript</h4>
                              {article.manuscriptUrl ? (
                                 <a 
-                                  href={`${process.env.NEXT_PUBLIC_API_URL}/${article.manuscriptUrl}`} 
+                                  href={article.manuscriptUrl.startsWith('http') ? article.manuscriptUrl : `${process.env.NEXT_PUBLIC_API_URL}/${article.manuscriptUrl}`} 
                                   target="_blank" 
                                   rel="noopener noreferrer"
                                   className="inline-flex items-center gap-2 text-sm text-sky-600 hover:text-sky-800 font-medium"
@@ -109,7 +109,7 @@ function SubmissionDetailsContent() {
                              <h4 className="font-semibold text-slate-800 text-sm mb-2">Cover Letter / CV</h4>
                              {article.coverLetterUrl ? (
                                 <a 
-                                  href={`${process.env.NEXT_PUBLIC_API_URL}/${article.coverLetterUrl}`} 
+                                  href={article.coverLetterUrl.startsWith('http') ? article.coverLetterUrl : `${process.env.NEXT_PUBLIC_API_URL}/${article.coverLetterUrl}`} 
                                   target="_blank" 
                                   rel="noopener noreferrer"
                                   className="inline-flex items-center gap-2 text-sm text-sky-600 hover:text-sky-800 font-medium"
