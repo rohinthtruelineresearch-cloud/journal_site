@@ -78,17 +78,17 @@ export default function Home() {
       </section>
 
       {/* Call for Papers Banner - Light Theme Refresh */}
-      <section className="relative overflow-hidden rounded-[2rem] bg-sky-50 px-6 py-10 md:px-14 md:py-12 border border-sky-100 shadow-xl">
+      <section className="relative overflow-hidden rounded-[2rem] bg-emerald-50 px-6 py-10 md:px-14 md:py-12 border border-emerald-100 shadow-xl">
         {/* Subtle decorative background elements */}
-        <div className="absolute -right-10 -top-10 h-64 w-64 rounded-full bg-sky-200/30 blur-[80px] pointer-events-none" />
-        <div className="absolute -left-10 -bottom-10 h-64 w-64 rounded-full bg-indigo-100/40 blur-[80px] pointer-events-none" />
+        <div className="absolute -right-10 -top-10 h-64 w-64 rounded-full bg-emerald-200/30 blur-[80px] pointer-events-none" />
+        <div className="absolute -left-10 -bottom-10 h-64 w-64 rounded-full bg-teal-100/40 blur-[80px] pointer-events-none" />
         
         <div className="relative z-10 flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
           <div className="space-y-4 max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-sky-600 border border-sky-200 shadow-sm">
+            <div className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-emerald-600 border border-emerald-200 shadow-sm">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
               Call for Papers - Inaugural Issue
             </div>
@@ -96,7 +96,7 @@ export default function Home() {
               "AI-Driven Innovation across Science and Technology"
             </h2>
             <p className="text-slate-600 text-base md:text-lg leading-relaxed">
-              Submit your original research by <span className="text-slate-950 font-semibold">01.06.2026</span> and benefit from a <span className="text-sky-600 font-bold underline decoration-sky-200 decoration-4 underline-offset-4">full publication fee waiver</span>. 
+              Submit your original research by <span className="text-slate-950 font-semibold">01.06.2026</span> and benefit from a <span className="text-emerald-600 font-bold underline decoration-emerald-200 decoration-4 underline-offset-4">full publication fee waiver</span>. 
               Accepted papers published with permanent DOI and global indexing.
             </p>
           </div>
@@ -214,7 +214,7 @@ export default function Home() {
             Full board -&gt;
           </Link>
         </div>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2">
           {editorialBoard.slice(0, 3).map((member) => (
             <div
               key={member.name}

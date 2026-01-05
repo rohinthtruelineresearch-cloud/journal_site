@@ -60,7 +60,7 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-10 flex flex-col gap-2 border-t border-slate-100 pt-6 text-xs text-slate-500 md:flex-row md:items-center md:justify-between">
-          <span>(c) {new Date().getFullYear()} {journalInfo.shortTitle}. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} {journalInfo.shortTitle}. All rights reserved.</span>
           <span>Designed for IEEE/Elsevier-grade clarity, speed, and compliance.</span>
         </div>
       </div>

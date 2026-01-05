@@ -299,7 +299,7 @@ export default function SubmitPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-sky-50/30">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-emerald-50/30">
       {loading && <Loader overlay={true} type={currentStep === 7 ? "submission" : "default"} />}
       
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -311,7 +311,7 @@ export default function SubmitPage() {
           <div className="flex-1">
             <div className="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
               {/* Step Header */}
-              <div className="bg-gradient-to-r from-sky-600 to-sky-700 px-8 py-5">
+              <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 px-8 py-5">
                 <h1 className="text-2xl font-bold text-white">
                   Step {currentStep}: {STEPS[currentStep - 1].label}
                 </h1>
@@ -401,7 +401,7 @@ export default function SubmitPage() {
                     Save
                   </button>
                   {currentStep < 7 ? (
-                    <button onClick={handleSaveAndContinue} className="px-6 py-2.5 bg-sky-600 text-white rounded-lg text-sm font-semibold hover:bg-sky-700 transition">
+                    <button onClick={handleSaveAndContinue} className="px-6 py-2.5 bg-emerald-600 text-white rounded-lg text-sm font-semibold hover:bg-emerald-700 transition">
                       Save & Continue ›
                     </button>
                   ) : (
@@ -423,11 +423,11 @@ export default function SubmitPage() {
 function Sidebar({ steps, currentStep, completedSteps, goToStep }) {
   return (
     <div className="w-72 flex-shrink-0">
-      <div className="bg-gradient-to-b from-sky-800 to-sky-900 rounded-2xl shadow-xl overflow-hidden sticky top-8">
-        <div className="px-5 py-4 bg-sky-900/50">
-          <h2 className="text-white font-bold text-lg">Submission</h2>
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden sticky top-8">
+        <div className="px-5 py-4 bg-slate-50 border-b border-slate-200">
+          <h2 className="text-slate-800 font-bold text-lg">Submission</h2>
         </div>
-        <nav className="p-2">
+        <nav className="p-2 space-y-1">
           {steps.map((step) => {
             const isCompleted = completedSteps.includes(step.id);
             const isCurrent = currentStep === step.id;
@@ -440,21 +440,21 @@ function Sidebar({ steps, currentStep, completedSteps, goToStep }) {
                 disabled={!isAccessible}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all ${
                   isCurrent
-                    ? "bg-white/20 text-white"
+                    ? "bg-emerald-50 text-black shadow-sm ring-1 ring-emerald-200"
                     : isCompleted
-                    ? "text-sky-100 hover:bg-white/10"
+                    ? "text-black hover:bg-slate-50"
                     : isAccessible
-                    ? "text-sky-200/70 hover:bg-white/5"
-                    : "text-sky-300/40 cursor-not-allowed"
+                    ? "text-black hover:bg-slate-50"
+                    : "text-slate-400 cursor-not-allowed"
                 }`}
               >
-                <span className={`flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${
-                  isCompleted ? "bg-emerald-500 text-white" : isCurrent ? "bg-white text-sky-800" : "bg-sky-700/50 text-sky-300"
+                <span className={`flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold shadow-sm transition-colors ${
+                  isCompleted ? "bg-emerald-100 text-emerald-700" : isCurrent ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-500 border border-slate-200"
                 }`}>
                   {isCompleted ? "✓" : step.id}
                 </span>
-                <span className="text-sm font-medium">{step.label}</span>
-                {isCurrent && <span className="ml-auto text-white">›</span>}
+                <span className="text-sm font-bold">{step.label}</span>
+                {isCurrent && <span className="ml-auto text-emerald-600">›</span>}
               </button>
             );
           })}
@@ -489,9 +489,9 @@ function Step1({ paperType, setPaperType, title, setTitle, abstract, setAbstract
             </thead>
             <tbody className="divide-y divide-slate-100">
               {PAPER_TYPES.map((type) => (
-                <tr key={type.id} className={`hover:bg-slate-50 transition cursor-pointer ${paperType === type.id ? "bg-sky-50" : ""}`} onClick={() => setPaperType(type.id)}>
+                <tr key={type.id} className={`hover:bg-slate-50 transition cursor-pointer ${paperType === type.id ? "bg-emerald-50" : ""}`} onClick={() => setPaperType(type.id)}>
                   <td className="px-4 py-3">
-                    <input type="radio" name="paperType" checked={paperType === type.id} onChange={() => setPaperType(type.id)} className="w-4 h-4 text-sky-600" />
+                    <input type="radio" name="paperType" checked={paperType === type.id} onChange={() => setPaperType(type.id)} className="w-4 h-4 text-emerald-600" />
                   </td>
                   <td className="px-4 py-3 text-sm text-slate-800">{type.label}</td>
                   <td className="px-4 py-3 text-sm text-slate-500 italic">{type.description}</td>
@@ -511,7 +511,7 @@ function Step1({ paperType, setPaperType, title, setTitle, abstract, setAbstract
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           rows={2}
-          className="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition"
+          className="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition"
           placeholder="Enter your manuscript title..."
         />
       </div>
@@ -525,7 +525,7 @@ function Step1({ paperType, setPaperType, title, setTitle, abstract, setAbstract
           value={abstract}
           onChange={(e) => setAbstract(e.target.value)}
           rows={8}
-          className="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition"
+          className="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition"
           placeholder="Write or paste your abstract here..."
         />
       </div>
@@ -567,7 +567,7 @@ function Step2({ files, handleFileUpload, updateFileDesignation, removeFile }) {
                     <select
                       value={file.designation}
                       onChange={(e) => updateFileDesignation(file.id, e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-sky-500"
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500"
                     >
                       <option value="">Choose File Designation...</option>
                       {FILE_DESIGNATIONS.map((d) => <option key={d} value={d}>{d}</option>)}
@@ -584,7 +584,7 @@ function Step2({ files, handleFileUpload, updateFileDesignation, removeFile }) {
         </div>
       )}
 
-      <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-sky-400 transition">
+      <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-emerald-400 transition">
         <input type="file" id="fileUpload" multiple onChange={handleFileUpload} className="hidden" accept=".pdf,.doc,.docx,.zip" />
         <label htmlFor="fileUpload" className="cursor-pointer">
           <div className="text-slate-400 mb-3">
@@ -615,7 +615,7 @@ function Step3({ keywords, keywordInput, setKeywordInput, addKeyword, removeKeyw
             onChange={(e) => setKeywordInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addKeyword())}
             placeholder="Enter a keyword..."
-            className="flex-1 px-4 py-3 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-sky-500"
+            className="flex-1 px-4 py-3 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500"
           />
           <button onClick={addKeyword} className="px-5 py-3 bg-slate-800 text-white rounded-xl text-sm font-medium hover:bg-slate-700 transition">+ Add</button>
         </div>
@@ -716,7 +716,7 @@ function Step4({ authors, addAuthor, updateAuthor, removeAuthor, moveAuthor }) {
                   <button onClick={() => moveAuthor(idx, 1)} disabled={idx === authors.length - 1} className="text-slate-400 hover:text-slate-600 disabled:opacity-30">▼</button>
                 </div>
                 <span className="text-sm font-semibold text-slate-700">Author {author.order}</span>
-                {author.isCorresponding && <span className="text-xs bg-sky-100 text-sky-700 px-2 py-0.5 rounded-full">Corresponding</span>}
+                {author.isCorresponding && <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">Corresponding</span>}
               </div>
               {authors.length > 1 && (
                 <button onClick={() => removeAuthor(idx)} className="text-red-600 hover:text-red-800 text-sm font-medium">Remove</button>
@@ -746,13 +746,13 @@ function Step4({ authors, addAuthor, updateAuthor, removeAuthor, moveAuthor }) {
                 />
                 <div className="absolute right-2 top-1.5 flex items-center gap-1">
                   {verifyingIdx === idx ? (
-                    <div className="w-4 h-4 border-2 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
+                      <div className="w-4 h-4 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
                   ) : verifiedEmails[idx] === 'valid' ? (
                     <span className="text-emerald-600 text-xs font-bold">✓ Verified</span>
                   ) : (
                     <button 
                       onClick={() => handleVerifyEmail(idx, author.email)}
-                      className="text-[10px] bg-sky-600 text-white px-2 py-1 rounded hover:bg-sky-700 transition font-bold"
+                      className="text-[10px] bg-emerald-600 text-white px-2 py-1 rounded hover:bg-emerald-700 transition font-bold"
                     >
                       VERIFY
                     </button>
@@ -769,7 +769,7 @@ function Step4({ authors, addAuthor, updateAuthor, removeAuthor, moveAuthor }) {
         ))}
       </div>
 
-      <button onClick={addAuthor} className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-600 font-medium hover:border-sky-400 hover:text-sky-600 transition">
+      <button onClick={addAuthor} className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-600 font-medium hover:border-emerald-400 hover:text-emerald-600 transition">
         + Add Another Author
       </button>
     </div>

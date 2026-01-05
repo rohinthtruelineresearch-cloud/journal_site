@@ -1,6 +1,6 @@
 export const journalInfo = {
   title: "Journal of AI Enabled Innovation and Discovery",
-  shortTitle: "JAIID",
+  shortTitle: "JAEID",
   issn: "Under process",
   doiPrefix: "Under process",
   frequency: "Bimonthly (Six issues in a year)",

@@ -89,9 +89,9 @@ function CurrentIssueContent() {
         {/* Top Navigation / Breadcrumbs */}
         <div className="border-b border-slate-200 bg-slate-50 px-4 py-3 text-xs font-medium text-slate-600">
           <div className="mx-auto flex max-w-[1200px] items-center gap-2">
-            <Link href="/archive" className="hover:underline hover:text-blue-700">Journals & Books</Link>
+            <Link href="/archive" className="hover:underline hover:text-teal-700">Journals & Books</Link>
             <span>/</span>
-            <Link href="/" className="hover:underline hover:text-blue-700">{journalInfo.shortTitle}</Link>
+            <Link href="/" className="hover:underline hover:text-teal-700">{journalInfo.shortTitle}</Link>
             <span>/</span>
             <span className="text-slate-400">Volume {volumeParam}, Issue {issueParam}</span>
           </div>
@@ -100,7 +100,7 @@ function CurrentIssueContent() {
         <div className="mx-auto max-w-[1200px] px-4 py-8">
           {/* Back Link */}
           <div className="mb-4">
-             <Link href="/archive" className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-[#007398] transition">
+             <Link href="/archive" className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-brand-teal transition">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M19 12H5M12 19l-7-7 7-7"/>
                 </svg>
@@ -117,8 +117,8 @@ function CurrentIssueContent() {
                       <img src="/journal-cover.jpg" alt="Journal Cover" className="h-full w-full object-cover" />
                    </div> 
                    <div className="space-y-2">
-                        <h1 className="font-serif text-3xl font-bold text-slate-900 md:text-4xl">
-                            Volume {volumeParam}, Issue {issueParam}
+                       <h1 className="font-serif text-3xl font-bold text-slate-900 md:text-4xl">
+                            Volume {volumeParam}, Issue {issueParam}, {new Date().getFullYear()}
                         </h1>
                         <p className="text-sm text-slate-500">
                              In progress (Latest)
@@ -132,14 +132,44 @@ function CurrentIssueContent() {
 
             {/* Prev/Next Navigation */}
             <div className="flex items-center gap-1 self-start md:self-end bg-slate-100 p-1 rounded">
-               <button disabled className="group flex items-center gap-1 rounded px-3 py-1.5 text-xs font-medium text-slate-400 disabled:cursor-not-allowed">
+               <button 
+                  onClick={() => {
+                      // Logic: Decrement Issue. If Issue is 1, go to Prev Volume's Last Issue (simplified: just decr issue for now or handle vol change if we had total issues data)
+                      // For now, let's just decrement issue number. Real world would limit by min/max.
+                      const prevIssue = Math.max(1, parseInt(issueParam) - 1);
+                      // If we are at Issue 1, we might want to go to Volume-1. 
+                      // Let's keep it simple: Just change Issue for now. 
+                      // Ideally we'd validte against 'issues' state but that is in the other view. 
+                      // Let's just push URL.
+                      if(parseInt(issueParam) > 1) {
+                        window.location.href = `/current-issue?volume=${volumeParam}&issue=${prevIssue}`;
+                      } else if(parseInt(volumeParam) > 1) {
+                         // Go to Vol-1, Issue 4 (assuming 4 issues/vol as placeholder)
+                         window.location.href = `/current-issue?volume=${parseInt(volumeParam)-1}&issue=4`; 
+                      }
+                  }}
+                  disabled={parseInt(issueParam) <= 1 && parseInt(volumeParam) <= 1}
+                  className="group flex items-center gap-1 rounded px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-white hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition"
+                >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
                       <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                   Previous vol/issue
                </button>
                <div className="h-4 w-px bg-slate-300"></div>
-               <button disabled className="group flex items-center gap-1 rounded px-3 py-1.5 text-xs font-medium text-slate-400 disabled:cursor-not-allowed">
+               <button 
+                  onClick={() => {
+                      // Logic: Increment Issue.
+                      // If Issue > 4 (assuming max), Go to Next Vol Issue 1.
+                      const nextIssue = parseInt(issueParam) + 1;
+                      if(nextIssue > 4) { // arbitrary max for demo
+                         window.location.href = `/current-issue?volume=${parseInt(volumeParam)+1}&issue=1`;
+                      } else {
+                         window.location.href = `/current-issue?volume=${volumeParam}&issue=${nextIssue}`;
+                      }
+                  }}
+                  className="group flex items-center gap-1 rounded px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-white hover:shadow-sm transition"
+                >
                   Next vol/issue
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
                       <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
@@ -162,6 +192,8 @@ function CurrentIssueContent() {
                      {publishedArticles.map((paper, idx) => {
                          const paperId = paper._id || idx;
                          const isExpanded = expandedAbstracts[paperId];
+                         const pubDate = paper.publishedDate ? new Date(paper.publishedDate) : new Date();
+                         const dateStr = pubDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
                          
                          return (
                         <div key={paperId} className="group relative flex gap-4 border-b border-slate-100 pb-8 last:border-0 pl-4">
@@ -172,9 +204,11 @@ function CurrentIssueContent() {
                                      <span className="text-xs font-medium uppercase text-slate-500 tracking-wide">Research article</span>
                                      <span className="text-xs text-slate-400">•</span>
                                      <span className="text-xs text-slate-500">Article {paper.articleNumber || idx + 1}</span>
+                                     <span className="text-xs text-slate-400">•</span>
+                                     <span className="text-xs text-slate-500">{dateStr}</span>
                                 </div>
                                 
-                                <h3 className="font-serif text-lg font-medium text-[#007398] sm:text-xl group-hover:underline cursor-pointer">
+                                <h3 className="font-serif text-lg font-medium text-brand-teal sm:text-xl group-hover:underline cursor-pointer">
                                     {paper.title}
                                 </h3>
 
@@ -187,7 +221,7 @@ function CurrentIssueContent() {
                                 <div className="flex flex-wrap items-center gap-4 pt-2">
                                     <button 
                                       onClick={() => toggleAbstract(paperId)}
-                                      className={`flex items-center gap-1 text-xs font-medium transition ${isExpanded ? 'text-[#007398] font-bold' : 'text-slate-600 hover:text-[#007398]'}`}
+                                      className={`flex items-center gap-1 text-xs font-medium transition ${isExpanded ? 'text-brand-teal font-bold' : 'text-slate-600 hover:text-brand-teal'}`}
                                     >
                                         Abstract
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
@@ -197,22 +231,38 @@ function CurrentIssueContent() {
 
                                     
                                     {paper.pdfUrl && (
+                                       <>
                                        <a 
                                          href={paper.pdfUrl.startsWith('http') ? paper.pdfUrl : `${process.env.NEXT_PUBLIC_API_URL}${paper.pdfUrl.startsWith('/') ? '' : '/'}${paper.pdfUrl}`}
                                          target="_blank"
                                          rel="noopener noreferrer"
-                                         className="flex items-center gap-1 text-xs font-bold text-[#007398] hover:underline"
+                                         className="flex items-center gap-1 text-xs font-bold text-slate-700 hover:text-brand-teal hover:underline"
+                                       >
+                                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
+                                                <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
+                                                <path fillRule="evenodd" d="M.664 10.59a1.651 1.651 0 010-1.186A10.004 10.004 0 0110 3c4.257 0 8.201 2.602 9.336 6.41.147.492.147 1 0 1.492C18.201 14.398 14.257 17 10 17c-4.257 0-8.201-2.602-9.336-6.41zM2.501 10a7.5 7.5 0 0014.998 0A7.5 7.5 0 002.5 10z" clipRule="evenodd" />
+                                           </svg>
+                                           View PDF
+                                       </a>
+
+                                       <a 
+                                         href={paper.pdfUrl.startsWith('http') ? paper.pdfUrl : `${process.env.NEXT_PUBLIC_API_URL}${paper.pdfUrl.startsWith('/') ? '' : '/'}${paper.pdfUrl}`}
+                                         target="_blank"
+                                         rel="noopener noreferrer"
+                                         download
+                                         className="flex items-center gap-1 text-xs font-bold text-brand-teal hover:underline"
                                        >
                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
                                                 <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
                                            </svg>
                                            Download PDF
                                        </a>
+                                       </>
                                     )}
                                 </div>
 
                                 {isExpanded && (
-                                    <div className="mt-4 p-4 bg-slate-50 border-l-4 border-[#007398] text-sm text-slate-700 leading-relaxed animate-in fade-in slide-in-from-top-2 duration-300">
+                                    <div className="mt-4 p-4 bg-slate-50 border-l-4 border-brand-teal text-sm text-slate-700 leading-relaxed animate-in fade-in slide-in-from-top-2 duration-300">
                                         <h4 className="text-xs font-bold uppercase tracking-wide text-slate-500 mb-2">Abstract</h4>
                                         {paper.abstract || "No abstract available for this article."}
                                     </div>
@@ -247,7 +297,7 @@ function CurrentIssueContent() {
         {/* Latest Articles Link (Static) */}
         <div className="border-b border-slate-100 bg-slate-50/50 p-4">
              {/* This could point to the latest issue dynamically, for now just a placeholder link */}
-             <a href="#" className="text-sm font-bold text-blue-900 hover:underline">
+             <a href="#" className="text-sm font-bold text-teal-900 hover:underline">
                  Latest articles
              </a>
         </div>
@@ -265,9 +315,9 @@ function CurrentIssueContent() {
                         {/* Volume Header */}
                         <button 
                             onClick={() => toggleVolume(vol)}
-                            className={`flex w-full items-center justify-between px-4 py-4 text-left transition hover:bg-slate-50 ${isExpanded ? 'bg-blue-50/30' : ''}`}
+                            className={`flex w-full items-center justify-between px-4 py-4 text-left transition hover:bg-slate-50 ${isExpanded ? 'bg-teal-50/30' : ''}`}
                         >
-                            <span className="text-sm font-bold text-blue-900">
+                            <span className="text-sm font-bold text-teal-900">
                                 Volume {vol} {year}
                             </span>
                             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-900 text-white">
@@ -290,7 +340,7 @@ function CurrentIssueContent() {
                                     <div key={issue._id} className="border-t border-slate-100 px-4 py-3 pl-8">
                                         {/* Link to Detail View with Query Params */}
                                         <Link href={`/current-issue?volume=${issue.volume}&issue=${issue.issue}`} className="group block">
-                                            <div className="text-sm font-bold text-blue-900 group-hover:underline">
+                                            <div className="text-sm font-bold text-teal-900 group-hover:underline">
                                                 Issue {issue.issue}
                                             </div>
                                             <div className="text-xs text-slate-500">

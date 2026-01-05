@@ -430,6 +430,84 @@ export default function AdminPage() {
   const [statusUpdate, setStatusUpdate] = useState("");
   const [reviewerComments, setReviewerComments] = useState("");
 
+  // Edit Article State
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+      title: "",
+      abstract: "",
+      authors: [],
+      articleNumber: "",
+      issue: ""
+  });
+
+  const handleDeleteArticle = async (id) => {
+      if (!confirm("Are you sure you want to delete this article? This action cannot be undone.")) return;
+      
+      setActionLoading(true);
+      try {
+          const token = localStorage.getItem("token");
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${id}`, {
+              method: "DELETE",
+              headers: { Authorization: `Bearer ${token}` },
+              credentials: 'include',
+          });
+
+          if (res.ok) {
+              setToast({ message: "Article deleted successfully", type: "success" });
+              fetchArticles();
+          } else {
+              setToast({ message: "Failed to delete article", type: "error" });
+          }
+      } catch (err) {
+          console.error(err);
+          setToast({ message: "Error deleting article", type: "error" });
+      } finally {
+          setActionLoading(false);
+      }
+  };
+
+  const openEditModal = (article) => {
+      setCurrentArticle(article);
+      setEditFormData({
+          title: article.title || "",
+          abstract: article.abstract || "",
+          authors: article.authors || [], // Assuming it's already an array of objects
+          articleNumber: article.articleNumber || "",
+          issue: article.issue || ""
+      });
+      setEditModalOpen(true);
+  };
+
+  const handleEditSubmit = async (e) => {
+      e.preventDefault();
+      setActionLoading(true);
+      try {
+          const token = localStorage.getItem("token");
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${currentArticle._id}`, {
+              method: "PUT",
+              headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`
+              },
+              body: JSON.stringify(editFormData),
+              credentials: 'include',
+          });
+
+          if (res.ok) {
+              setToast({ message: "Article updated successfully", type: "success" });
+              setEditModalOpen(false);
+              fetchArticles();
+          } else {
+              setToast({ message: "Failed to update article", type: "error" });
+          }
+      } catch (err) {
+          console.error(err);
+          setToast({ message: "Error updating article", type: "error" });
+      } finally {
+          setActionLoading(false);
+      }
+  };
+
   const [sendBackModalOpen, setSendBackModalOpen] = useState(false);
   const [sendBackMessage, setSendBackMessage] = useState("");
 
@@ -827,6 +905,62 @@ export default function AdminPage() {
     );
   }
 
+  const handleRemoveReviewerFromArticle = async (articleId, reviewerId) => {
+      if(!confirm("Are you sure you want to remove this reviewer from the article?")) return;
+      
+      setActionLoading(true);
+      try {
+          const token = localStorage.getItem("token");
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${articleId}/reviewers/${reviewerId}`, {
+              method: "DELETE",
+              headers: { Authorization: `Bearer ${token}` },
+              credentials: 'include',
+          });
+
+          if (res.ok) {
+              setToast({ message: "Reviewer removed from article", type: "success" });
+              fetchArticles();
+          } else {
+              setToast({ message: "Failed to remove reviewer", type: "error" });
+          }
+      } catch (err) {
+           console.error(err);
+           setToast({ message: "Error removing reviewer", type: "error" });
+      } finally {
+          setActionLoading(false);
+      }
+  }
+
+  const handleRemoveReviewerRole = async (userId) => {
+      if(!confirm("Are you sure you want to remove this user from the Reviewers list? They will become an Author.")) return;
+
+      setActionLoading(true);
+      try {
+          const token = localStorage.getItem("token");
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${userId}/role`, {
+              method: "PUT",
+              headers: { 
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}` 
+              },
+              body: JSON.stringify({ role: 'author' }),
+              credentials: 'include',
+          });
+
+          if (res.ok) {
+              setToast({ message: "Reviewer removed from list (Role changed to Author)", type: "success" });
+              fetchReviewers(); // Refresh global list
+          } else {
+              setToast({ message: "Failed to remove reviewer role", type: "error" });
+          }
+      } catch (err) {
+           console.error(err);
+           setToast({ message: "Error updating user role", type: "error" });
+      } finally {
+          setActionLoading(false);
+      }
+  }
+
   const statuses = [
       { id: 'active', label: 'Active' },
       { id: 'submitted', label: 'Submitted' },
@@ -988,7 +1122,7 @@ export default function AdminPage() {
             <div className="space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_18px_60px_-50px_rgba(15,23,42,0.5)]">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-2">
-                    <div className="text-sm font-semibold text-slate-900">
+                    <div className="text-xl font-bold text-slate-900">
                     Manage submissions
                     </div>
                     <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold text-slate-600">
@@ -1105,9 +1239,20 @@ export default function AdminPage() {
                                            <div key={idx} className="mb-2 border-b border-slate-100 last:border-0 pb-1 last:pb-0">
                                                 <div className="flex justify-between items-center">
                                                     <span>{reviewerName}</span>
-                                                    <span className={`${statusColor} font-bold text-[10px] uppercase tracking-wider`}>
-                                                        {displayLabel}
-                                                    </span>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className={`${statusColor} font-bold text-[10px] uppercase tracking-wider`}>
+                                                            {displayLabel}
+                                                        </span>
+                                                        <button 
+                                                            onClick={() => handleRemoveReviewerFromArticle(submission._id, rev.user)}
+                                                            className="text-slate-400 hover:text-red-500"
+                                                            title="Runassign Reviewer"
+                                                        >
+                                                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                                 {rev.comments && (
                                                     <div className="mt-1 text-[10px] text-slate-600 bg-white p-1.5 rounded border border-slate-100 italic">
@@ -1147,6 +1292,8 @@ export default function AdminPage() {
                           <ActionButton label="Send back to author" onClick={() => openSendBackModal(submission)} variant="outline" />
                           <ActionButton label="Generate DOI" onClick={() => handleGenerateDOI(submission._id)} />
                           <ActionButton label="Upload final PDF" onClick={() => handleUploadClick(submission._id)} />
+                          <ActionButton label="Edit Details" onClick={() => openEditModal(submission)} />
+                          <ActionButton label="Delete" onClick={() => handleDeleteArticle(submission._id)} dark={true} />
                           
                           {submission.status !== 'published' && submission.status !== 'rejected' && (
                           <ActionButton label="Publish issue" onClick={() => {
@@ -1192,6 +1339,12 @@ export default function AdminPage() {
                     >
                       <span>{reviewer.name} ({reviewer.email})</span>
                       <span className="text-xs bg-slate-200 px-2 py-1 rounded">Reviewer</span>
+                      <button 
+                          onClick={() => handleRemoveReviewerRole(reviewer._id)}
+                          className="ml-2 text-xs text-red-500 hover:text-red-700 font-bold"
+                      >
+                          Remove
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -1676,6 +1829,92 @@ export default function AdminPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Edit Article Modal */}
+      {editModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+              <div className="w-full max-w-2xl rounded-2xl bg-white p-6 max-h-[90vh] overflow-y-auto">
+                  <h2 className="mb-4 text-xl font-bold text-slate-900">Edit Article Details</h2>
+                  <form onSubmit={handleEditSubmit} className="space-y-4">
+                      <div>
+                          <label className="block text-sm font-medium text-slate-700">Title</label>
+                          <input 
+                              type="text" 
+                              value={editFormData.title}
+                              onChange={(e) => setEditFormData({...editFormData, title: e.target.value})}
+                              className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2"
+                              required
+                          />
+                      </div>
+                      <div>
+                          <label className="block text-sm font-medium text-slate-700">Abstract</label>
+                          <textarea 
+                              rows={5}
+                              value={editFormData.abstract}
+                              onChange={(e) => setEditFormData({...editFormData, abstract: e.target.value})}
+                              className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2"
+                              required
+                          />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                          <div>
+                              <label className="block text-sm font-medium text-slate-700">Issue</label>
+                              <input 
+                                  type="text" 
+                                  value={editFormData.issue}
+                                  onChange={(e) => setEditFormData({...editFormData, issue: e.target.value})}
+                                  className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2"
+                                  placeholder="e.g. Vol 1, Issue 1"
+                              />
+                          </div>
+                          <div>
+                              <label className="block text-sm font-medium text-slate-700">Article Number</label>
+                              <input 
+                                  type="number" 
+                                  value={editFormData.articleNumber}
+                                  onChange={(e) => setEditFormData({...editFormData, articleNumber: e.target.value})}
+                                  className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2"
+                              />
+                          </div>
+                      </div>
+
+                       {/* Simplified Author Editing - mostly just to fix typos in names if stored as objects */}
+                       <div>
+                          <label className="block text-sm font-medium text-slate-700 mb-2">Authors (JSON RAW EDIT)</label>
+                          <p className="text-xs text-slate-500 mb-2">Advanced: Edit the raw JSON for authors.</p>
+                          <textarea
+                             rows={4}
+                             value={JSON.stringify(editFormData.authors, null, 2)}
+                             onChange={(e) => {
+                                 try {
+                                     setEditFormData({...editFormData, authors: JSON.parse(e.target.value)})
+                                 } catch (err) {
+                                     // allow typing invalid json temporarily
+                                 }
+                             }}
+                             className="block w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-xs bg-slate-50"
+                          />
+                       </div>
+
+                      <div className="flex justify-end gap-2 pt-4">
+                          <button 
+                              type="button"
+                              onClick={() => setEditModalOpen(false)}
+                              className="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100"
+                          >
+                              Cancel
+                          </button>
+                          <button 
+                              type="submit"
+                              className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+                          >
+                              Save Changes
+                          </button>
+                      </div>
+                  </form>
+              </div>
+          </div>
       )}
 
       {/* Author Details Modal */}
