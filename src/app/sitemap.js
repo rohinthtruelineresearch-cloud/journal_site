@@ -35,7 +35,7 @@ export default async function sitemap() {
 
     const issues = await response.json();
 
-    // Issue routes
+    // Issue routes - Note: Next.js sitemap automatically escapes & to &amp; in XML output
     const issueRoutes = Array.isArray(issues) ? issues.map((issue) => ({
       url: `${baseUrl}/current-issue?volume=${issue.volume}&issue=${issue.issue}`,
       lastModified: new Date(issue.publicationDate || new Date()),
@@ -52,6 +52,10 @@ export default async function sitemap() {
     let articleRoutes = [];
     if (articlesResponse.ok) {
       const articles = await articlesResponse.json();
+      
+      // Get unique article URLs (avoid duplicates)
+      const uniqueArticleUrls = new Set();
+      
       articleRoutes = Array.isArray(articles) 
         ? articles
             .filter(article => article.status === 'published')
@@ -61,13 +65,21 @@ export default async function sitemap() {
               const volume = volumeMatch ? volumeMatch[1] : '1';
               const issue = issueMatch ? issueMatch[1] : '1';
               
-              return {
-                url: `${baseUrl}/current-issue?volume=${volume}&issue=${issue}`,
-                lastModified: new Date(article.publishedDate || article.updatedAt || new Date()),
-                changeFrequency: 'monthly',
-                priority: 0.6,
-              };
+              const url = `${baseUrl}/current-issue?volume=${volume}&issue=${issue}`;
+              
+              // Only add if not already in the set
+              if (!uniqueArticleUrls.has(url)) {
+                uniqueArticleUrls.add(url);
+                return {
+                  url: url,
+                  lastModified: new Date(article.publishedDate || article.updatedAt || new Date()),
+                  changeFrequency: 'monthly',
+                  priority: 0.6,
+                };
+              }
+              return null;
             })
+            .filter(Boolean) // Remove null entries
         : [];
     }
 
