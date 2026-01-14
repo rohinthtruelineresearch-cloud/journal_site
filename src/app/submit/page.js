@@ -9,11 +9,6 @@ const PAPER_TYPES = [
   { id: "regular", label: "Regular Full Paper Submission", description: "" },
   { id: "research_note", label: "Research Note/Short Paper", description: "" },
   { id: "tutorial", label: "Tutorial Survey", description: "" },
-  { id: "software", label: "Software/Algorithms", description: "" },
-  { id: "addendum", label: "Addendum/Corrections", description: "" },
-  { id: "editorial", label: "Editorial", description: "Exclusively for EIC's editorial" },
-  { id: "introduction", label: "Introduction", description: "Exclusively for special issue introduction" },
-  { id: "conference", label: "Conference Extension Paper", description: "Exclusively for extension papers" },
 ];
 
 const FILE_DESIGNATIONS = [
@@ -66,6 +61,7 @@ export default function SubmitPage() {
     city: "",
     country: "",
     isCorresponding: true,
+    authorRole: "First Author", // Added for author classification
   }]);
   
   // Step 5: Reviewers
@@ -126,7 +122,19 @@ export default function SubmitPage() {
         if (invalidAuthor) { toast.error("Please complete all required author fields"); return false; }
         return true;
       case 5:
-        return true; // Optional step
+        if (suggestedReviewers.length < 2) { 
+          toast.error("Please suggest at least 2 reviewers"); 
+          return false; 
+        }
+        const invalidReviewer = suggestedReviewers.find(r => 
+          !r.name || !r.email || !r.phone || !r.designation || 
+          !r.department || !r.college || !r.university || !r.expertise || !r.country
+        );
+        if (invalidReviewer) { 
+          toast.error("Please complete all details for suggested reviewers"); 
+          return false; 
+        }
+        return true;
       case 6:
         if (!confirmPlagiarismPolicy) { toast.error("Please confirm the plagiarism policy"); return false; }
         if (!confirmPaperAccuracy) { toast.error("Please confirm the accuracy of paper information"); return false; }
@@ -201,8 +209,12 @@ export default function SubmitPage() {
   };
 
   const addAuthor = () => {
+    const orderNum = authors.length + 1;
+    const roleMap = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth'];
+    const authorRole = orderNum <= roleMap.length ? `${roleMap[orderNum - 1]} Author` : `Author ${orderNum}`;
+    
     setAuthors([...authors, {
-      order: authors.length + 1,
+      order: orderNum,
       firstName: "",
       lastName: "",
       email: "",
@@ -211,6 +223,7 @@ export default function SubmitPage() {
       city: "",
       country: "",
       isCorresponding: false,
+      authorRole: authorRole, // Auto-set role based on order
     }]);
   };
 
@@ -222,18 +235,27 @@ export default function SubmitPage() {
 
   const removeAuthor = (idx) => {
     if (authors.length > 1) {
-      const updated = authors.filter((_, i) => i !== idx).map((a, i) => ({ ...a, order: i + 1 }));
+      const roleMap = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth'];
+      const updated = authors.filter((_, i) => i !== idx).map((a, i) => ({
+        ...a,
+        order: i + 1,
+        authorRole: (i + 1) <= roleMap.length ? `${roleMap[i]} Author` : `Author ${i + 1}`,
+      }));
       setAuthors(updated);
     }
   };
 
   const moveAuthor = (idx, direction) => {
     if ((direction === -1 && idx === 0) || (direction === 1 && idx === authors.length - 1)) return;
+    const roleMap = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth'];
     const updated = [...authors];
     const temp = updated[idx];
     updated[idx] = updated[idx + direction];
     updated[idx + direction] = temp;
-    updated.forEach((a, i) => a.order = i + 1);
+    updated.forEach((a, i) => {
+      a.order = i + 1;
+      a.authorRole = (i + 1) <= roleMap.length ? `${roleMap[i]} Author` : `Author ${i + 1}`;
+    });
     setAuthors(updated);
   };
 
@@ -710,18 +732,35 @@ function Step4({ authors, addAuthor, updateAuthor, removeAuthor, moveAuthor }) {
         {authors.map((author, idx) => (
           <div key={idx} className="border border-slate-200 rounded-xl p-5 bg-slate-50/50">
             <div className="flex justify-between items-center mb-4">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 flex-wrap">
                 <div className="flex flex-col gap-1">
                   <button onClick={() => moveAuthor(idx, -1)} disabled={idx === 0} className="text-slate-400 hover:text-slate-600 disabled:opacity-30">▲</button>
                   <button onClick={() => moveAuthor(idx, 1)} disabled={idx === authors.length - 1} className="text-slate-400 hover:text-slate-600 disabled:opacity-30">▼</button>
                 </div>
                 <span className="text-sm font-semibold text-slate-700">Author {author.order}</span>
-                {author.isCorresponding && <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">Corresponding</span>}
+                {/* Display author role badge */}
+                {author.authorRole && <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">{author.authorRole}</span>}
+                {author.isCorresponding && <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-medium">✉ Corresponding</span>}
               </div>
               {authors.length > 1 && (
                 <button onClick={() => removeAuthor(idx)} className="text-red-600 hover:text-red-800 text-sm font-medium">Remove</button>
               )}
             </div>
+            
+            {/* Corresponding Author Checkbox */}
+            <div className="mb-3 flex items-center gap-2">
+              <input 
+                type="checkbox" 
+                id={`corresponding-${idx}`}
+                checked={author.isCorresponding} 
+                onChange={(e) => updateAuthor(idx, 'isCorresponding', e.target.checked)}
+                className="w-4 h-4 text-emerald-600 border-slate-300 rounded focus:ring-2 focus:ring-emerald-500"
+              />
+              <label htmlFor={`corresponding-${idx}`} className="text-sm text-slate-700 cursor-pointer">
+                Mark as Corresponding Author
+              </label>
+            </div>
+            
             <div className="grid grid-cols-2 gap-4">
               <input type="text" placeholder="First Name *" value={author.firstName} onChange={(e) => updateAuthor(idx, 'firstName', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
               <input type="text" placeholder="Last Name *" value={author.lastName} onChange={(e) => updateAuthor(idx, 'lastName', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
@@ -781,7 +820,16 @@ function Step5({ suggestedReviewers, setSuggestedReviewers, opposedReviewers, se
   const addReviewer = (type) => {
     const list = type === 'suggested' ? suggestedReviewers : opposedReviewers;
     const setList = type === 'suggested' ? setSuggestedReviewers : setOpposedReviewers;
-    setList([...list, { name: '', email: '', institution: '' }]);
+    
+    if (type === 'suggested') {
+      setList([...list, { 
+        name: '', email: '', institution: '', 
+        designation: '', department: '', college: '', 
+        university: '', phone: '', expertise: '', country: '' 
+      }]);
+    } else {
+      setList([...list, { name: '', email: '', institution: '' }]);
+    }
   };
 
   const updateReviewer = (type, idx, field, value) => {
@@ -799,36 +847,53 @@ function Step5({ suggestedReviewers, setSuggestedReviewers, opposedReviewers, se
 
   return (
     <div className="space-y-8">
-      <p className="text-sm text-slate-600">You may suggest or oppose reviewers. This is optional but helps the editorial team.</p>
-
-      <div>
-        <h3 className="text-sm font-semibold text-slate-900 mb-3">Suggested Reviewers (Optional)</h3>
-        {suggestedReviewers.map((r, idx) => (
-          <div key={idx} className="grid grid-cols-3 gap-3 mb-3">
-            <input type="text" placeholder="Name" value={r.name} onChange={(e) => updateReviewer('suggested', idx, 'name', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
-            <input type="email" placeholder="Email" value={r.email} onChange={(e) => updateReviewer('suggested', idx, 'email', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
-            <div className="flex gap-2">
-              <input type="text" placeholder="Institution" value={r.institution} onChange={(e) => updateReviewer('suggested', idx, 'institution', e.target.value)} className="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
-              <button onClick={() => removeReviewer('suggested', idx)} className="text-red-600 px-2">×</button>
-            </div>
-          </div>
-        ))}
-        <button onClick={() => addReviewer('suggested')} className="text-sky-600 text-sm font-medium hover:text-sky-800">+ Add Suggested Reviewer</button>
+      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+        <p className="text-sm text-amber-800">
+          <strong>Reviewer Requirements:</strong> You must suggest at least <strong>2 reviewers</strong>. Please provide complete details for each reviewer, including their current affiliation and area of expertise.
+        </p>
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-slate-900 mb-3">Opposed Reviewers (Optional)</h3>
-        {opposedReviewers.map((r, idx) => (
-          <div key={idx} className="grid grid-cols-3 gap-3 mb-3">
-            <input type="text" placeholder="Name" value={r.name} onChange={(e) => updateReviewer('opposed', idx, 'name', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
-            <input type="email" placeholder="Email" value={r.email} onChange={(e) => updateReviewer('opposed', idx, 'email', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
-            <div className="flex gap-2">
-              <input type="text" placeholder="Institution" value={r.institution} onChange={(e) => updateReviewer('opposed', idx, 'institution', e.target.value)} className="flex-1 px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
-              <button onClick={() => removeReviewer('opposed', idx)} className="text-red-600 px-2">×</button>
+        <h3 className="text-sm font-semibold text-slate-900 mb-3">Suggested Reviewers <span className="text-red-500">* (Min. 2 Required)</span></h3>
+        {suggestedReviewers.map((r, idx) => (
+          <div key={idx} className="border border-slate-200 rounded-xl p-5 mb-4 bg-slate-50/50">
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-sm font-bold text-slate-700">Reviewer {idx + 1}</span>
+              <button onClick={() => removeReviewer('suggested', idx)} className="text-red-600 hover:text-red-800 text-sm font-medium">Remove</button>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input type="text" placeholder="Full Name *" value={r.name} onChange={(e) => updateReviewer('suggested', idx, 'name', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
+              <input type="text" placeholder="Designation *" value={r.designation} onChange={(e) => updateReviewer('suggested', idx, 'designation', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
+              
+              <input type="text" placeholder="Department *" value={r.department} onChange={(e) => updateReviewer('suggested', idx, 'department', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
+              <input type="text" placeholder="College Name *" value={r.college} onChange={(e) => updateReviewer('suggested', idx, 'college', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
+              
+              <input type="text" placeholder="University *" value={r.university} onChange={(e) => updateReviewer('suggested', idx, 'university', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
+              <input type="text" placeholder="Affiliation/Institution *" value={r.institution} onChange={(e) => updateReviewer('suggested', idx, 'institution', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
+              
+              <input type="text" placeholder="Phone Number *" value={r.phone} onChange={(e) => updateReviewer('suggested', idx, 'phone', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
+              <input type="email" placeholder="Email ID *" value={r.email} onChange={(e) => updateReviewer('suggested', idx, 'email', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
+              
+              <input type="text" placeholder="Country *" value={r.country} onChange={(e) => updateReviewer('suggested', idx, 'country', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
+              <input type="text" placeholder="Area of Interest & Expertise *" value={r.expertise} onChange={(e) => updateReviewer('suggested', idx, 'expertise', e.target.value)} className="md:col-span-2 px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
             </div>
           </div>
         ))}
-        <button onClick={() => addReviewer('opposed')} className="text-sky-600 text-sm font-medium hover:text-sky-800">+ Add Opposed Reviewer</button>
+        <button onClick={() => addReviewer('suggested')} className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-emerald-600 font-medium hover:border-emerald-400 hover:bg-emerald-50 transition">+ Add Suggested Reviewer</button>
+      </div>
+
+      <div className="pt-6 border-t border-slate-200">
+        <h3 className="text-sm font-semibold text-slate-900 mb-3">Opposed Reviewers (Optional)</h3>
+        {opposedReviewers.map((r, idx) => (
+          <div key={idx} className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3 p-4 border border-slate-200 rounded-xl bg-slate-50/50 relative">
+             <button onClick={() => removeReviewer('opposed', idx)} className="absolute top-2 right-2 text-red-600 hover:text-red-800 text-lg leading-none">×</button>
+            <input type="text" placeholder="Name" value={r.name} onChange={(e) => updateReviewer('opposed', idx, 'name', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
+            <input type="email" placeholder="Email" value={r.email} onChange={(e) => updateReviewer('opposed', idx, 'email', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
+            <input type="text" placeholder="Institution" value={r.institution} onChange={(e) => updateReviewer('opposed', idx, 'institution', e.target.value)} className="px-4 py-2.5 border border-slate-300 rounded-lg text-sm" />
+          </div>
+        ))}
+        <button onClick={() => addReviewer('opposed')} className="text-slate-500 text-sm font-medium hover:text-slate-700 underline decoration-slate-300 underline-offset-4">+ Add Opposed Reviewer</button>
       </div>
     </div>
   );
@@ -879,7 +944,7 @@ function Step6({
               onChange={(e) => setCoverLetterText(e.target.value)}
               rows={6}
               maxLength={32768}
-              className="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-sky-500"
+              className="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500"
               placeholder="Enter your cover letter here..."
             />
             <span className="absolute bottom-2 right-3 text-xs text-slate-400">{coverLetterText.length} OUT OF 32768 CHARACTERS</span>
@@ -913,11 +978,11 @@ function Step6({
           </label>
           <div className="flex gap-6">
             <label className="flex items-center gap-2 cursor-pointer">
-              <input type="radio" name="hasFunding" checked={hasFunding === true} onChange={() => setHasFunding(true)} className="w-4 h-4 text-sky-600" />
+              <input type="radio" name="hasFunding" checked={hasFunding === true} onChange={() => setHasFunding(true)} className="w-4 h-4 text-emerald-600" />
               <span className="text-sm text-slate-700">Yes</span>
             </label>
             <label className="flex items-center gap-2 cursor-pointer">
-              <input type="radio" name="hasFunding" checked={hasFunding === false} onChange={() => setHasFunding(false)} className="w-4 h-4 text-sky-600" />
+              <input type="radio" name="hasFunding" checked={hasFunding === false} onChange={() => setHasFunding(false)} className="w-4 h-4 text-emerald-600" />
               <span className="text-sm text-slate-700">No</span>
             </label>
           </div>
@@ -967,11 +1032,11 @@ function Step6({
         </label>
         <div className="flex gap-6 mb-3">
           <label className="flex items-center gap-2 cursor-pointer">
-            <input type="radio" name="conferenceAccepted" checked={wasConferenceAccepted === true} onChange={() => setWasConferenceAccepted(true)} className="w-4 h-4 text-sky-600" />
+            <input type="radio" name="conferenceAccepted" checked={wasConferenceAccepted === true} onChange={() => setWasConferenceAccepted(true)} className="w-4 h-4 text-emerald-600" />
             <span className="text-sm text-slate-700">Yes</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
-            <input type="radio" name="conferenceAccepted" checked={wasConferenceAccepted === false} onChange={() => setWasConferenceAccepted(false)} className="w-4 h-4 text-sky-600" />
+            <input type="radio" name="conferenceAccepted" checked={wasConferenceAccepted === false} onChange={() => setWasConferenceAccepted(false)} className="w-4 h-4 text-emerald-600" />
             <span className="text-sm text-slate-700">No</span>
           </label>
         </div>
@@ -982,7 +1047,7 @@ function Step6({
               type="text"
               value={conferenceName}
               onChange={(e) => setConferenceName(e.target.value)}
-              className="w-full max-w-md px-4 py-3 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-sky-500"
+              className="w-full max-w-md px-4 py-3 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500"
               placeholder="Conference name"
             />
             <p className="mt-2 text-xs text-amber-600 bg-amber-50 p-3 rounded-lg">
@@ -997,11 +1062,11 @@ function Step6({
         <label className="block text-sm font-semibold text-slate-900 mb-3">Do you have electronic supplementary materials?</label>
         <div className="flex gap-6">
           <label className="flex items-center gap-2 cursor-pointer">
-            <input type="radio" name="supplementary" checked={hasSupplementaryMaterials === true} onChange={() => setHasSupplementaryMaterials(true)} className="w-4 h-4 text-sky-600" />
+            <input type="radio" name="supplementary" checked={hasSupplementaryMaterials === true} onChange={() => setHasSupplementaryMaterials(true)} className="w-4 h-4 text-emerald-600" />
             <span className="text-sm text-slate-700">Yes</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
-            <input type="radio" name="supplementary" checked={hasSupplementaryMaterials === false} onChange={() => setHasSupplementaryMaterials(false)} className="w-4 h-4 text-sky-600" />
+            <input type="radio" name="supplementary" checked={hasSupplementaryMaterials === false} onChange={() => setHasSupplementaryMaterials(false)} className="w-4 h-4 text-emerald-600" />
             <span className="text-sm text-slate-700">No</span>
           </label>
         </div>
@@ -1013,7 +1078,7 @@ function Step6({
           <span className="text-red-500">*</span> Plagiarism Policy
         </label>
         <label className="flex items-start gap-3 p-4 border border-slate-200 rounded-xl hover:bg-slate-50 cursor-pointer">
-          <input type="checkbox" checked={confirmPlagiarismPolicy} onChange={(e) => setConfirmPlagiarismPolicy(e.target.checked)} className="mt-1 w-4 h-4 text-sky-600" />
+          <input type="checkbox" checked={confirmPlagiarismPolicy} onChange={(e) => setConfirmPlagiarismPolicy(e.target.checked)} className="mt-1 w-4 h-4 text-emerald-600" />
           <span className="text-sm text-slate-700">
             <span className="text-red-500">*</span> The journal uses automated plagiarism checking services. Any submission is subject to such a check. Confirm that you are familiar with the journal's Plagiarism Policy.
           </span>
@@ -1029,7 +1094,7 @@ function Step6({
           </p>
         </div>
         <label className="flex items-start gap-3 p-4 border border-slate-200 rounded-xl hover:bg-slate-50 cursor-pointer">
-          <input type="checkbox" checked={confirmPaperAccuracy} onChange={(e) => setConfirmPaperAccuracy(e.target.checked)} className="mt-1 w-4 h-4 text-sky-600" />
+          <input type="checkbox" checked={confirmPaperAccuracy} onChange={(e) => setConfirmPaperAccuracy(e.target.checked)} className="mt-1 w-4 h-4 text-emerald-600" />
           <span className="text-sm text-slate-700">
             <span className="text-red-500">*</span> To confirm that you have reviewed all title, author, and affiliation information in the submission form and the manuscript for accuracy, and approve its exact use in the final, published article, please check the box to the right.
           </span>
@@ -1143,7 +1208,7 @@ function Step7({
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold text-sky-700"><span className="text-red-500">*</span> Verify Step Information</h2>
+      <h2 className="text-xl font-bold text-emerald-700"><span className="text-red-500">*</span> Verify Step Information</h2>
 
       {/* Step 1 Summary */}
       <StepSummary stepNum={1} stepTitle="Type, Title, & Abstract">
@@ -1151,7 +1216,7 @@ function Step7({
         <Row label="Title" value={title} />
         <Row label="Abstract" value={
           abstract.length > 200 
-            ? <><span>{abstract.slice(0, 200)}...</span> <button className="text-sky-600 text-xs">More...</button></>
+            ? <><span>{abstract.slice(0, 200)}...</span> <button className="text-emerald-600 text-xs">More...</button></>
             : abstract
         } />
       </StepSummary>
@@ -1159,7 +1224,7 @@ function Step7({
       {/* Step 2 Summary */}
       <StepSummary stepNum={2} stepTitle="File Upload">
         {files.map((f, i) => (
-          <Row key={i} label={`File ${i + 1}`} value={<a href="#" className="text-sky-600 hover:underline">{f.name}</a>} />
+          <Row key={i} label={`File ${i + 1}`} value={<a href="#" className="text-emerald-600 hover:underline">{f.name}</a>} />
         ))}
         {files.length === 0 && <Row label="Files" value="No files uploaded" />}
       </StepSummary>
@@ -1181,7 +1246,7 @@ function Step7({
           <Row key={i} label={`Author ${i + 1}`} value={
             <div>
               <div className="font-medium">{a.firstName} {a.lastName}</div>
-              <div className="text-sky-600">{a.email}</div>
+              <div className="text-emerald-600">{a.email}</div>
               {a.orcid && <div className="text-slate-500 flex items-center gap-1"><span className="text-emerald-600">ℹ</span> {a.orcid} ✓</div>}
               <div className="text-slate-600 mt-1">{a.institution}{a.city && `, ${a.city}`}{a.country && `, ${a.country}`}</div>
             </div>
@@ -1263,8 +1328,8 @@ function Step7({
       {/* Become a Reviewer Section */}
       <div className="border-t border-slate-200 pt-6">
         <h4 className="text-sm font-semibold text-slate-900 mb-3">CONTRIBUTION OPPORTUNITY:</h4>
-        <div className="bg-sky-50 border border-sky-100 rounded-xl p-4 mb-4">
-          <p className="text-sm text-sky-800 italic">
+        <div className="bg-emerald-50 border border-sky-100 rounded-xl p-4 mb-4">
+          <p className="text-sm text-emerald-800 italic">
             "Your expertise is valuable to our community. By becoming a reviewer, you help maintain the high standards of our journal and stay at the forefront of research in your field."
           </p>
         </div>
@@ -1273,14 +1338,14 @@ function Step7({
             type="checkbox" 
             checked={wantsReviewerRole} 
             onChange={(e) => setWantsReviewerRole(e.target.checked)} 
-            className="mt-1 w-4 h-4 text-sky-600 rounded focus:ring-sky-500" 
+            className="mt-1 w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500" 
           />
           <div className="flex flex-col">
-            <span className="text-sm font-semibold text-slate-900 group-hover:text-sky-700 transition-colors">
+            <span className="text-sm font-semibold text-slate-900 group-hover:text-emerald-700 transition-colors">
               I wish to become a reviewer for this journal.
             </span>
             <span className="text-xs text-slate-500 mt-1">
-              By checking this box, your account will be upgraded to the Reviewer role upon successful submission.
+              By checking this box, your account will be upgraded to the Reviewer role upon successful submission. (Faculty only, not eligible for students)
             </span>
           </div>
         </label>
@@ -1288,7 +1353,7 @@ function Step7({
 
       {/* View Proof Section */}
       <div className="border-t border-slate-200 pt-6">
-        <h3 className="text-xl font-bold text-sky-700 mb-4"><span className="text-red-500">*</span> View Proof</h3>
+        <h3 className="text-xl font-bold text-emerald-700 mb-4"><span className="text-red-500">*</span> View Proof</h3>
         <p className="text-sm text-slate-700 mb-4">You must view the PDF proof before you can submit</p>
         <div className="flex gap-3">
           <button
@@ -1297,7 +1362,7 @@ function Step7({
             className={`px-6 py-3 rounded-lg text-sm font-semibold transition flex items-center gap-2 ${
               hasViewedProof 
                 ? 'bg-emerald-600 text-white hover:bg-emerald-700' 
-                : 'bg-sky-600 text-white hover:bg-sky-700'
+                : 'bg-emerald-600 text-white hover:bg-emerald-700'
             }`}
           >
             {previewLoading ? (
@@ -1362,13 +1427,13 @@ function Step7({
                   <div className="space-y-2">
                     {files.map((f, i) => (
                       <div key={i} className="flex items-start gap-2 group cursor-pointer">
-                        <span className="text-sky-600 mt-1">
+                        <span className="text-emerald-600 mt-1">
                           <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
                             <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
                           </svg>
                         </span>
-                        <span className="text-[11px] text-slate-700 group-hover:text-sky-700 group-hover:underline break-all">
+                        <span className="text-[11px] text-slate-700 group-hover:text-emerald-700 group-hover:underline break-all">
                           {f.name}
                         </span>
                       </div>
@@ -1381,13 +1446,13 @@ function Step7({
                     Other
                   </h3>
                   <div className="flex items-start gap-2 group cursor-pointer">
-                    <span className="text-sky-600 mt-1">
+                    <span className="text-emerald-600 mt-1">
                       <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
                         <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
                       </svg>
                     </span>
-                    <span className="text-[11px] text-slate-700 group-hover:text-sky-700 group-hover:underline">
+                    <span className="text-[11px] text-slate-700 group-hover:text-emerald-700 group-hover:underline">
                       Cover & Metadata
                     </span>
                   </div>

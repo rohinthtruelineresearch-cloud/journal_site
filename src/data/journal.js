@@ -3,12 +3,12 @@ export const journalInfo = {
   shortTitle: "JAEID",
   issn: "Under process",
   doiPrefix: "Under process",
-  frequency: "Bimonthly (Six issues in a year)",
+  frequency: "Monthly (Twelve issues in a year)",
   description:
-    "An international, peer-reviewed scholarly publication dedicated to advancing research in Artificial Intelligence (AI) and its transformative role across Science, Engineering, Technology, and Society.",
+    "An International, Peer-Reviewed Scholarly Publication Dedicated to Advancing Research in Artificial Intelligence (AI) and Its Transformative Role Across Science, Engineering, Technology, and Society.",
   tagline: "Bridging Theory and Application in the Age of AI.",
   aboutFull: [
-    "The journal is an international, peer-reviewed scholarly publication dedicated to advancing research in Artificial Intelligence (AI) and its transformative role across Science, Engineering, Technology, and Society. As AI rapidly becomes a foundational driver of innovation, discovery, and decision-making, the journal provides a high-quality academic platform for publishing original research that contributes to both theoretical advancement and practical implementation of intelligent systems. The journal aims to support and promote interdisciplinary and cross-sector research, recognizing that many of today’s global challenges require AI-driven solutions that transcend traditional disciplinary boundaries.",
+    "The journal is an International, Peer-Reviewed Scholarly Publication Dedicated to Advancing Research in Artificial Intelligence (AI) and Its Transformative Role Across Science, Engineering, Technology, and Society. As AI rapidly becomes a foundational driver of innovation, discovery, and decision-making, the journal provides a high-quality academic platform for publishing original research that contributes to both theoretical advancement and practical implementation of intelligent systems. The journal aims to support and promote interdisciplinary and cross-sector research, recognizing that many of today’s global challenges require AI-driven solutions that transcend traditional disciplinary boundaries.",
     "A defining characteristic of the journal is its strong commitment to ethical, responsible, and transparent AI research. In addition to technical excellence, the journal promotes studies addressing explainability, fairness, accountability, robustness, and governance of AI systems. Research that examines the societal, legal, and ethical implications of AI deployment is considered essential to ensuring that technological progress aligns with human values and public interest.",
   ],
   aims: [
@@ -64,7 +64,7 @@ export const journalInfo = {
     { title: "Editorial Desk Check", detail: "Same day of submission" },
     { title: "Double-blind Review", detail: "Completed within 15 days" },
     { title: "Author Revision", detail: "1-2 weeks window" },
-    { title: "DOI & Publication", detail: "Online within 72h of acceptance" },
+    { title: "DOI & Publication", detail: "Online within 72 hours of acceptance" },
   ],
   policies: {
     peerReview: {
@@ -180,10 +180,10 @@ export const paymentInfo = {
 
 export const contactInfo = {
   email: "editor@jaeid.com",
-  support: "Dr. V. Nagaraj: +91 9578873583 / Dr. Ragul Sambath: +91 99521 24414",
+  support: "9578873583",
   whatsapp: "+91 9578873583",
   whatsappNote: "WhatsApp only",
-  address: "Building No. 7/232-19, Devi Towers, Kalipatti Privu Road, Vaikuntham, Sankari, Salem, Tamil Nadu – 637103.",
+  address: "Trueline Publisher , Building No. 7/232-19, Devi Towers, Kalipatti Privu Road, Vaikuntham, Sankari, Salem, Tamil Nadu – 637103.",
   officeHours: "09:00-18:00 IST, Monday-Saturday",
 };
 

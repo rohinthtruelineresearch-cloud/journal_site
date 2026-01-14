@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { journalInfo, editorialBoard, reviewerPool, contactInfo } from "@/data/journal";
+import { journalInfo, editorialBoard, contactInfo } from "@/data/journal";
 
 export default function AboutPage() {
   return (
@@ -7,23 +7,23 @@ export default function AboutPage() {
       {/* Hero Section - About Page */}
       <section className="rounded-2xl sm:rounded-3xl border border-slate-200 bg-white p-5 sm:p-6 md:p-8 lg:p-12 shadow-[0_25px_70px_-38px_rgba(15,23,42,0.35)]">
         <div className="space-y-3 sm:space-y-4">
-          <div className="inline-flex items-center gap-2 rounded-full bg-sky-100 px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.12em] text-sky-700">
+          <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.12em] text-emerald-700">
             About the Journal
           </div>
           <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-slate-900 leading-tight">
             {journalInfo.title}
           </h1>
-          <p className="max-w-3xl text-base sm:text-lg text-slate-600">
+          <p className="max-w-3xl text-base sm:text-lg text-black">
             {journalInfo.description}
           </p>
-          <p className="max-w-3xl text-sm sm:text-base text-slate-600">
+          <p className="max-w-3xl text-sm sm:text-base text-black">
             {journalInfo.tagline}
           </p>
         </div>
 
         <div className="mt-6 sm:mt-8 grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
           <div className="rounded-xl sm:rounded-2xl border border-slate-200 bg-slate-50/80 p-4 sm:p-5">
-            <div className="text-xs uppercase tracking-[0.18em] text-slate-500">
+            <div className="text-xs uppercase tracking-[0.18em] text-slate-700">
               ISSN
             </div>
             <div className="mt-2 text-sm font-semibold text-slate-900">
@@ -31,7 +31,7 @@ export default function AboutPage() {
             </div>
           </div>
           <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-5">
-            <div className="text-xs uppercase tracking-[0.18em] text-slate-500">
+            <div className="text-xs uppercase tracking-[0.18em] text-slate-700">
               DOI Prefix
             </div>
             <div className="mt-2 text-sm font-semibold text-slate-900">
@@ -39,7 +39,7 @@ export default function AboutPage() {
             </div>
           </div>
           <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-5">
-            <div className="text-xs uppercase tracking-[0.18em] text-slate-500">
+            <div className="text-xs uppercase tracking-[0.18em] text-slate-700">
               Frequency
             </div>
             <div className="mt-2 text-sm font-semibold text-slate-900">
@@ -56,7 +56,7 @@ export default function AboutPage() {
         </h2>
         <div className="mt-4 space-y-4">
           {journalInfo.aboutFull.map((paragraph, index) => (
-            <p key={index} className="text-sm sm:text-base text-slate-600 leading-relaxed">
+            <p key={index} className="text-sm sm:text-base text-black leading-relaxed">
               {paragraph}
             </p>
           ))}
@@ -68,8 +68,8 @@ export default function AboutPage() {
             <h3 className="text-lg font-semibold text-slate-900 border-b border-slate-200 pb-3 mb-4">Aim</h3>
             <ul className="space-y-3">
               {journalInfo.aims.map((aim, i) => (
-                <li key={i} className="flex items-start gap-3 text-sm text-slate-600">
-                  <div className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-sky-600" />
+                <li key={i} className="flex items-start gap-3 text-sm text-black">
+                  <div className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-600" />
                   {aim}
                 </li>
               ))}
@@ -80,7 +80,7 @@ export default function AboutPage() {
             <h3 className="text-lg font-semibold text-slate-900 border-b border-slate-200 pb-3 mb-4">Objectives</h3>
             <ul className="space-y-3">
               {journalInfo.objectives.map((obj, i) => (
-                <li key={i} className="flex items-start gap-3 text-sm text-slate-600">
+                <li key={i} className="flex items-start gap-3 text-sm text-black">
                   <div className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-600" />
                   {obj}
                 </li>
@@ -99,12 +99,12 @@ export default function AboutPage() {
                 key={section.category}
                 className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
               >
-                <h3 className="text-base font-semibold text-slate-900 mb-4 text-sky-700">
+                <h3 className="text-base font-semibold text-slate-900 mb-4 text-emerald-700">
                   {section.category}
                 </h3>
                 <ul className="space-y-2">
                   {section.topics.map((topic) => (
-                    <li key={topic} className="text-sm text-slate-600 flex items-center gap-2">
+                    <li key={topic} className="text-sm text-black flex items-center gap-2">
                       <span className="text-slate-300">•</span>
                       {topic}
                     </li>
@@ -113,7 +113,7 @@ export default function AboutPage() {
               </div>
             ))}
           </div>
-          <div className="mt-6 p-4 rounded-xl bg-sky-50 border border-sky-100 text-sm italic text-sky-800">
+          <div className="mt-6 p-4 rounded-xl bg-emerald-50 border border-sky-100 text-sm italic text-emerald-800">
             {journalInfo.scopeNote}
           </div>
         </div>
@@ -129,12 +129,30 @@ export default function AboutPage() {
             {editorialBoard.filter(m => m.role === "Editor-in-Chief").map((m) => (
               <div key={m.name} className="p-6 rounded-2xl bg-slate-50 border border-slate-200">
                 <div className="text-lg font-bold text-slate-900">{m.name}</div>
-                <div className="text-sky-600 font-semibold text-xs uppercase tracking-widest mt-1">{m.role}</div>
-                <div className="text-sm text-slate-500 mt-2 font-medium">{m.affiliation}</div>
-                {m.bio && <p className="mt-4 text-sm text-slate-600 leading-relaxed italic border-l-2 border-sky-500 pl-4">{m.bio}</p>}
-                <div className="mt-4 inline-block text-xs font-semibold text-slate-400">Email: {m.email}</div>
+                <div className="text-emerald-600 font-semibold text-xs uppercase tracking-widest mt-1">{m.role}</div>
+                <div className="text-sm text-slate-700 mt-2 font-medium">{m.affiliation}</div>
+                {m.bio && <p className="mt-4 text-sm text-black leading-relaxed italic border-l-2 border-sky-500 pl-4">{m.bio}</p>}
+                <div className="mt-4 inline-block text-xs font-semibold text-slate-700">Email: {m.email}</div>
               </div>
             ))}
+          </div>
+
+          <div className="mt-10 grid gap-8 md:grid-cols-2">
+            <div>
+              <h3 className="text-lg font-bold text-slate-900 mb-4 font-serif">Associate Editors</h3>
+              <div className="h-48 rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center text-center p-6">
+                <div className="text-emerald-600 font-bold uppercase tracking-widest text-xs mb-2">Coming Soon</div>
+                <p className="text-slate-700 text-sm">We are currently finalizing our board of Associate Editors.</p>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-bold text-slate-900 mb-4 font-serif">Reviewers</h3>
+              <div className="h-48 rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center text-center p-6">
+                <div className="text-emerald-600 font-bold uppercase tracking-widest text-xs mb-2">Coming Soon</div>
+                <p className="text-slate-700 text-sm">Our application portal for Reviewers is now open.</p>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -180,12 +198,12 @@ export default function AboutPage() {
 
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-4 p-6 rounded-2xl bg-slate-50 border border-slate-200">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-sky-700">Peer Review Policy</h3>
-            <p className="text-sm text-slate-600">{journalInfo.policies.peerReview.description}</p>
+            <h3 className="text-sm font-bold uppercase tracking-widest text-emerald-700">Peer Review Policy</h3>
+            <p className="text-sm text-black">{journalInfo.policies.peerReview.description}</p>
             <div className="space-y-2 border-t border-slate-200 pt-4 mt-4">
               {journalInfo.policies.peerReview.timeline.map(t => (
                 <div key={t.stage} className="flex justify-between text-xs">
-                  <span className="text-slate-500 font-medium">{t.stage}:</span>
+                  <span className="text-slate-700 font-medium">{t.stage}:</span>
                   <span className="font-bold text-slate-900">{t.period}</span>
                 </div>
               ))}
@@ -193,11 +211,11 @@ export default function AboutPage() {
           </div>
 
           <div className="space-y-4 p-6 rounded-2xl bg-slate-50 border border-slate-200">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-sky-700">Ethics & Responsibilities</h3>
+            <h3 className="text-sm font-bold uppercase tracking-widest text-emerald-700">Ethics & Responsibilities</h3>
             <ul className="space-y-2">
               {journalInfo.policies.ethics.map(e => (
-                <li key={e} className="text-xs text-slate-600 flex gap-2">
-                  <span className="text-sky-500">•</span> {e}
+                <li key={e} className="text-xs text-black flex gap-2">
+                  <span className="text-emerald-500">•</span> {e}
                 </li>
               ))}
             </ul>
@@ -207,15 +225,15 @@ export default function AboutPage() {
         <div className="grid gap-4 md:grid-cols-3 mt-6">
           <div className="p-4 rounded-xl border border-slate-100 bg-white shadow-sm">
             <h4 className="text-xs font-bold text-slate-400 uppercase mb-2">Plagiarism</h4>
-            <div className="text-sm text-slate-700">Similarity index must be <strong>below 15%</strong>. Screening is mandatory.</div>
+            <div className="text-sm text-black">Similarity index must be <strong>below 15%</strong>. Screening is mandatory.</div>
           </div>
           <div className="p-4 rounded-xl border border-slate-100 bg-white shadow-sm">
             <h4 className="text-xs font-bold text-slate-400 uppercase mb-2">AI Usage</h4>
-            <div className="text-sm text-slate-700">{journalInfo.policies.aiUsage}</div>
+            <div className="text-sm text-black">{journalInfo.policies.aiUsage}</div>
           </div>
           <div className="p-4 rounded-xl border border-slate-100 bg-white shadow-sm">
             <h4 className="text-xs font-bold text-slate-400 uppercase mb-2">Copyright</h4>
-            <div className="text-sm text-slate-700">{journalInfo.policies.copyright}</div>
+            <div className="text-sm text-black">{journalInfo.policies.copyright}</div>
           </div>
         </div>
       </section>
@@ -225,7 +243,7 @@ export default function AboutPage() {
         <h2 className="text-xl sm:text-2xl font-semibold text-slate-900">
           Indexing & Recognition
         </h2>
-        <p className="mt-1.5 sm:mt-2 text-sm sm:text-base text-slate-600">
+        <p className="mt-1.5 sm:mt-2 text-sm sm:text-base text-black">
           Our journal is indexed and recognized by leading academic databases and services.
         </p>
 
@@ -233,7 +251,7 @@ export default function AboutPage() {
           {journalInfo.indexingBadges.map((badge) => (
             <span
               key={badge}
-              className="rounded-full border border-slate-200 bg-slate-50 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-slate-700"
+              className="rounded-full border border-slate-200 bg-slate-50 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-black"
             >
               {badge}
             </span>
@@ -242,31 +260,31 @@ export default function AboutPage() {
       </section>
 
       {/* Contact Information - Light Theme Refresh */}
-      <section className="rounded-2xl sm:rounded-3xl border border-sky-100 bg-sky-50 p-5 sm:p-6 md:p-8 lg:p-10 shadow-xl relative overflow-hidden">
+      <section className="rounded-2xl sm:rounded-3xl border border-sky-100 bg-emerald-50 p-5 sm:p-6 md:p-8 lg:p-10 shadow-xl relative overflow-hidden">
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-sky-200/20 rounded-full blur-3xl -mb-48 -mr-48" />
         <div className="relative z-10">
           <h2 className="text-2xl font-semibold font-serif text-slate-900">Get in Touch</h2>
-          <p className="mt-2 text-slate-600">For inquiries regarding submissions, editorial roles, or general support.</p>
+          <p className="mt-2 text-black">For inquiries regarding submissions, editorial roles, or general support.</p>
 
           <div className="mt-8 grid gap-8 md:grid-cols-3">
             <div className="space-y-1">
-              <div className="text-[10px] uppercase tracking-widest text-sky-600 font-bold">Email</div>
-              <a href={`mailto:${contactInfo.email}`} className="text-lg font-bold text-slate-900 hover:text-sky-600 transition-colors underline decoration-sky-200 underline-offset-4">{contactInfo.email}</a>
+              <div className="text-[10px] uppercase tracking-widest text-emerald-600 font-bold">Email</div>
+              <a href={`mailto:${contactInfo.email}`} className="text-lg font-bold text-slate-900 hover:text-emerald-600 transition-colors underline decoration-emerald-200 underline-offset-4">{contactInfo.email}</a>
             </div>
             <div className="space-y-1">
-              <div className="text-[10px] uppercase tracking-widest text-sky-600 font-bold">WhatsApp Support</div>
+              <div className="text-[10px] uppercase tracking-widest text-emerald-600 font-bold">WhatsApp Support</div>
               <div className="text-lg font-bold text-slate-900">{contactInfo.whatsapp}</div>
               <div className="text-[10px] text-emerald-600 font-bold italic">{contactInfo.whatsappNote}</div>
             </div>
             <div className="space-y-1">
-              <div className="text-[10px] uppercase tracking-widest text-sky-600 font-bold">Office Hours</div>
+              <div className="text-[10px] uppercase tracking-widest text-emerald-600 font-bold">Office Hours</div>
               <div className="text-lg font-bold text-slate-900">{contactInfo.officeHours}</div>
             </div>
           </div>
 
           <div className="mt-8 pt-8 border-t border-sky-100">
-            <div className="text-[10px] uppercase tracking-widest text-sky-600 font-bold mb-2">Main Office Address</div>
-            <p className="text-slate-700 max-w-xl font-medium leading-relaxed">{contactInfo.address}</p>
+            <div className="text-[10px] uppercase tracking-widest text-emerald-600 font-bold mb-2">Main Office Address</div>
+            <p className="text-black max-w-xl font-medium leading-relaxed">{contactInfo.address}</p>
           </div>
 
           <div className="mt-10 flex flex-wrap gap-4">

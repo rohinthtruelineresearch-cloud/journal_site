@@ -174,7 +174,7 @@ function AuthorPageContent() {
                         placeholder="Search submissions, ID, authors..." 
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full rounded-md border border-slate-300 py-2 pl-3 pr-10 text-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                        className="w-full rounded-md border border-slate-300 py-2 pl-3 pr-10 text-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                      />
                       <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                         <svg className="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

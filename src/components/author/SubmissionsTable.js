@@ -15,19 +15,19 @@ export default function SubmissionsTable({ articles }) {
         <table className="min-w-full divide-y divide-slate-200">
           <thead className="bg-slate-50">
             <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-sky-600 uppercase tracking-wider w-16">
+              <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-emerald-600 uppercase tracking-wider w-16">
                 ID <span className="text-slate-400">⇅</span>
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-sky-600 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-emerald-600 uppercase tracking-wider">
                 Submissions
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-sky-600 uppercase tracking-wider w-40">
+              <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-emerald-600 uppercase tracking-wider w-40">
                 Stage
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-sky-600 uppercase tracking-wider w-40">
+              <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-emerald-600 uppercase tracking-wider w-40">
                 Editorial Activity
               </th>
-              <th scope="col" className="px-6 py-3 text-right text-xs font-semibold text-sky-600 uppercase tracking-wider w-24">
+              <th scope="col" className="px-6 py-3 text-right text-xs font-semibold text-emerald-600 uppercase tracking-wider w-24">
                 Actions
               </th>
             </tr>
@@ -71,7 +71,7 @@ export default function SubmissionsTable({ articles }) {
                   {/* Placeholder for activity */}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <Link href={`/author/submission/${article._id}`} className="text-sky-600 hover:text-sky-800 hover:underline">
+                  <Link href={`/author/submission/${article._id}`} className="text-emerald-600 hover:text-emerald-800 hover:underline">
                     View
                   </Link>
                 </td>

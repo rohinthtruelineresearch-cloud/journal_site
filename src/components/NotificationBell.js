@@ -200,7 +200,7 @@ export default function NotificationBell() {
             {unreadCount > 0 && (
               <button
                 onClick={markAllAsRead}
-                className="text-xs text-sky-600 hover:text-sky-800 font-medium"
+                className="text-xs text-emerald-600 hover:text-emerald-800 font-medium"
               >
                 Mark all as read
               </button>
@@ -233,7 +233,7 @@ export default function NotificationBell() {
                       if (notification.link) window.location.href = notification.link;
                   }}
                   className={`flex gap-3 p-4 border-b border-slate-100 cursor-pointer transition hover:bg-slate-50 ${
-                    !notification.isRead ? 'bg-sky-50/50' : ''
+                    !notification.isRead ? 'bg-emerald-50/50' : ''
                   }`}
                 >
                   {/* Type Icon */}
@@ -248,7 +248,7 @@ export default function NotificationBell() {
                         {notification.title}
                       </p>
                       {!notification.isRead && (
-                        <span className="flex-shrink-0 w-2 h-2 rounded-full bg-sky-500 mt-1.5"></span>
+                        <span className="flex-shrink-0 w-2 h-2 rounded-full bg-emerald-500 mt-1.5"></span>
                       )}
                     </div>
                     <p className="text-sm text-slate-600 line-clamp-2 mt-0.5">

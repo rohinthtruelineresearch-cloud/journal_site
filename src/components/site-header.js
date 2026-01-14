@@ -84,7 +84,14 @@ export function SiteHeader() {
         }
       } catch (error) {
          // Network error - keep optimistic state if possible
-         console.error("[Header] Auth check network failed", error);
+         // Only log if it's truly a network issue, not just "no user logged in"
+         if (error.message !== 'Failed to fetch') {
+            console.error("[Header] Auth check failed:", error.message);
+         }
+         // If fetch fails and we have no user, just silently continue
+         if (!userStr) {
+            setUser(null);
+         }
       }
     };
 
@@ -135,7 +142,7 @@ export function SiteHeader() {
             <div className="text-sm font-semibold text-slate-900">
               {journalInfo.title}
             </div>
-            <div className="text-[12px] text-slate-500">
+            <div className="text-[12px] text-slate-700">
               ISSN {journalInfo.issn} | DOI {journalInfo.doiPrefix}
             </div>
           </div>
@@ -153,7 +160,7 @@ export function SiteHeader() {
                 className={`rounded-full px-3 py-2 text-sm transition ${
                   active
                     ? "bg-slate-900 !text-white"
-                    : "text-slate-600 hover:bg-slate-100"
+                    : "text-black hover:bg-slate-100"
                 }`}
               >
                 {link.label}
@@ -224,7 +231,7 @@ export function SiteHeader() {
                 <div className="absolute right-0 top-full mt-2 w-72 origin-top-right overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none">
                   <div className="border-b border-slate-100 px-4 py-4 bg-slate-50/50">
                     <p className="text-sm font-bold text-slate-900">{user.name}</p>
-                    <p className="text-xs text-slate-500">{user.email}</p>
+                    <p className="text-xs text-slate-700">{user.email}</p>
                   </div>
                   
                   <div className="py-2">
@@ -266,7 +273,7 @@ export function SiteHeader() {
                   <div className="border-t border-slate-100 py-2">
                     <button
                       onClick={handleLogout}
-                      className="block w-full px-4 py-2 text-left text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                      className="block w-full px-4 py-2 text-left text-sm text-black hover:bg-slate-50 hover:text-slate-900"
                     >
                       Log out
                     </button>
@@ -277,7 +284,7 @@ export function SiteHeader() {
           ) : (
             <Link
               href="/login"
-              className="hidden text-sm font-medium text-slate-600 transition hover:text-slate-900 md:inline-flex"
+              className="hidden text-sm font-medium text-black transition hover:text-slate-900 md:inline-flex"
             >
               Log in
             </Link>
@@ -307,7 +314,7 @@ export function SiteHeader() {
                 className={`rounded-full border border-slate-200 px-3 py-1 text-xs font-medium transition ${
                   active
                     ? "bg-slate-900 !text-white"
-                    : "bg-white text-slate-700 hover:bg-slate-50"
+                    : "bg-white text-black hover:bg-slate-50"
                 }`}
               >
                 {link.label}

@@ -56,7 +56,7 @@ export default function AuthorSidebar({ articles = [], currentFilter, onFilterCh
         ))}
         
         <div className="mt-4 border-t border-slate-200 pt-4">
-            <a href="/submit" className="flex w-full items-center gap-2 px-3 py-2 text-sm font-medium text-sky-600 hover:bg-sky-50 hover:text-sky-700 rounded-md">
+            <a href="/submit" className="flex w-full items-center gap-2 px-3 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 rounded-md">
                 Start A New Submission
             </a>
         </div>

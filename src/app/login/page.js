@@ -131,7 +131,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen bg-white font-sans text-slate-800">
+    <div className="min-h-screen bg-white font-sans text-black">
       {/* Top Header */}
       <header className="px-4 py-4 md:px-8 border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl flex justify-between items-center">
@@ -148,10 +148,10 @@ function LoginForm() {
             <div className="bg-slate-900 text-white px-6 py-2 text-sm font-bold rounded-t-lg">
               Log In
             </div>
-            <Link href="/forgot-password" className="text-slate-700 hover:text-slate-900 px-6 py-2 text-sm font-bold border-r border-slate-300">
+            <Link href="/forgot-password" className="text-black hover:text-slate-900 px-6 py-2 text-sm font-bold border-r border-slate-300">
               Reset Password
             </Link>
-            <Link href="/register" className="text-slate-700 hover:text-slate-900 px-6 py-2 text-sm font-bold border-r border-slate-300">
+            <Link href="/register" className="text-black hover:text-slate-900 px-6 py-2 text-sm font-bold border-r border-slate-300">
               Create An Account
             </Link>
           </div>
@@ -169,7 +169,7 @@ function LoginForm() {
           <div>
             <h3 className="text-amber-800 font-bold text-lg">Please add this site to your pop-up blocker exception list</h3>
             <p className="text-amber-700 text-sm mt-1">Blocking pop-ups on this site may prevent peer-review related e-mails from being sent.</p>
-            <a href="#" className="text-sky-600 text-sm hover:underline mt-1 block">More information on disabling pop-up blockers</a>
+            <a href="#" className="text-emerald-600 text-sm hover:underline mt-1 block">More information on disabling pop-up blockers</a>
           </div>
         </div>
 
@@ -192,8 +192,8 @@ function LoginForm() {
                 {/* Login Form */}
                 <div className="flex-1">
                   <div className="flex justify-between items-baseline mb-4">
-                    <h2 className="text-3xl font-light text-slate-600">Log In</h2>
-                    <Link href="/register" className="text-xs text-sky-600 hover:underline font-bold">Create an Account</Link>
+                    <h2 className="text-3xl font-light text-black">Log In</h2>
+                    <Link href="/register" className="text-xs text-emerald-600 hover:underline font-bold">Create an Account</Link>
                   </div>
 
                   {error && (
@@ -205,7 +205,7 @@ function LoginForm() {
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                       <div className="flex justify-between">
-                        <label htmlFor="email" className="block text-sm font-bold text-slate-500 mb-1">User ID / Email</label>
+                        <label htmlFor="email" className="block text-sm font-bold text-black mb-1">User ID / Email</label>
                       </div>
                       <input
                         id="email"
@@ -215,14 +215,14 @@ function LoginForm() {
                         required
                         value={formData.email}
                         onChange={handleChange}
-                        className="block w-full rounded border border-slate-300 px-3 py-2 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 sm:text-sm"
+                        className="block w-full rounded border border-slate-300 px-3 py-2 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 sm:text-sm"
                       />
                     </div>
 
                     <div>
                        <div className="flex justify-between items-center mb-1">
-                        <label htmlFor="password" className="block text-sm font-bold text-slate-500">Password</label>
-                        <Link href="/forgot-password" className="text-xs text-sky-600 hover:underline font-bold">Reset Password</Link>
+                        <label htmlFor="password" className="block text-sm font-bold text-black">Password</label>
+                        <Link href="/forgot-password" className="text-xs text-emerald-600 hover:underline font-bold">Reset Password</Link>
                       </div>
                       <input
                         id="password"
@@ -232,7 +232,7 @@ function LoginForm() {
                         required
                         value={formData.password}
                         onChange={handleChange}
-                        className="block w-full rounded border border-slate-300 px-3 py-2 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 sm:text-sm"
+                        className="block w-full rounded border border-slate-300 px-3 py-2 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 sm:text-sm"
                       />
                     </div>
 
@@ -251,7 +251,7 @@ function LoginForm() {
                     <button
                         onClick={handleGoogleLogin}
                         type="button"
-                        className="w-full flex items-center justify-center gap-2 rounded bg-white border border-slate-300 px-4 py-3 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
+                        className="w-full flex items-center justify-center gap-2 rounded bg-white border border-slate-300 px-4 py-3 text-sm font-bold text-black shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
                     >
                          <svg className="h-5 w-5" viewBox="0 0 24 24">
                           <path
@@ -280,18 +280,18 @@ function LoginForm() {
           </div>
 
           {/* Right Column: Info */}
-          <div className="text-slate-600 space-y-4">
+          <div className="text-black space-y-4">
             <p className="text-lg font-medium">Welcome to the submission site for</p>
-            <h2 className="text-3xl font-light text-slate-800">
+            <h2 className="text-3xl font-light text-black">
                Journal of AI Enabled Innovation and Discovery
             </h2>
             
             <div className="space-y-3 text-sm leading-relaxed">
               <p>
-                To begin, <Link href="/register" className="text-sky-600 font-bold hover:underline">create an account</Link>. It only takes a few minutes.
+                To begin, <Link href="/register" className="text-emerald-600 font-bold hover:underline">create an account</Link>. It only takes a few minutes.
               </p>
               <p>
-                If you are unsure about whether or not you have an account, or have forgotten your password, go to the <Link href="/forgot-password" className="text-sky-600 font-bold hover:underline">Reset Password</Link> screen.
+                If you are unsure about whether or not you have an account, or have forgotten your password, go to the <Link href="/forgot-password" className="text-emerald-600 font-bold hover:underline">Reset Password</Link> screen.
               </p>
             </div>
 
@@ -299,7 +299,7 @@ function LoginForm() {
 
              <div className="space-y-3 text-sm">
                 <p>
-                  <span className="font-bold text-sky-600">Journal of AI Enabled Innovation and Discovery</span> is a peer-reviewed, open access journal. All articles published within it are made open access under a Creative Commons licence.
+                  <span className="font-bold text-emerald-600">Journal of AI Enabled Innovation and Discovery</span> is a peer-reviewed, open access journal. All articles published within it are made open access under a Creative Commons licence.
                 </p>
              </div>
           </div>

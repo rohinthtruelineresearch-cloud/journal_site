@@ -213,9 +213,29 @@ function CurrentIssueContent() {
                                 </h3>
 
                                 <div className="text-sm text-slate-600">
-                                    {Array.isArray(paper.authors) 
-                                        ? paper.authors.map(a => typeof a === 'string' ? a : `${a.firstName} ${a.lastName}`).join(", ") 
-                                        : paper.authors}
+                                    {Array.isArray(paper.authors) && paper.authors.length > 0 ? (
+                                        <div className="leading-relaxed">
+                                            {paper.authors.map((author, authIdx) => {
+                                                const authorName = typeof author === 'string' 
+                                                    ? author 
+                                                    : `${author.firstName} ${author.lastName}`;
+                                                const isLast = authIdx === paper.authors.length - 1;
+                                                const isCorresponding = typeof author === 'object' && author.isCorresponding;
+                                                const authorNumber = authIdx + 1;
+                                                
+                                                return (
+                                                    <span key={authIdx}>
+                                                        {authorName}
+                                                        <sup className="text-slate-700 font-semibold">{authorNumber}</sup>
+                                                        {isCorresponding && <sup className="text-emerald-600 font-bold">*</sup>}
+                                                        {!isLast && ", "}
+                                                    </span>
+                                                );
+                                            })}
+                                        </div>
+                                    ) : (
+                                        paper.authors
+                                    )}
                                 </div>
                                 
                                 <div className="flex flex-wrap items-center gap-4 pt-2">

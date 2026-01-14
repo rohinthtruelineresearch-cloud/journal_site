@@ -129,16 +129,16 @@ export default function AccountPage() {
             <div>
               <h3 className="mb-2 text-sm font-bold uppercase text-slate-500">Account</h3>
               <nav className="flex flex-col space-y-1">
-                <a href="#" className="rounded-md px-3 py-2 text-sm font-medium text-sky-600 hover:bg-sky-50">Dashboard</a>
+                <a href="#" className="rounded-md px-3 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-50">Dashboard</a>
                  <a href="#" className="rounded-md bg-teal-700 px-3 py-2 text-sm font-medium text-white">Profile</a>
-                 <Link href="/account/view" className="rounded-md px-3 py-2 text-sm font-medium text-sky-600 hover:bg-sky-50">View Profile Data</Link>
+                 <Link href="/account/view" className="rounded-md px-3 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-50">View Profile Data</Link>
               </nav>
             </div>
              <div>
               <h3 className="mb-2 text-sm font-bold uppercase text-slate-500">Submissions</h3>
               <nav className="flex flex-col space-y-1">
-                 <a href="/submit" className="rounded-md px-3 py-2 text-sm font-medium text-sky-600 hover:bg-sky-50">Submit</a>
-                 <a href="/author?filter=active" className="rounded-md px-3 py-2 text-sm font-medium text-sky-600 hover:bg-sky-50">Submitted Manuscripts</a>
+                 <a href="/submit" className="rounded-md px-3 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-50">Submit</a>
+                 <a href="/author?filter=active" className="rounded-md px-3 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-50">Submitted Manuscripts</a>
               </nav>
             </div>
           </div>

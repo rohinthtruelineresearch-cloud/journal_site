@@ -18,15 +18,15 @@ export function SiteFooter() {
             <div className="text-lg font-semibold text-slate-900">
               {journalInfo.title}
             </div>
-            <p className="text-sm text-slate-600">{journalInfo.tagline}</p>
-            <div className="flex flex-wrap gap-2 text-xs text-slate-500">
-              <span className="rounded-full bg-slate-100 px-3 py-1">
+            <p className="text-sm text-black">{journalInfo.tagline}</p>
+            <div className="flex flex-wrap gap-2 text-sm text-slate-700">
+              <span className="rounded-full bg-slate-100 px-4 py-2 font-bold">
                 ISSN {journalInfo.issn}
               </span>
-              <span className="rounded-full bg-slate-100 px-3 py-1">
+              <span className="rounded-full bg-slate-100 px-4 py-2 font-bold">
                 DOI {journalInfo.doiPrefix}
               </span>
-              <span className="rounded-full bg-slate-100 px-3 py-1">
+              <span className="rounded-full bg-slate-100 px-4 py-2 font-bold">
                 {journalInfo.frequency}
               </span>
             </div>
@@ -34,7 +34,7 @@ export function SiteFooter() {
 
           <div>
             <div className="text-sm font-semibold text-slate-900">Navigate</div>
-            <div className="mt-3 flex flex-col gap-2 text-sm text-slate-600">
+            <div className="mt-3 flex flex-col gap-2 text-sm text-black">
               {quickLinks.map((item) => (
                 <Link
                   key={item.href}
@@ -47,19 +47,19 @@ export function SiteFooter() {
             </div>
           </div>
 
-          <div className="space-y-2 text-sm text-slate-600">
+          <div className="space-y-2 text-sm text-black">
             <div className="text-sm font-semibold text-slate-900">Contact</div>
             <div>Email: {contactInfo.email}</div>
             <div>WhatsApp: {contactInfo.whatsapp}</div>
-            <div>Phone: {contactInfo.support}</div>
-            <div>Office: {contactInfo.address}</div>
-            <div className="text-xs text-slate-500">
+            <div>Office: {contactInfo.support}</div>
+            <div>Address: {contactInfo.address}</div>
+            <div className="text-xs text-slate-700">
               Office hours: {contactInfo.officeHours}
             </div>
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-2 border-t border-slate-100 pt-6 text-xs text-slate-500 md:flex-row md:items-center md:justify-between">
+        <div className="mt-10 flex flex-col gap-2 border-t border-slate-100 pt-6 text-xs text-slate-700 md:flex-row md:items-center md:justify-between">
           <span>© {new Date().getFullYear()} {journalInfo.shortTitle}. All rights reserved.</span>
           <span>Designed for IEEE/Elsevier-grade clarity, speed, and compliance.</span>
         </div>

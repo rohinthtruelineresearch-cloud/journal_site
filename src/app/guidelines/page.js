@@ -11,20 +11,20 @@ export default function GuidelinesPage() {
       <section className="rounded-3xl border border-slate-200 bg-white p-8 shadow-[0_25px_70px_-38px_rgba(15,23,42,0.35)] md:p-12">
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-full bg-sky-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-sky-700">
+            <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-emerald-700">
               Author guidelines
             </div>
             <h1 className="text-3xl font-semibold text-slate-900 md:text-5xl font-serif">
               Submission Standards
             </h1>
-            <p className="max-w-2xl text-lg text-slate-600 leading-relaxed">
+            <p className="max-w-2xl text-lg text-black leading-relaxed">
               Fast, fair, and transparent publication. We support authors at every stage, 
               from initial free-format submission to final DOI-ready publication.
             </p>
           </div>
           <Link
             href="/submit"
-            className="rounded-full bg-sky-600 px-8 py-4 text-base font-semibold !text-white shadow-[0_20px_45px_-28px_rgba(3,105,161,0.9)] transition hover:-translate-y-0.5 hover:bg-sky-700"
+            className="rounded-full bg-emerald-600 px-8 py-4 text-base font-semibold !text-white shadow-[0_20px_45px_-28px_rgba(3,105,161,0.9)] transition hover:-translate-y-0.5 hover:bg-emerald-700"
           >
             Submit Paper
           </Link>
@@ -42,7 +42,7 @@ export default function GuidelinesPage() {
           <div>
             <h3 className="text-lg font-bold text-emerald-900">Inaugural Issue Launch Offer!</h3>
             <p className="text-emerald-700">
-              Full waiver (100% discount) for all papers submitted before <strong>01.06.2026</strong>. 
+              Waiver for all papers submitted before <strong>01.06.2026</strong>. 
               Accepted papers will be published completely <strong>FREE of cost</strong>.
             </p>
           </div>
@@ -51,17 +51,17 @@ export default function GuidelinesPage() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <GuidelineCard title="1. Submission Format" icon="📄">
-          <ul className="space-y-4 text-sm text-slate-600">
+          <ul className="space-y-4 text-sm text-black">
             <li className="flex gap-3">
-              <span className="font-bold text-sky-600">FREE FORMAT:</span>
+              <span className="font-bold text-emerald-600">FREE FORMAT:</span>
               Initial submission is accepted in any professional layout. No IEEE formatting required at the start.
             </li>
             <li className="flex gap-3">
-              <span className="font-bold text-sky-600">Language:</span>
+              <span className="font-bold text-emerald-600">Language:</span>
               Manuscripts must be in clear, academic English.
             </li>
             <li className="flex gap-3">
-              <span className="font-bold text-sky-600">Length:</span>
+              <span className="font-bold text-emerald-600">Length:</span>
               Maximum 12 pages including references.
             </li>
             <li className="bg-slate-50 p-3 rounded-xl border border-slate-100 italic">
@@ -71,7 +71,7 @@ export default function GuidelinesPage() {
         </GuidelineCard>
 
         <GuidelineCard title="2. File Requirements" icon="📎">
-          <ul className="space-y-4 text-sm text-slate-600">
+          <ul className="space-y-4 text-sm text-black">
             <li className="flex items-center gap-2">
               <div className="h-2 w-2 rounded-full bg-emerald-500" />
               Only Microsoft Word (.DOC/.DOCX) accepted
@@ -88,10 +88,10 @@ export default function GuidelinesPage() {
         </GuidelineCard>
 
         <GuidelineCard title="3. Peer Review Process" icon="⚖️">
-          <ul className="space-y-4 text-sm text-slate-600">
+          <ul className="space-y-4 text-sm text-black">
             <li className="flex gap-2 font-semibold text-slate-900">Double-blind Policy</li>
             <li className="flex gap-3">
-              <div className="font-bold text-sky-600">•</div>
+              <div className="font-bold text-emerald-600">•</div>
               Reviewed by at least 2 independent experts.
             </li>
             <div className="space-y-2 pt-2 border-t border-slate-100">
@@ -113,7 +113,7 @@ export default function GuidelinesPage() {
           <h3 className="text-xl font-semibold text-slate-900 flex items-center gap-3">
             <span className="text-2xl">🤖</span> AI Usage & Disclosure
           </h3>
-          <p className="text-sm text-slate-600 leading-relaxed">
+          <p className="text-sm text-black leading-relaxed">
             As an AI-focused journal, we require transparency:
           </p>
           <ul className="space-y-3">
@@ -122,8 +122,8 @@ export default function GuidelinesPage() {
               "AI-generated content must be critically reviewed and validated.",
               "Authors maintain full responsibility for accuracy and integrity."
             ].map((item, i) => (
-              <li key={i} className="flex gap-3 text-sm text-slate-700">
-                <div className="mt-1 h-5 w-5 rounded-full bg-sky-100 flex items-center justify-center text-[10px] text-sky-600 font-bold flex-shrink-0">
+              <li key={i} className="flex gap-3 text-sm text-black">
+                <div className="mt-1 h-5 w-5 rounded-full bg-emerald-100 flex items-center justify-center text-[10px] text-emerald-600 font-bold flex-shrink-0">
                   {i+1}
                 </div>
                 {item}
@@ -137,25 +137,25 @@ export default function GuidelinesPage() {
             <span className="text-2xl">💰</span> Publication Choices
           </h3>
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="p-4 rounded-2xl bg-sky-50 border border-sky-100">
-              <div className="font-bold text-sky-900 text-sm">Open Access</div>
-              <div className="text-2xl font-bold text-sky-600 mt-1">$100</div>
-              <div className="text-[10px] text-sky-700 mt-1">Free access worldwide</div>
+            <div className="p-4 rounded-2xl bg-emerald-50 border border-sky-100">
+              <div className="font-bold text-emerald-900 text-sm">Open Access</div>
+              <div className="text-2xl font-bold text-emerald-600 mt-1">$100</div>
+              <div className="text-[10px] text-emerald-700 mt-1">Free access worldwide</div>
             </div>
             <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
               <div className="font-bold text-slate-900 text-sm">Subscription</div>
-              <div className="text-2xl font-bold text-slate-600 mt-1">$0</div>
-              <div className="text-[10px] text-slate-500 mt-1">Limited accessibility</div>
+              <div className="text-2xl font-bold text-black mt-1">$0</div>
+              <div className="text-[10px] text-slate-700 mt-1">Limited accessibility</div>
             </div>
           </div>
-          <div className="text-xs text-slate-500 italic">
+          <div className="text-xs text-slate-700 italic">
             Waivers available for students and low-income backgrounds. No submission fees.
           </div>
         </section>
       </section>
 
       <section className="rounded-3xl border border-slate-900 bg-slate-900 p-8 md:p-12 text-white overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-sky-500/20 rounded-full blur-3xl -mr-32 -mt-32" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/20 rounded-full blur-3xl -mr-32 -mt-32" />
         <div className="relative z-10 grid gap-8 md:grid-cols-2 md:items-center">
           <div className="space-y-4">
             <h3 className="text-2xl font-semibold font-serif">Ready to publish?</h3>
@@ -166,7 +166,7 @@ export default function GuidelinesPage() {
             <div className="flex flex-wrap gap-4 pt-4">
               <Link
                 href="/submit"
-                className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-sky-50"
+                className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-emerald-50"
               >
                 Submit Now
               </Link>
@@ -181,7 +181,7 @@ export default function GuidelinesPage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
               <div className="text-xs text-slate-400 uppercase tracking-wider">Frequency</div>
-              <div className="text-lg font-semibold mt-1">6 Issues / Year</div>
+              <div className="text-lg font-semibold mt-1">12 Issues / Year</div>
             </div>
             <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
               <div className="text-xs text-slate-400 uppercase tracking-wider">DOI</div>

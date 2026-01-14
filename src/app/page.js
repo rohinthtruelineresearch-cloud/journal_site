@@ -4,7 +4,7 @@ import { editorialBoard, journalInfo } from "@/data/journal";
 function StatCard({ title, value }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
-      <div className="text-xs uppercase tracking-[0.18em] text-slate-500">
+      <div className="text-xs uppercase tracking-[0.18em] text-slate-700">
         {title}
       </div>
       <div className="mt-2 text-sm font-semibold text-slate-900">{value}</div>
@@ -15,10 +15,10 @@ function StatCard({ title, value }) {
 function PolicyCard({ label, text }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
-      <div className="text-[11px] uppercase tracking-[0.2em] text-slate-500">
+      <div className="text-[11px] uppercase tracking-[0.2em] text-slate-700">
         {label}
       </div>
-      <div className="mt-2 text-sm text-slate-700">{text}</div>
+      <div className="mt-2 text-sm text-black">{text}</div>
     </div>
   );
 }
@@ -29,14 +29,14 @@ export default function Home() {
       <section className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-[0_25px_70px_-38px_rgba(15,23,42,0.35)]">
         <div className="w-full">
           <div className="space-y-7 p-8 md:p-12">
-            <div className="inline-flex items-center gap-3 rounded-full bg-slate-100 px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-600">
+            <div className="inline-flex items-center gap-3 rounded-full bg-slate-100 px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-black">
               Open access / Double-blind review / DOI-ready
             </div>
             <div className="space-y-3">
               <h1 className="font-serif text-4xl font-semibold leading-tight text-slate-900 md:text-5xl">
                 {journalInfo.title}
               </h1>
-              <p className="max-w-3xl text-lg text-slate-600">
+              <p className="max-w-3xl text-lg text-black">
                 {journalInfo.description}
               </p>
             </div>
@@ -67,7 +67,7 @@ export default function Home() {
               {journalInfo.indexingBadges.map((badge) => (
                 <span
                   key={badge}
-                  className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600"
+                  className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-black"
                 >
                   {badge}
                 </span>
@@ -95,8 +95,8 @@ export default function Home() {
             <h2 className="text-3xl font-semibold md:text-4xl font-serif text-slate-900 tracking-tight leading-tight">
               "AI-Driven Innovation across Science and Technology"
             </h2>
-            <p className="text-slate-600 text-base md:text-lg leading-relaxed">
-              Submit your original research by <span className="text-slate-950 font-semibold">01.06.2026</span> and benefit from a <span className="text-emerald-600 font-bold underline decoration-emerald-200 decoration-4 underline-offset-4">full publication fee waiver</span>. 
+            <p className="text-black text-base md:text-lg leading-relaxed">
+              Submit your original research by <span className="text-slate-950 font-semibold">01.06.2026</span> and benefit from a <span className="text-emerald-600 font-bold underline decoration-emerald-200 decoration-4 underline-offset-4">publication fee waiver</span>. 
               Accepted papers published with permanent DOI and global indexing.
             </p>
           </div>
@@ -123,7 +123,7 @@ export default function Home() {
             <h2 className="text-2xl font-semibold text-slate-900">
               Aim &amp; scope
             </h2>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-black">
               Advancing AI research across Science, Engineering, Technology, and Society.
             </p>
           </div>
@@ -138,15 +138,15 @@ export default function Home() {
           {journalInfo.detailedScope.map((section) => (
             <div
               key={section.category}
-              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_20px_60px_-45px_rgba(15,23,42,0.5)] hover:border-sky-200 transition-colors"
+              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_20px_60px_-45px_rgba(15,23,42,0.5)] hover:border-emerald-200 transition-colors"
             >
               <div className="flex items-start gap-4">
-                <div className="mt-1.5 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-sky-600 shadow-[0_0_10px_rgba(2,132,199,0.5)]" />
+                <div className="mt-1.5 h-2.5 w-2.5 flex-shrink-0 rounded-full bg-emerald-600 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                 <div>
                   <div className="font-semibold text-slate-900">{section.category}</div>
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {section.topics.slice(0, 3).map((topic, i) => (
-                      <span key={i} className="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md">
+                      <span key={i} className="text-[11px] bg-slate-100 text-slate-800 px-2 py-0.5 rounded-md">
                         {topic}
                       </span>
                     ))}
@@ -170,7 +170,7 @@ export default function Home() {
                 key={item.title}
                 className="rounded-2xl border border-slate-200 bg-slate-50/60 px-4 py-3"
               >
-                <div className="text-xs uppercase tracking-[0.18em] text-slate-500">
+                <div className="text-xs uppercase tracking-[0.18em] text-slate-700">
                   {item.title}
                 </div>
                 <div className="mt-2 text-sm font-semibold text-slate-900">
@@ -204,7 +204,7 @@ export default function Home() {
           <h3 className="text-xl font-semibold text-slate-900">
             Editorial board
           </h3>
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-black">
             Diverse expertise across autonomy, infrastructure, and responsible AI.
           </p>
           <Link
@@ -223,13 +223,13 @@ export default function Home() {
               <div className="text-sm font-semibold text-slate-900">
                 {member.name}
               </div>
-              <div className="text-xs uppercase tracking-[0.16em] text-slate-500">
+              <div className="text-xs uppercase tracking-[0.16em] text-slate-700">
                 {member.role}
               </div>
-              <div className="mt-2 text-sm text-slate-600">
+              <div className="mt-2 text-sm text-black">
                 {member.affiliation}
               </div>
-              <div className="mt-1 text-xs text-slate-500">
+              <div className="mt-1 text-xs text-slate-700">
                 Focus: {member.focus}
               </div>
             </div>
@@ -242,7 +242,7 @@ export default function Home() {
           <h3 className="text-xl font-semibold text-slate-900">
             Publication ethics
           </h3>
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-black">
             COPE-aligned practices with clear plagiarism and data policies.
           </p>
           <Link

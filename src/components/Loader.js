@@ -11,7 +11,7 @@ export default function Loader({ overlay = false, type = "default" }) {
           autoplay
         />
       </div>
-      <p className="text-xl font-bold bg-gradient-to-r from-sky-600 to-sky-800 bg-clip-text text-transparent animate-pulse">
+      <p className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-sky-800 bg-clip-text text-transparent animate-pulse">
         Finalizing Your Submission...
       </p>
       <p className="text-sm text-slate-500">Please do not close this window</p>

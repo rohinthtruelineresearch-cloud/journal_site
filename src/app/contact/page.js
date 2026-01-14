@@ -32,16 +32,16 @@ export default function ContactPage() {
   return (
     <div className="space-y-12 mb-20">
       <section className="relative overflow-hidden rounded-[2.5rem] border border-slate-200 bg-white p-8 md:p-16 shadow-[0_45px_100px_-50px_rgba(15,23,42,0.5)]">
-        <div className="absolute top-0 right-0 h-64 w-64 bg-sky-500/5 rounded-full blur-3xl -mr-32 -mt-32" />
+        <div className="absolute top-0 right-0 h-64 w-64 bg-emerald-500/5 rounded-full blur-3xl -mr-32 -mt-32" />
         <div className="relative z-10 flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-2xl space-y-6">
-            <div className="inline-flex items-center gap-2 rounded-full bg-sky-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-sky-700">
+            <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-emerald-700">
               Editorial Office
             </div>
             <h1 className="font-serif text-4xl font-bold leading-tight text-slate-900 md:text-6xl">
               How can we help you?
             </h1>
-            <p className="text-lg text-slate-600 leading-relaxed">
+            <p className="text-lg text-black leading-relaxed">
               We aim for rapid response. For manuscript inquiries, please include 
               your <strong>Submission ID</strong> (e.g., AJSE-2025-0412) to help us route your request faster.
             </p>
@@ -50,7 +50,7 @@ export default function ContactPage() {
             <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
               <div className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Office Hours</div>
               <div className="text-xl font-bold text-slate-900">{contactInfo.officeHours}</div>
-              <p className="text-xs text-slate-500 mt-2">Personalized support across all time zones.</p>
+              <p className="text-xs text-slate-700 mt-2">Personalized support across all time zones.</p>
             </div>
           </div>
         </div>
@@ -101,7 +101,7 @@ export default function ContactPage() {
                 value={formData.message}
                 onChange={handleChange}
                 placeholder="How can we assist you today?"
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-slate-900 focus:border-sky-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-sky-500/10 transition-all text-sm"
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-slate-900 focus:border-sky-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all text-sm"
               />
             </label>
               <button
@@ -111,7 +111,7 @@ export default function ContactPage() {
               >
                 Send via WhatsApp
               </button>
-            <p className="text-center text-[10px] text-slate-400 uppercase tracking-widest font-semibold italic">
+            <p className="text-center text-[10px] text-slate-700 uppercase tracking-widest font-semibold italic">
               Expected turnaround: within 24 business hours
             </p>
           </form>
@@ -123,8 +123,8 @@ export default function ContactPage() {
 
 function ContactChannel({ title, value, icon, description, badge, href }) {
   return (
-    <div className="group flex gap-6 p-6 rounded-[2rem] border border-slate-100 bg-white shadow-sm hover:shadow-md transition-all hover:border-sky-200">
-      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-2xl group-hover:bg-sky-100 transition-colors">
+    <div className="group flex gap-6 p-6 rounded-[2rem] border border-slate-100 bg-white shadow-sm hover:shadow-md transition-all hover:border-emerald-200">
+      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-2xl group-hover:bg-emerald-100 transition-colors">
         {icon}
       </div>
       <div className="space-y-1">
@@ -133,11 +133,11 @@ function ContactChannel({ title, value, icon, description, badge, href }) {
           {badge && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700 uppercase tracking-tighter">{badge}</span>}
         </div>
         {href ? (
-          <a href={href} className="block text-xl font-bold text-sky-600 hover:text-sky-700 transition-colors underline decoration-sky-500/20 underline-offset-4">{value}</a>
+          <a href={href} className="block text-xl font-bold text-emerald-600 hover:text-emerald-700 transition-colors underline decoration-emerald-500/20 underline-offset-4">{value}</a>
         ) : (
           <div className="text-lg font-bold text-slate-900">{value}</div>
         )}
-        <p className="text-xs text-slate-500 leading-relaxed pt-1">{description}</p>
+        <p className="text-xs text-slate-700 leading-relaxed pt-1">{description}</p>
       </div>
     </div>
   );
@@ -152,7 +152,7 @@ function Field({
   onChange
 }) {
   return (
-    <label className="block space-y-1 text-sm text-slate-700">
+    <label className="block space-y-1 text-sm text-black">
       <span className="font-semibold text-slate-900">{label}</span>
       <input
         type={type}

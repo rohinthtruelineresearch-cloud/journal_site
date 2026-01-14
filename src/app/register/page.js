@@ -75,7 +75,7 @@ export default function RegisterPage() {
           <h2 className="text-3xl font-bold tracking-tight text-slate-900">
             Create an account
           </h2>
-          <p className="mt-2 text-sm text-slate-600">
+          <p className="mt-2 text-sm text-black">
             Join the community to submit and review papers
           </p>
         </div>
@@ -84,7 +84,7 @@ export default function RegisterPage() {
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-slate-700"
+                className="block text-sm font-medium text-black"
               >
                 Full Name
               </label>
@@ -96,7 +96,7 @@ export default function RegisterPage() {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="block w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 sm:text-sm"
+                  className="block w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 sm:text-sm"
                   placeholder="John Doe"
                 />
               </div>
@@ -105,7 +105,7 @@ export default function RegisterPage() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-slate-700"
+                className="block text-sm font-medium text-black"
               >
                 Email address
               </label>
@@ -118,7 +118,7 @@ export default function RegisterPage() {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="block w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 sm:text-sm"
+                  className="block w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 sm:text-sm"
                   placeholder="you@example.com"
                 />
               </div>
@@ -127,7 +127,7 @@ export default function RegisterPage() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-slate-700"
+                className="block text-sm font-medium text-black"
               >
                 Password
               </label>
@@ -140,7 +140,7 @@ export default function RegisterPage() {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="block w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 sm:text-sm"
+                  className="block w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 sm:text-sm"
                   placeholder="••••••••"
                 />
               </div>
@@ -206,7 +206,7 @@ export default function RegisterPage() {
             <div>
               <label
                 htmlFor="role"
-                className="block text-sm font-medium text-slate-700"
+                className="block text-sm font-medium text-black"
               >
                 I am a...
               </label>
@@ -216,7 +216,7 @@ export default function RegisterPage() {
                   name="role"
                   value={formData.role}
                   onChange={handleChange}
-                  className="block w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 sm:text-sm"
+                  className="block w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-900 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 sm:text-sm"
                 >
                   <option value="author">Author</option>
                   <option value="reviewer">Reviewer</option>
@@ -244,11 +244,11 @@ export default function RegisterPage() {
         </form>
 
         <div className="text-center text-sm">
-          <p className="text-slate-600">
+          <p className="text-black">
             Already have an account?{" "}
             <Link
               href="/login"
-              className="font-medium text-sky-600 hover:text-sky-500"
+              className="font-medium text-emerald-600 hover:text-emerald-500"
             >
               Sign in
             </Link>

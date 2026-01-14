@@ -3,9 +3,9 @@
 :root {
   --ink: #0b1531;
   --muted: #4b5563;
-  --accent: #00A99D;
-  --accent-strong: #00796B;
-  --brand-teal: #00A99D;
+  --accent: #10b981;
+  --accent-strong: #059669;
+  --brand-green: #10b981;
   --surface: #f7f9fb;
   --panel: #ffffff;
   --border: #e2e8f0;
@@ -14,17 +14,18 @@
 @theme inline {
   --color-background: var(--surface);
   --color-foreground: var(--ink);
-  --color-brand-teal: var(--brand-teal);
+  --color-brand-green: var(--brand-green);
   --font-sans: var(--font-sans);
   --font-serif: var(--font-serif);
 }
 
 body {
   background: radial-gradient(circle at 20% 20%,
-      rgba(16, 185, 129, 0.08),
-      transparent 30%),
-    radial-gradient(circle at 80% 0%, rgba(5, 150, 105, 0.08), transparent 26%),
-    #f8fbff;
+      rgba(16, 185, 129, 0.06),
+      transparent 35%),
+    radial-gradient(circle at 80% 0%, rgba(5, 150, 105, 0.05), transparent 30%),
+    radial-gradient(circle at 50% 100%, rgba(134, 239, 172, 0.04), transparent 40%),
+    #f0fdf4;
   color: var(--ink);
   font-family: var(--font-sans), sans-serif;
   letter-spacing: -0.01em;
@@ -40,6 +41,6 @@ a:hover {
 }
 
 ::selection {
-  background-color: #ccfbf1;
-  color: #0f766e;
+  background-color: #d1fae5;
+  color: #065f46;
 }
