@@ -208,9 +208,11 @@ function CurrentIssueContent() {
                                      <span className="text-xs text-slate-500">{dateStr}</span>
                                 </div>
                                 
-                                <h3 className="font-serif text-lg font-medium text-brand-teal sm:text-xl group-hover:underline cursor-pointer">
-                                    {paper.title}
-                                </h3>
+                                <Link href={`/article/${paperId}`}>
+                                    <h3 className="font-serif text-lg font-medium text-brand-teal sm:text-xl group-hover:underline cursor-pointer">
+                                        {paper.title}
+                                    </h3>
+                                </Link>
 
                                 <div className="text-sm text-slate-600">
                                     {Array.isArray(paper.authors) && paper.authors.length > 0 ? (
@@ -279,6 +281,16 @@ function CurrentIssueContent() {
                                        </a>
                                        </>
                                     )}
+                                    <Link 
+                                        href={`/article/${paperId}`}
+                                        className="flex items-center gap-1 text-xs font-bold text-slate-700 hover:text-brand-teal hover:underline ml-2"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
+                                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                            <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                                        </svg>
+                                        View Article
+                                    </Link>
                                 </div>
 
                                 {isExpanded && (

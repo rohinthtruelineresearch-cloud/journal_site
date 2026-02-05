@@ -5,6 +5,11 @@ import {
   submissionGuidelines,
 } from "@/data/journal";
 
+export const metadata = {
+  title: "Author Guidelines",
+  description: "Detailed submission standards, manuscript formatting, peer review process, and publication policies for authors submitting to JAEID.",
+};
+
 export default function GuidelinesPage() {
   return (
     <div className="space-y-10">

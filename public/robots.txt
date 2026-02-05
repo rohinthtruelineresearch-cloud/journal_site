@@ -1,33 +1,25 @@
-# Allow all search engines
+# Robots.txt for Journal of AI Enabled Innovation and Discovery
+# Allow all search engines and academic crawlers
+
 User-agent: *
 Allow: /
+Allow: /current-issue
+Allow: /archive
+Allow: /about
+Allow: /guidelines
 
-# Disallow private areas
+# Google Scholar Bot
+User-agent: Googlebot-Scholar
+Allow: /
+Crawl-delay: 0
+
+# Disable crawling for admin and private areas
 Disallow: /admin
-Disallow: /api/
-Disallow: /author/submission/
-Disallow: /reviewer/
-Disallow: /account/
-
-# Allow specific bots
-User-agent: Googlebot
-Allow: /
-
-User-agent: Googlebot-Image
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-# Academic crawlers
-User-agent: Google-Extended
-Allow: /
-
-User-agent: GPTBot
-Disallow: /
+Disallow: /api
+Disallow: /author-dashboard
+Disallow: /reviewer-dashboard
+Disallow: /login
+Disallow: /register
 
 # Sitemap location
 Sitemap: https://www.jaeid.com/sitemap.xml
-
-# Crawl delay (optional, helps prevent server overload)
-# Crawl-delay: 10

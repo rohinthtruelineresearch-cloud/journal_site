@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { journalInfo, editorialBoard, contactInfo } from "@/data/journal";
 
+export const metadata = {
+  title: "About the Journal",
+  description: "Learn about JAEID's mission, editorial board, aims, scope, and publication ethics. An open-access journal for AI innovation.",
+};
+
 export default function AboutPage() {
   return (
     <div className="space-y-8">

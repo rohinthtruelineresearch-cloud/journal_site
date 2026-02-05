@@ -37,7 +37,7 @@ export default async function sitemap() {
 
     // Issue routes
     const issueRoutes = Array.isArray(issues) ? issues.map((issue) => ({
-      url: `${baseUrl}/current-issue?volume=${issue.volume}&issue=${issue.issue}`,
+      url: `${baseUrl}/current-issue?volume=${issue.volume}&amp;issue=${issue.issue}`,
       lastModified: new Date(issue.publicationDate || new Date()),
       changeFrequency: 'weekly',
       priority: 0.7,
@@ -62,7 +62,7 @@ export default async function sitemap() {
               const issue = issueMatch ? issueMatch[1] : '1';
               
               return {
-                url: `${baseUrl}/current-issue?volume=${volume}&issue=${issue}`,
+                url: `${baseUrl}/article/${article._id}`,
                 lastModified: new Date(article.publishedDate || article.updatedAt || new Date()),
                 changeFrequency: 'monthly',
                 priority: 0.6,
