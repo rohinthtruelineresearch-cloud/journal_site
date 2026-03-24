@@ -2,7 +2,7 @@ export const journalInfo = {
   title: "Journal of AI Enabled Innovation and Discovery",
   shortTitle: "JAEID",
   issn: "Under process",
-  doiPrefix: "Under process",
+  doiPrefix: "10.66153",
   frequency: "Monthly (Twelve issues in a year)",
   description:
     "An International, Peer-Reviewed Scholarly Publication Dedicated to Advancing Research in Artificial Intelligence (AI) and Its Transformative Role Across Science, Engineering, Technology, and Society.",

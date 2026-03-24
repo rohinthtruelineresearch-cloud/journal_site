@@ -315,7 +315,7 @@ export default function AdminPage() {
         // Refresh articles
         const updatedArticles = articles.map((article) => {
             if (article._id === id) {
-                return { ...article, doi: `10.1000/${article._id}` };
+                return { ...article, doi: `10.66153/${article._id}` };
             }
             return article;
         });
