@@ -191,6 +191,15 @@ function CurrentIssueContent() {
                   <div className="space-y-8">
                      {publishedArticles.map((paper, idx) => {
                          const paperId = paper._id || idx;
+                         const getSlug = (p) => {
+                           if (!p.issue || !p.articleNumber) return p._id;
+                           const volMatch = p.issue.match(/Vol (\d+)/i);
+                           const issMatch = p.issue.match(/Issue (\d+)/i);
+                           const v = volMatch ? volMatch[1] : '1';
+                           const i = issMatch ? issMatch[1] : '1';
+                           return `volume${v}/issue${i}/article${p.articleNumber}`;
+                         };
+                         const paperSlug = getSlug(paper);
                          const isExpanded = expandedAbstracts[paperId];
                          const pubDate = paper.publishedDate ? new Date(paper.publishedDate) : new Date();
                          const dateStr = pubDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
@@ -208,7 +217,7 @@ function CurrentIssueContent() {
                                      <span className="text-xs text-slate-500">{dateStr}</span>
                                 </div>
                                 
-                                <Link href={`/article/${paperId}`}>
+                                <Link href={`/article/${paperSlug}`}>
                                     <h3 className="font-serif text-lg font-medium text-brand-teal sm:text-xl group-hover:underline cursor-pointer">
                                         {paper.title}
                                     </h3>
@@ -282,7 +291,7 @@ function CurrentIssueContent() {
                                        </>
                                     )}
                                     <Link 
-                                        href={`/article/${paperId}`}
+                                        href={`/article/${paperSlug}`}
                                         className="flex items-center gap-1 text-xs font-bold text-slate-700 hover:text-brand-teal hover:underline ml-2"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
@@ -371,12 +380,13 @@ function CurrentIssueContent() {
                                 {volIssues.map((issue) => (
                                     <div key={issue._id} className="border-t border-slate-100 px-4 py-3 pl-8">
                                         {/* Link to Detail View with Query Params */}
-                                        <Link href={`/current-issue?volume=${issue.volume}&issue=${issue.issue}`} className="group block">
+                                        <Link href={`/current-issue?volume=${issue.volume}&issue=${issue.issue}`} className="group flex items-center gap-3">
                                             <div className="text-sm font-bold text-teal-900 group-hover:underline">
                                                 Issue {issue.issue}
                                             </div>
-                                            <div className="text-xs text-slate-500">
-                                                {new Date(issue.publicationDate).getFullYear()}
+                                            <div className="text-xs text-slate-300">|</div>
+                                            <div className="text-sm text-slate-900">
+                                                {new Date(issue.publicationDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                                             </div>
                                         </Link>
                                     </div>

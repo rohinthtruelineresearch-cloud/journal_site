@@ -115,12 +115,13 @@ export default function ArchivePage() {
                             <div className="bg-white">
                                 {volIssues.map((issue) => (
                                     <div key={issue._id} className="border-t border-slate-100 px-4 py-3 pl-8">
-                                        <Link href={`/current-issue?volume=${issue.volume}&issue=${issue.issue}`} className="group block">
+                                        <Link href={`/current-issue?volume=${issue.volume}&issue=${issue.issue}`} className="group flex items-center gap-3">
                                             <div className="text-sm font-bold text-blue-900 group-hover:underline">
                                                 Issue {issue.issue}
                                             </div>
-                                            <div className="text-xs text-slate-500">
-                                                {new Date(issue.publicationDate).getFullYear()}
+                                            <div className="text-xs text-slate-300">|</div>
+                                            <div className="text-sm text-slate-900">
+                                                {new Date(issue.publicationDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                                             </div>
                                         </Link>
                                     </div>

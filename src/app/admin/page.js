@@ -41,6 +41,7 @@ export default function AdminPage() {
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const [publishVolume, setPublishVolume] = useState(1);
   const [publishIssue, setPublishIssue] = useState(1);
+  const [publishMonth, setPublishMonth] = useState(new Date().toISOString().slice(0, 7));
   const [publishType, setPublishType] = useState('regular');
   const [publishTitle, setPublishTitle] = useState('');
   const [nextArticleNumber, setNextArticleNumber] = useState(1);
@@ -299,23 +300,30 @@ export default function AdminPage() {
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/users/auth/google`;
   };
 
-  const handleGenerateDOI = async (id) => {
+  const handleGenerateDOI = async (id, currentDoi = "") => {
+    const defaultDoi = currentDoi || `10.66153/jaeid.${new Date().getFullYear()}.xxxx`;
+    const userDoi = prompt("Enter DOI (leave blank to auto-generate):", defaultDoi);
+    if (userDoi === null) return; // Cancelled
+
     setActionLoading(true);
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${id}/doi`, {
         method: "PUT",
         headers: {
+             "Content-Type": "application/json",
              Authorization: `Bearer ${token}`
         },
+        body: JSON.stringify({ doi: userDoi.trim() }),
         credentials: 'include',
       });
       if (res.ok) {
-        alert("DOI Generated!");
+        const data = await res.json();
+        alert(`DOI Assigned: ${data.doi}`);
         // Refresh articles
         const updatedArticles = articles.map((article) => {
             if (article._id === id) {
-                return { ...article, doi: `10.66153/${article._id}` };
+                return { ...article, doi: data.doi };
             }
             return article;
         });
@@ -328,6 +336,38 @@ export default function AdminPage() {
       alert("Error generating DOI");
     } finally {
         setActionLoading(false);
+    }
+  };
+
+  const handleDownloadCrossRefXML = async (id, title) => {
+    setActionLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${id}/crossref-xml`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        credentials: 'include',
+      });
+      if (res.ok) {
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const cleanTitle = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 30);
+        a.download = `crossref-xml-${cleanTitle || id}.xml`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      } else {
+        alert("Failed to download CrossRef XML. Make sure the article is published and has all required details.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error downloading CrossRef XML");
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -445,7 +485,9 @@ export default function AdminPage() {
       abstract: "",
       authors: [],
       articleNumber: "",
-      issue: ""
+      issue: "",
+      doi: "",
+      publishedDate: ""
   });
 
   const handleDeleteArticle = async (id) => {
@@ -481,7 +523,9 @@ export default function AdminPage() {
           abstract: article.abstract || "",
           authors: article.authors || [], // Assuming it's already an array of objects
           articleNumber: article.articleNumber || "",
-          issue: article.issue || ""
+          issue: article.issue || "",
+          doi: article.doi || "",
+          publishedDate: article.publishedDate ? new Date(article.publishedDate).toISOString().slice(0, 10) : ""
       });
       setEditModalOpen(true);
   };
@@ -673,7 +717,8 @@ export default function AdminPage() {
                   volume: publishVolume,
                   issue: publishIssue, // We now pass the manually selected issue
                   title: `Volume ${publishVolume}, Issue ${publishIssue}`,
-                  type: publishType
+                  type: publishType,
+                  publishedMonth: publishMonth
               }),
               credentials: 'include',
           });
@@ -694,7 +739,8 @@ export default function AdminPage() {
                   body: JSON.stringify({ 
                       issue: issueString, 
                       status: 'published',
-                      articleNumber: nextArticleNumber
+                      articleNumber: nextArticleNumber,
+                      publishedDate: new Date(`${publishMonth}-01`).toISOString()
                   }),
               });
 
@@ -1335,7 +1381,10 @@ export default function AdminPage() {
                           }} />
                           <ActionButton label="Review & Update" onClick={() => openReviewModal(submission)} />
                           <ActionButton label="Send back to author" onClick={() => openSendBackModal(submission)} variant="outline" />
-                          <ActionButton label="Generate DOI" onClick={() => handleGenerateDOI(submission._id)} />
+                          <ActionButton label={submission.doi ? "Edit DOI" : "Assign DOI"} onClick={() => handleGenerateDOI(submission._id, submission.doi)} />
+                          {submission.status === 'published' && (
+                              <ActionButton label="Download CrossRef XML" onClick={() => handleDownloadCrossRefXML(submission._id, submission.title)} />
+                          )}
                           <ActionButton label="Upload final PDF" onClick={() => handleUploadClick(submission._id)} />
                           <ActionButton label="Edit Details" onClick={() => openEditModal(submission)} />
                           <ActionButton label="Delete" onClick={() => handleDeleteArticle(submission._id)} dark={true} />
@@ -1804,6 +1853,16 @@ export default function AdminPage() {
                               className="mt-1 block w-full rounded-lg border border-slate-300 bg-slate-100 px-3 py-2 text-slate-500"
                           />
                       </div>
+
+                      <div>
+                          <label className="block text-sm font-medium text-slate-700">Published Month & Year</label>
+                          <input 
+                              type="month" 
+                              value={publishMonth}
+                              onChange={(e) => setPublishMonth(e.target.value)}
+                              className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2"
+                          />
+                      </div>
                       
                       <div className="flex justify-end gap-2 pt-4">
                           <button 
@@ -1997,6 +2056,27 @@ export default function AdminPage() {
                                   type="number" 
                                   value={editFormData.articleNumber}
                                   onChange={(e) => setEditFormData({...editFormData, articleNumber: e.target.value})}
+                                  className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2"
+                              />
+                          </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                          <div>
+                              <label className="block text-sm font-medium text-slate-700">DOI</label>
+                              <input 
+                                  type="text" 
+                                  value={editFormData.doi}
+                                  onChange={(e) => setEditFormData({...editFormData, doi: e.target.value})}
+                                  className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2"
+                              />
+                          </div>
+                          <div>
+                              <label className="block text-sm font-medium text-slate-700">Published Date</label>
+                              <input 
+                                  type="date" 
+                                  value={editFormData.publishedDate}
+                                  onChange={(e) => setEditFormData({...editFormData, publishedDate: e.target.value})}
                                   className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2"
                               />
                           </div>

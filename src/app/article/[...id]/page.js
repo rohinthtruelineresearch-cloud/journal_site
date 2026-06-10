@@ -3,9 +3,17 @@ import Link from "next/link";
 import { journalInfo } from "@/data/journal";
 
 // Function to fetch article data (used by both metadata and page)
-async function getArticle(id) {
+async function getArticle(idArray) {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/articles/${id}`, {
+    let apiPath = '';
+    if (Array.isArray(idArray) && idArray.length === 3) {
+      apiPath = `/api/articles/by-slug/${idArray.join('/')}`;
+    } else {
+      const id = Array.isArray(idArray) ? idArray[0] : idArray;
+      apiPath = `/api/articles/${id}`;
+    }
+    
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${apiPath}`, {
       cache: 'no-store', // Ensure fresh data
     });
     if (!res.ok) return null;
@@ -57,7 +65,7 @@ export async function generateMetadata({ params }) {
       citation_issue: article.issue?.match(/Issue (\d+)/)?.[1] || "1",
       citation_pdf_url: pdfUrl,
       citation_doi: article.doi || "",
-      citation_abstract_html_url: `${process.env.NEXT_PUBLIC_SITE_URL}/article/${id}`,
+      citation_abstract_html_url: `${process.env.NEXT_PUBLIC_SITE_URL}/article/${Array.isArray(id) ? id.join('/') : id}`,
       citation_language: "en",
     }
   };

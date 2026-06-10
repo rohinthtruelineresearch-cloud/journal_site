@@ -183,7 +183,8 @@ export const contactInfo = {
   support: "9578873583",
   whatsapp: "+91 9578873583",
   whatsappNote: "WhatsApp only",
-  address: "Trueline Publisher , Building No. 7/232-19, Devi Towers, Kalipatti Privu Road, Vaikuntham, Sankari, Salem, Tamil Nadu – 637103.",
+  publisher: "Trueline Publisher",
+  address: "Building No. 7/232-19, Devi Towers, Kalipatti Privu Road, Vaikuntham, Sankari, Salem, Tamil Nadu – 637103, India",
   officeHours: "09:00-18:00 IST, Monday-Saturday",
 };
 

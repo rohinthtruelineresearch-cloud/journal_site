@@ -48,12 +48,15 @@ export function SiteFooter() {
           </div>
 
           <div className="space-y-2 text-sm text-black">
-            <div className="text-sm font-semibold text-slate-900">Contact</div>
+            <div className="text-sm font-semibold text-slate-900">Contact & Publisher</div>
             <div>Email: {contactInfo.email}</div>
             <div>WhatsApp: {contactInfo.whatsapp}</div>
             <div>Office: {contactInfo.support}</div>
-            <div>Address: {contactInfo.address}</div>
-            <div className="text-xs text-slate-700">
+            <div className="mt-4 pt-2 border-t border-slate-200">
+              <div className="font-semibold text-slate-900">{contactInfo.publisher}</div>
+              <div className="text-slate-700">{contactInfo.address}</div>
+            </div>
+            <div className="text-xs text-slate-700 mt-2">
               Office hours: {contactInfo.officeHours}
             </div>
           </div>
